@@ -18,7 +18,15 @@ import repast.simphony.util.SimUtilities;
  */
 public class Player {
 	
-	
+	//maybe we make personal traits/risk factors an array of 1s/0s - 1 if in risk zone 0 if not
+	int availableMoney;  
+	int employmentStatus;
+	int age; 
+	boolean gender; 
+	boolean buy; 
+	Double riskLvl; 
+	int jealousy;
+	int happiness; 
 	
 	
 	//TODO: allows players to keep an

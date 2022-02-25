@@ -15,12 +15,20 @@ import repast.simphony.space.grid.Grid;
  */
 public class Lootbox {
 
-
-	private String name; 
-	private double value; // current value as calculated 
+	private int rarity;
+	private int availability; // current value as calculated 
 	private ContinuousSpace<Object> space; 
 	private Grid<Object> grid;
-	private Random rnd = new Random();
+	
+	
+	public Lootbox(int rarity, int availability, ContinuousSpace<Object> space, Grid<Object> grid) {
+		this.rarity = rarity;
+		this.availability = availability;
+		this.space = space;
+		this.grid = grid;
+		
+	}
+	
 	
 	
 	
