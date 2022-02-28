@@ -22,7 +22,7 @@
 
 (suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
 
-## NETLOGO FEATURES
+## REPAST SIMPHONY FEATURES
 
 (interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
 
