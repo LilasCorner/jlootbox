@@ -19,8 +19,9 @@ public class Lootbox {
 
 	private int rarity;
 	private int price; // current value as calculated 
-	private Uniform unigen = RandomHelper.createUniform(0, 10);
-
+	private Uniform unigen = RandomHelper.createUniform(0, 5);
+	private ContinuousSpace<Object> space; 
+	private Grid<Object> grid;
 	
 	public Lootbox() {
 		this.rarity = unigen.nextInt();
@@ -30,6 +31,8 @@ public class Lootbox {
 	public Lootbox(int rarity, int price, ContinuousSpace<Object> space, Grid<Object> grid) {
 		this.rarity = rarity;
 		this.price = price;	
+		this.space = space;
+		this.grid = grid;
 	}
 	
 	
