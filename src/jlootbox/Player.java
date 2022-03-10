@@ -3,9 +3,7 @@
  */
 package jlootbox;
 
-import java.util.Iterator;
 import java.util.Stack;
-
 import cern.jet.random.Uniform;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
@@ -19,7 +17,7 @@ import repast.simphony.space.grid.Grid;
  */
 public class Player {
 	
-	//maybe we make personal traits/risk factors an array of 1s/0s - 1 if in risk zone 0 if not
+	//private vars
 	private int availableMoney;  
 	private int buyThreshold;
 	private Stack<Integer> hist = new Stack<Integer>();
@@ -28,7 +26,7 @@ public class Player {
 	private ContinuousSpace<Object> space; 
 	private Grid<Object> grid;
 	
-	
+	//default constructor
 	public Player(int availMoney, int buy, ContinuousSpace <Object> space , Grid <Object> grid) {
 		this.availableMoney = availMoney;
 		this.buyThreshold = buy;
@@ -49,6 +47,13 @@ public class Player {
 		
 		return buyThreshold;
 	}
+	
+	
+	//print out of a player's internal variables
+	public void infoDump() {
+		
+	}
+	
 	
 	//TODO: comment!
 	@ScheduledMethod(start=1, interval=1)
@@ -101,4 +106,5 @@ public class Player {
 	}
 	
 
+	
 }

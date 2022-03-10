@@ -5,11 +5,6 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
-				<parameter name="lootMaxVal" displayName="Lootbox Max Value" type="int" 
-						defaultValue="5" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
 				<parameter name="lootMinVal" displayName="Lootbox Min Value" type="int" 
 						defaultValue="1" 
 						isReadOnly="false" 

@@ -14,7 +14,6 @@ import repast.simphony.parameter.Parameters;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.continuous.RandomCartesianAdder;
-import repast.simphony.space.continuous.SimpleCartesianAdder;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
@@ -61,6 +60,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
 		}
 		
+		Lootbox.initGen(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
 		
 		return context;
 	}
