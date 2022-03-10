@@ -46,6 +46,10 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				new SimpleGridAdder<Object>(),
 				true, 50, 50));
 		
+		Lootbox.initGen(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
+		Player.initGen(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"));
+
+		
 		int playerCount = 1;
 		int money = 100;
 		int buy = 5;
@@ -60,7 +64,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
 		}
 		
-		Lootbox.initGen(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
+
 		
 		return context;
 	}

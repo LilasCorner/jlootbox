@@ -3,10 +3,7 @@
  */
 package jlootbox;
 
-import java.util.Random;
-
 import cern.jet.random.Uniform;
-import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
@@ -19,9 +16,10 @@ public class Lootbox {
 
 	private int rarity;
 	private int price; // current value as calculated 
-	private static Uniform unigen;
+	public static Uniform unigen;
 	private ContinuousSpace<Object> space; 
 	private Grid<Object> grid;
+	
 	
 	//default constructor
 	public Lootbox() {
@@ -30,6 +28,10 @@ public class Lootbox {
 	}
 	
 	//tbd if this constructor needed
+	/**
+	 * 
+	 * @return
+	 */
 	public Lootbox(int rarity, int price, ContinuousSpace<Object> space, Grid<Object> grid) {
 		this.rarity = rarity;
 		this.price = price;	
@@ -37,16 +39,28 @@ public class Lootbox {
 		this.grid = grid;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	//initialize the random generator
 	public static void initGen(int lowRange, int upRange) {  
 		unigen = RandomHelper.createUniform(lowRange, upRange);
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getRarity() {
 		return rarity;
 	}
 	
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public void step() {
 		
 	}

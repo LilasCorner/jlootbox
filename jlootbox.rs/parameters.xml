@@ -5,6 +5,16 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="buyThresMin" displayName="Buy Threshold Min" type="int" 
+						defaultValue="0" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
+				<parameter name="buyThresMax" displayName="Buy Threshold Max" type="int" 
+						defaultValue="10" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
 				<parameter name="lootMaxVal" displayName="Lootbox Max Value" type="int" 
 						defaultValue="5" 
 						isReadOnly="false" 
