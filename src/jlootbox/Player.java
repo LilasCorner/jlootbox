@@ -3,8 +3,8 @@
  */
 package jlootbox;
 
-import java.util.Stack;
-
+import java.util.ArrayDeque;
+import java.util.Deque;
 import cern.jet.random.Uniform;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
@@ -25,7 +25,7 @@ public class Player {
 	private int changeRate = 1; //TODO: paramaterize this
 	private int availableMoney;  
 	private int buyThreshold;
-	private Stack<Integer> hist = new Stack<Integer>();
+	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
 	private ContinuousSpace<Object> space; 
 	private Grid<Object> grid;
@@ -40,7 +40,7 @@ public class Player {
 		
 		//setting player up with free lootbox so hist.size > 1
 		newLoot = new Lootbox();
-		hist.push(newLoot.getRarity()); 
+		hist.addLast(newLoot); 
 	}
 	
 
@@ -80,7 +80,6 @@ public class Player {
 			
 	}
 	
-	
 	/** getThreshold()
 	 * 
 	 * @return the Player's buyThreshold
@@ -91,11 +90,17 @@ public class Player {
 	
 	/** recordNewLootboxInHistory()
 	 * 
-	 *  push new lootbox onto history
+	 *  push new lootbox onto history and 
+	 *  keep size of deque manageable
 	 */
 	protected void recordNewLootboxInHistory(){
-		hist.push(newLoot.getRarity());
 		
+		hist.addLast(newLoot);
+		
+		//temp attempt at size management
+		if(hist.size() > 2) { 
+			hist.removeFirst();
+		}
 	}
 	
 	/** buyNewLootbox()
@@ -126,7 +131,7 @@ public class Player {
 		// 		different reward structures mayb
 		
 		//old box better than new one
-		if(hist.peek() > newLoot.getRarity()) { 
+		if(hist.peek().getRarity() > newLoot.getRarity()) { 
 			
 			if(buyThreshold + (-1 * changeRate) > 0) { 
 				buyThreshold += changeRate * -1;
@@ -160,9 +165,7 @@ public class Player {
 		
 		//temp implementation
 		NdPoint myPoint = space.getLocation (this);
-		Integer[] arr = hist.toArray(new Integer[hist.size()]);		
-		int disp = arr[arr.length - 1] - arr[arr.length - 2];
-		
+		int disp = hist.peekLast().getRarity() - hist.peekFirst().getRarity();
 		
 		space.moveByDisplacement(this, 1, disp); //x, y displacement
 		myPoint = space.getLocation(this);
@@ -177,7 +180,7 @@ public class Player {
 	 * Player buying decision structure
 	 * @return
 	 */
-	protected boolean decide() {
+	protected Boolean decide() {
 		
 		switch(decisionStrat) {
 		
@@ -213,9 +216,9 @@ public class Player {
 	 */
 	protected void infoDump() {
 		
-		if(hist.peek() > newLoot.getRarity()) { 
+		if(hist.peek().getRarity() > newLoot.getRarity()) { 
 			System.out.println("++++BUY++++");
-			System.out.println("Old Loot Val: " + hist.peek());
+			System.out.println("Old Loot Val: " + hist.peek().getRarity());
 			System.out.println("New Loot Val: " + newLoot.getRarity());
 			System.out.println("BuyThreshold: " + getThreshold());
 		}
