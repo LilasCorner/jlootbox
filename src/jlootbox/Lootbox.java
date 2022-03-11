@@ -14,6 +14,9 @@ import repast.simphony.space.grid.Grid;
  */
 public class Lootbox {
 
+	private static int MIN_PRICE = 1;
+	private static int MAX_PRICE = 10;
+
 	private int rarity;
 	private int price; // current value as calculated 
 	public static Uniform unigen;
@@ -24,8 +27,18 @@ public class Lootbox {
 	//default constructor
 	public Lootbox() {
 		this.rarity = unigen.nextInt();
-		this.price = unigen.nextInt(); 
+		this.price = unigen.nextInt() + 1; 
 	}
+	
+	public Lootbox(int money) {
+		this.rarity = unigen.nextInt();
+		this.price = unigen.nextInt() + 1;
+		
+		while(this.price > money) {
+			this.price = unigen.nextInt() + 1;
+		}
+	}
+	
 	
 	//tbd if this constructor needed
 	/**
@@ -39,25 +52,34 @@ public class Lootbox {
 		this.grid = grid;
 	}
 	
-	/**
+	/** initGen(int lowRange, int upRange)
 	 * 
-	 * @return
+	 * @return void
 	 */
 	//initialize the random generator
 	public static void initGen(int lowRange, int upRange) {  
 		unigen = RandomHelper.createUniform(lowRange, upRange);
+		MIN_PRICE = lowRange + 1;
+		MAX_PRICE = upRange;
 	}
 	
+	/** getPrice()
+	 * 
+	 * @return price
+	 */
+	public int getPrice() {
+		return price;
+	}
 	
 	/**
 	 * 
-	 * @return
+	 * @return rarity
 	 */
 	public int getRarity() {
 		return rarity;
 	}
 	
-	/**
+	/** tbd
 	 * 
 	 * @return
 	 */

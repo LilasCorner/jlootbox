@@ -24,8 +24,9 @@ public class Player {
 	private static final int PRICE = 2; 
 
 	private static Uniform coinFlip;
-	private static int decisionStrat = 0; //0=always buy, 1=recent hist, 2=price - maybe make this individual for each agent
+	private static int decisionStrat;
 	private static Boolean dump = false;
+	
 	private int changeRate = 1; //TODO: paramaterize this
 	private int availableMoney;  
 	private int buyThreshold;
@@ -91,6 +92,21 @@ public class Player {
 		return buyThreshold;
 	}
 	
+	public int getMoney() {
+		return availableMoney;
+	}
+	
+	public void setMoney(int money) {
+		availableMoney = money;
+	}
+	
+	/**deductFunds()
+	 * deduct price of lootbox from available funds
+	 */
+	public void deductFunds() {
+		setMoney(getMoney() - newLoot.getPrice());
+	}
+	
 	/** recordNewLootboxInHistory()
 	 * 
 	 *  push new lootbox onto history and 
@@ -114,9 +130,36 @@ public class Player {
 	 */
 	protected Lootbox buyNewLootbox() {
 		
-		newLoot = new Lootbox();
+		switch(decisionStrat) {
 		
-		return newLoot;
+		case ALWAYS_BUY:{ 
+			
+			newLoot = new Lootbox();
+			return newLoot;
+		}
+		
+		case COIN_FLIP:{ 
+			
+			newLoot = new Lootbox();
+			return newLoot;
+			
+		}
+		
+		case PRICE:{ //TODO: price implementation
+			
+			newLoot = new Lootbox(getMoney());
+			deductFunds();
+			
+			return newLoot;
+		}
+
+		default:
+			newLoot = new Lootbox();
+			return newLoot;
+			
+		}
+		
+		
 	}
 	
 	/** updateThreshold()
@@ -200,6 +243,10 @@ public class Player {
 			}
 			
 			case PRICE:{ //TODO: price implementation
+				//if money > minLootPrice
+				//buy!
+				
+				//else kill agent?
 				return false;
 			}
 
@@ -223,7 +270,11 @@ public class Player {
 			System.out.println("++++BUY++++");
 			System.out.println("Old Loot Val: " + hist.peek().getRarity());
 			System.out.println("New Loot Val: " + newLoot.getRarity());
+			if(decisionStrat == PRICE) {
+				System.out.println("Price: " + newLoot.getPrice());
+			}
 			System.out.println("BuyThreshold: " + getThreshold());
+
 		}
 		else {
 			System.out.println("---NO BUY---");
