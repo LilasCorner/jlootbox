@@ -18,12 +18,14 @@ import repast.simphony.space.grid.Grid;
 public class Player {
 	
 	//private vars
+	private static Uniform coinFlip;
+	private static int decisionStrat = 0; //0=always buy, 1=recent hist, 2=price
+	private static Boolean dump = false;
+	private int changeRate = 1; //TODO: paramaterize this
 	private int availableMoney;  
 	private int buyThreshold;
 	private Stack<Integer> hist = new Stack<Integer>();
 	private Lootbox newLoot;
-	private static Uniform coinFlip;
-	private int changeRate = 1;
 	private ContinuousSpace<Object> space; 
 	private Grid<Object> grid;
 	
@@ -41,13 +43,40 @@ public class Player {
 	}
 	
 
-	/**
+	/** initGen(int lowRange, int upRange, String strat, Boolean debug)
 	 * 
-	 * @return
+	 * intializes random generator, decision strategy, 
+	 * and debug print statements according to params
+	 * 
+	 * @return void
 	 */
-	//initialize the random generator
-	public static void initGen(int lowRange, int upRange) {  
+	public static void initGen(int lowRange, int upRange, String strat, Boolean debug) {  
 		coinFlip = RandomHelper.createUniform(lowRange, upRange);
+		dump = debug;
+		
+		switch( strat ) {
+		
+			case "Always-Buy":{
+				decisionStrat = 0;
+
+			}
+			
+			case "Coin-Flip":{
+				decisionStrat = 1;
+
+			}
+			
+			case "Price":{
+				decisionStrat = 2;
+
+			}
+			
+			default: {
+				decisionStrat = 1;
+			}
+		
+		}
+			
 	}
 	
 	
@@ -59,8 +88,29 @@ public class Player {
 		return buyThreshold;
 	}
 	
+	/** recordNewLootboxInHistory()
+	 * 
+	 *  push new lootbox onto history
+	 */
+	protected void recordNewLootboxInHistory(){
+		hist.push(newLoot.getRarity());
+		
+	}
 	
-	/** changeThreshold()
+	/** buyNewLootbox()
+	 * 
+	 * create new lootbox object
+	 * 
+	 * @return newly generated lootbox newLoot
+	 */
+	protected Lootbox buyNewLootbox() {
+		
+		newLoot = new Lootbox();
+		
+		return newLoot;
+	}
+	
+	/** updateThreshold()
 	 * 
 	 * Increase/decrease the buyThreshold 
 	 * 
@@ -69,12 +119,15 @@ public class Player {
 	 * 
 	 * @return int new buyThreshold
 	 */
-	public int changeThreshold() {
+	protected int updateThreshold() {
+		
+		//TODO: case statement here for
+		// 		different reward structures mayb
 		
 		//old box better than new one
 		if(hist.peek() > newLoot.getRarity()) { 
 			
-			if(buyThreshold + (-1 * changeRate) > 0) { //TODO: remove hardcoded vals, paramaterize
+			if(buyThreshold + (-1 * changeRate) > 0) { 
 				buyThreshold += changeRate * -1;
 			}
 			
@@ -96,16 +149,19 @@ public class Player {
 	 * Calculates displacement for Player and moves them
 	 * to new location
 	 * 
+	 * Only runs when lootbox is purchased - player holds still
+	 * when no purchase is made
+	 * 
 	 * @return true for positive displacement, false for negative
 	 */
-	public Boolean move() {
+	protected Boolean move() {
 		
 		NdPoint myPoint = space.getLocation (this);
 		int disp = 0;//these two vars to calculate mvmt
 		int old = 0;
 		
 		old = getThreshold();
-    	disp = changeThreshold();
+    	disp = updateThreshold();
     	disp -= old;
         	
 		space.moveByDisplacement(this, 1, disp); //x, y displacement
@@ -121,17 +177,32 @@ public class Player {
 	 * Player buying decision structure
 	 * @return
 	 */
-	public void decide() {
+	protected boolean decide() {
 		
-		//flip a coin....
-		if(coinFlip.nextInt() <= buyThreshold) { 
+		switch(decisionStrat) {
+		
+			case 0:{ //alwaysBuy
+				return true;
+			}
 			
-			//decided to buy!
-			newLoot = new Lootbox();
-						
-			move();
+			case 1:{ //coinFlip
+				
+				if(coinFlip.nextInt() <= buyThreshold) { 
+					return true;
+				}
+				return false;
+			}
+			
+			case 2:{ //TODO: price implementation
+				return false;
+			}
 
+			default:{
+				 return false; //impossible
+			}
 		}
+		
+		
 
 	}
 	
@@ -140,7 +211,7 @@ public class Player {
 	 * fun for debugging :p
 	 * @return void
 	 */
-	public void infoDump() {
+	protected void infoDump() {
 		
 		if(hist.peek() > newLoot.getRarity()) { 
 			System.out.println("++++BUY++++");
@@ -153,7 +224,6 @@ public class Player {
 		}
 	}
 	
-	
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
 	 * and if that new box + or - their likelyhood to buy in future
@@ -162,11 +232,22 @@ public class Player {
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {
 		
-		decide();
+		if(decide()) {
+					
+			buyNewLootbox();
+			
+			if(dump) {
+				infoDump();
+			}
+
+			move();
+			
+			recordNewLootboxInHistory();
+
+
+		}		
 		
-		infoDump(); //TODO: paramaterize this based on checkbox on front
 		
-		hist.push(newLoot.getRarity());
 		
 	}
 	

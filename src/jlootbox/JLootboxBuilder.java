@@ -47,7 +47,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				true, 50, 50));
 		
 		Lootbox.initGen(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
-		Player.initGen(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"));
+		Player.initGen(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"), params.getString("strat"), params.getBoolean("debug"));
 
 		
 		int playerCount = 1;

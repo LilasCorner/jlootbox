@@ -5,6 +5,11 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="buyThresMin" displayName="Buy Threshold Min" type="int" 
+						defaultValue="0" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
 				<parameter name="buyThresMax" displayName="Buy Threshold Max" type="int" 
 						defaultValue="10" 
 						isReadOnly="false" 
@@ -19,6 +24,12 @@
 						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
+				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" 
+						defaultValue="Coin-Flip" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
+												values="Always-Buy Coin-Flip Price "
 											/>
 		</parameters>
 
