@@ -4,6 +4,7 @@
 package jlootbox;
 
 import java.util.Stack;
+
 import cern.jet.random.Uniform;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
@@ -19,7 +20,7 @@ public class Player {
 	
 	//private vars
 	private static Uniform coinFlip;
-	private static int decisionStrat = 0; //0=always buy, 1=recent hist, 2=price
+	private static int decisionStrat = 0; //0=always buy, 1=recent hist, 2=price - maybe make this individual for each agent
 	private static Boolean dump = false;
 	private int changeRate = 1; //TODO: paramaterize this
 	private int availableMoney;  
@@ -156,14 +157,13 @@ public class Player {
 	 */
 	protected Boolean move() {
 		
-		NdPoint myPoint = space.getLocation (this);
-		int disp = 0;//these two vars to calculate mvmt
-		int old = 0;
 		
-		old = getThreshold();
-    	disp = updateThreshold();
-    	disp -= old;
-        	
+		//temp implementation
+		NdPoint myPoint = space.getLocation (this);
+		Integer[] arr = hist.toArray(new Integer[hist.size()]);		
+		int disp = arr[arr.length - 1] - arr[arr.length - 2];
+		
+		
 		space.moveByDisplacement(this, 1, disp); //x, y displacement
 		myPoint = space.getLocation(this);
 		grid.moveTo(this, (int)myPoint.getX(), (int)myPoint.getY());
@@ -240,9 +240,12 @@ public class Player {
 				infoDump();
 			}
 
-			move();
+			updateThreshold();
 			
 			recordNewLootboxInHistory();
+
+			move();
+			
 
 
 		}		
