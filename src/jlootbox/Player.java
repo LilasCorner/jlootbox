@@ -19,6 +19,10 @@ import repast.simphony.space.grid.Grid;
 public class Player {
 	
 	//private vars
+	private static final int ALWAYS_BUY = 0; 
+	private static final int COIN_FLIP = 1; 
+	private static final int PRICE = 2; 
+
 	private static Uniform coinFlip;
 	private static int decisionStrat = 0; //0=always buy, 1=recent hist, 2=price - maybe make this individual for each agent
 	private static Boolean dump = false;
@@ -43,7 +47,6 @@ public class Player {
 		hist.addLast(newLoot); 
 	}
 	
-
 	/** initGen(int lowRange, int upRange, String strat, Boolean debug)
 	 * 
 	 * intializes random generator, decision strategy, 
@@ -58,22 +61,22 @@ public class Player {
 		switch( strat ) {
 		
 			case "Always-Buy":{
-				decisionStrat = 0;
+				decisionStrat = ALWAYS_BUY;
 
 			}
 			
 			case "Coin-Flip":{
-				decisionStrat = 1;
+				decisionStrat = COIN_FLIP;
 
 			}
 			
 			case "Price":{
-				decisionStrat = 2;
+				decisionStrat = PRICE;
 
 			}
 			
 			default: {
-				decisionStrat = 1;
+				decisionStrat = COIN_FLIP;
 			}
 		
 		}
@@ -184,11 +187,11 @@ public class Player {
 		
 		switch(decisionStrat) {
 		
-			case 0:{ //alwaysBuy
+			case ALWAYS_BUY:{ 
 				return true;
 			}
 			
-			case 1:{ //coinFlip
+			case COIN_FLIP:{ 
 				
 				if(coinFlip.nextInt() <= buyThreshold) { 
 					return true;
@@ -196,7 +199,7 @@ public class Player {
 				return false;
 			}
 			
-			case 2:{ //TODO: price implementation
+			case PRICE:{ //TODO: price implementation
 				return false;
 			}
 
