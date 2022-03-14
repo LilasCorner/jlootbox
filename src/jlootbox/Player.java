@@ -60,7 +60,6 @@ public class Player {
 	public static void initGen(int lowRange, int upRange, String strat, Boolean debug) {  
 		coinFlip = RandomHelper.createUniform(lowRange, upRange);
 		dump = debug;
-		System.out.println("strat: " + strat);
 		
 		switch(strat) {
 		
@@ -80,7 +79,6 @@ public class Player {
 			
 			
 		}
-		System.out.println("initStrat: " + decisionStrat);
 
 	}
 	
@@ -279,14 +277,15 @@ public class Player {
 
 	}
 	
-	/** infoDump()
+	/** infoDump(Boolean Buy)
 	 * print out of a player's internal variables
-	 * fun for debugging :p
+	 * buy = true allows us to print details of transaction, 
+	 * buy = false prints NO BUY
 	 * @return void
 	 */
-	protected void infoDump() {
+	protected void infoDump(Boolean buy) {
 		
-		if(hist.peek().getRarity() > newLoot.getRarity()) { 
+		if(buy) {
 			System.out.println("++++BUY++++");
 			System.out.println("Old Loot Val: " + hist.peek().getRarity());
 			System.out.println("New Loot Val: " + newLoot.getRarity());
@@ -297,8 +296,9 @@ public class Player {
 
 		}
 		else {
-			System.out.println("---NO BUY---");
+			System.out.println("----NO BUY----");
 		}
+
 	}
 	
 	/** step()
@@ -313,7 +313,7 @@ public class Player {
 			buyNewLootbox();
 			
 			if(dump) {
-				infoDump();
+				infoDump(true);
 			}
 
 			updateThreshold();
@@ -321,10 +321,13 @@ public class Player {
 			recordNewLootboxInHistory();
 
 			move();
-			
-			
-
 		}		
+		else {
+			if(dump) {
+				infoDump(false);
+			}
+
+		}
 		
 		
 		
