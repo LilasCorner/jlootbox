@@ -19,12 +19,14 @@ import repast.simphony.space.grid.Grid;
 public class Player {
 	
 	//private vars
-	private static final int ALWAYS_BUY = 0; 
-	private static final int COIN_FLIP = 1; 
-	private static final int PRICE = 2; 
+	public static enum DecisionStrategy{
+		   ALWAYS_BUY,
+		   COIN_FLIP,
+		   PRICE
+		}
 
 	private static Uniform coinFlip;
-	private static int decisionStrat;
+	private static DecisionStrategy decisionStrat;
 	private static Boolean dump = false;
 	
 	private int changeRate = 1; //TODO: paramaterize this
@@ -58,30 +60,28 @@ public class Player {
 	public static void initGen(int lowRange, int upRange, String strat, Boolean debug) {  
 		coinFlip = RandomHelper.createUniform(lowRange, upRange);
 		dump = debug;
+		System.out.println("strat: " + strat);
 		
-		switch( strat ) {
+		switch(strat) {
 		
-			case "Always-Buy":{
-				decisionStrat = ALWAYS_BUY;
-
-			}
+			case "ALWAYS_BUY":
+				decisionStrat = DecisionStrategy.ALWAYS_BUY;
+				break;
 			
-			case "Coin-Flip":{
-				decisionStrat = COIN_FLIP;
-
-			}
 			
-			case "Price":{
-				decisionStrat = PRICE;
-
-			}
+			case "COIN_FLIP":
+				decisionStrat = DecisionStrategy.COIN_FLIP;
+				break;
 			
-			default: {
-				decisionStrat = COIN_FLIP;
-			}
-		
+			
+			case "PRICE":
+				decisionStrat = DecisionStrategy.PRICE;
+				break;
+			
+			
 		}
-			
+		System.out.println("initStrat: " + decisionStrat);
+
 	}
 	
 	/** getThreshold()
@@ -104,11 +104,7 @@ public class Player {
 	 * deduct price of lootbox from available funds
 	 */
 	public void deductFunds() {
-
-		System.out.println("MADE ITTTTTTTTTTTTTTTTTTTTTTTTT: " + getMoney());
 		setMoney(getMoney() - newLoot.getPrice());
-		System.out.println("thoughts tho: " + getMoney());
-
 	}
 	
 	/** recordNewLootboxInHistory()
@@ -133,33 +129,32 @@ public class Player {
 	 * @return newly generated lootbox newLoot
 	 */
 	protected Lootbox buyNewLootbox() {
-		
+		System.out.println("decisionStrat:" + decisionStrat);
+
 		switch(decisionStrat) {
 		
-		case ALWAYS_BUY:{ 
+			case ALWAYS_BUY:{ 
+				
+				newLoot = new Lootbox();
+				return newLoot;
+			}
 			
-			newLoot = new Lootbox();
-			return newLoot;
-		}
-		
-		case COIN_FLIP:{ 
+			case COIN_FLIP:{ 
+	
+				newLoot = new Lootbox();
+				return newLoot;
+				
+			}
 			
-			newLoot = new Lootbox();
-			return newLoot;
-			
-		}
-		
-		case PRICE:{ 
-			
-			newLoot = new Lootbox(getMoney());
-			deductFunds();
-			System.out.println("HELLLLLLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-			return newLoot;
-		}
-
-		default:
-			newLoot = new Lootbox();
-			return newLoot;
+			case PRICE:{ 
+				newLoot = new Lootbox(getMoney());
+				deductFunds();
+				return newLoot;
+			}
+	
+			default:
+				newLoot = new Lootbox();
+				return newLoot;
 			
 		}
 		
@@ -191,7 +186,7 @@ public class Player {
 						buyThreshold += changeRate;
 					}
 				}
-				
+				break;
 			}
 	
 			default:{
@@ -210,6 +205,7 @@ public class Player {
 					}
 				}		
 			}
+			
 		}
 
 		
@@ -294,7 +290,7 @@ public class Player {
 			System.out.println("++++BUY++++");
 			System.out.println("Old Loot Val: " + hist.peek().getRarity());
 			System.out.println("New Loot Val: " + newLoot.getRarity());
-			if(decisionStrat == PRICE) {
+			if(decisionStrat == DecisionStrategy.PRICE) {
 				System.out.println("Price: " + newLoot.getPrice());
 			}
 			System.out.println("BuyThreshold: " + getThreshold());
@@ -314,7 +310,6 @@ public class Player {
 	public void step() {
 		
 		if(decide()) {
-					
 			buyNewLootbox();
 			
 			if(dump) {
@@ -322,7 +317,7 @@ public class Player {
 			}
 
 			updateThreshold();
-			
+
 			recordNewLootboxInHistory();
 
 			move();

@@ -15,6 +15,12 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="debug" displayName="Debug" type="boolean" 
+						defaultValue="false" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
+												values="true false "
+											/>
 				<parameter name="lootMaxVal" displayName="Lootbox Max Value" type="int" 
 						defaultValue="5" 
 						isReadOnly="false" 
@@ -24,12 +30,6 @@
 						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
-				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" 
-						defaultValue="Coin-Flip" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
-												values="Always-Buy Coin-Flip Price "
 											/>
 		</parameters>
 

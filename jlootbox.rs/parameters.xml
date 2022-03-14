@@ -32,10 +32,10 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
 				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" 
-						defaultValue="Coin-Flip" 
+						defaultValue="COIN_FLIP" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
-												values="Always-Buy Coin-Flip Price "
+												values="ALWAYS_BUY COIN_FLIP PRICE "
 											/>
 		</parameters>
 
