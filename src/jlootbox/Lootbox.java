@@ -14,8 +14,8 @@ import repast.simphony.space.grid.Grid;
  */
 public class Lootbox {
 
-	private static int MIN_PRICE = 1;
-	private static int MAX_PRICE = 10;
+	public static int MIN_PRICE = 1;
+	public static int MAX_PRICE = 10;
 
 	private int rarity;
 	private int price; // current value as calculated 

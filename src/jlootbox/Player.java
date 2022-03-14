@@ -104,7 +104,11 @@ public class Player {
 	 * deduct price of lootbox from available funds
 	 */
 	public void deductFunds() {
+
+		System.out.println("MADE ITTTTTTTTTTTTTTTTTTTTTTTTT: " + getMoney());
 		setMoney(getMoney() - newLoot.getPrice());
+		System.out.println("thoughts tho: " + getMoney());
+
 	}
 	
 	/** recordNewLootboxInHistory()
@@ -145,11 +149,11 @@ public class Player {
 			
 		}
 		
-		case PRICE:{ //TODO: price implementation
+		case PRICE:{ 
 			
 			newLoot = new Lootbox(getMoney());
 			deductFunds();
-			
+			System.out.println("HELLLLLLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 			return newLoot;
 		}
 
@@ -173,24 +177,41 @@ public class Player {
 	 */
 	protected int updateThreshold() {
 		
-		//TODO: case statement here for
-		// 		different reward structures mayb
-		
-		//old box better than new one
-		if(hist.peek().getRarity() > newLoot.getRarity()) { 
+		switch(decisionStrat) {
 			
-			if(buyThreshold + (-1 * changeRate) > 0) { 
-				buyThreshold += changeRate * -1;
+			case PRICE:{ 
+				//if loot worse than price paid for it - assuming loot and price scaled same, temporary
+				if(newLoot.getRarity() < newLoot.getPrice()) {
+					if(buyThreshold + (-1 * changeRate) > 0) {  //TODO: turn lines 184/185 into method, too many brackets here ;-;
+						buyThreshold += changeRate * -1;
+					}
+				}
+				else {
+					if(buyThreshold + changeRate < 10 ) {
+						buyThreshold += changeRate;
+					}
+				}
+				
 			}
-			
+	
+			default:{
+				//old box better than new one
+				if(hist.peek().getRarity() > newLoot.getRarity()) { 
+					
+					if(buyThreshold + (-1 * changeRate) > 0) { 
+						buyThreshold += changeRate * -1;
+					}
+					
+				}
+				else { //new box better than old
+					
+					if(buyThreshold + changeRate < 10 ) {
+						buyThreshold += changeRate;
+					}
+				}		
+			}
 		}
-		else { //new box better than old
-			
-			if(buyThreshold + changeRate < 10 ) {
-				buyThreshold += changeRate;
 
-			}
-		}
 		
 
 		return buyThreshold;
@@ -242,11 +263,14 @@ public class Player {
 				return false;
 			}
 			
-			case PRICE:{ //TODO: price implementation
+			case PRICE:{ 
 				//if money > minLootPrice
 				//buy!
+				if(getMoney() > Lootbox.MIN_PRICE) {
+					return true;
+				}
 				
-				//else kill agent?
+				//otherwise wait/acrue dogecoin wealth
 				return false;
 			}
 
@@ -303,7 +327,7 @@ public class Player {
 
 			move();
 			
-
+			
 
 		}		
 		
@@ -312,5 +336,12 @@ public class Player {
 	}
 	
 
+	/**dieCheck()
+	 * 
+	 * If player runs out of money, or becomes too old(?), god strikes them down
+	 */
+	public void dieCheck() {
+		//TODO
+	}
 	
 }
