@@ -46,8 +46,13 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				new SimpleGridAdder<Object>(),
 				true, 50, 50));
 		
-		Lootbox.initGen(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
-		Player.initGen(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"), params.getString("strat"), params.getBoolean("debug"));
+		//create Network
+		
+		
+		
+		
+		Lootbox.init(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
+		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"), params.getString("strat"), params.getBoolean("debug"));
 
 		
 		int playerCount = 1;
@@ -62,6 +67,12 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		for (Object obj : context) {
 			NdPoint pt = space.getLocation(obj);
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
+			
+			// choose another obj in context and create link
+			// can loop thru them all and connect all if small,
+			// or give chance at friendship forming
+			// addEdge
+			
 		}
 		
 

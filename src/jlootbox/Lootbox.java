@@ -52,14 +52,14 @@ public class Lootbox {
 		this.grid = grid;
 	}
 	
-	/** initGen(int lowRange, int upRange)
+	/** init(int lowRange, int upRange)
 	 * 
 	 * @return void
 	 */
 	//initialize the random generator
-	public static void initGen(int lowRange, int upRange) {  
-		unigen = RandomHelper.createUniform(lowRange, upRange);
-		MIN_PRICE = lowRange + 1;
+	public static void init(int lowRange, int upRange) {   
+		unigen = RandomHelper.createUniform(lowRange, upRange); 
+		MIN_PRICE = lowRange + 1; //TODO: Parameterize price bounds
 		MAX_PRICE = upRange;
 	}
 	

@@ -6,7 +6,9 @@ package jlootbox;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import cern.jet.random.Uniform;
+import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
@@ -50,37 +52,21 @@ public class Player {
 		hist.addLast(newLoot); 
 	}
 	
-	/** initGen(int lowRange, int upRange, String strat, Boolean debug)
+	
+	/** init(int lowRange, int upRange, String strat, Boolean debug)
 	 * 
 	 * intializes random generator, decision strategy, 
 	 * and debug print statements according to params
 	 * 
 	 * @return void
 	 */
-	public static void initGen(int lowRange, int upRange, String strat, Boolean debug) {  
+	public static void init(int lowRange, int upRange, String strat, Boolean debug) {  
 		coinFlip = RandomHelper.createUniform(lowRange, upRange);
-		dump = debug;
-		
-		switch(strat) {
-		
-			case "ALWAYS_BUY":
-				decisionStrat = DecisionStrategy.ALWAYS_BUY;
-				break;
-			
-			
-			case "COIN_FLIP":
-				decisionStrat = DecisionStrategy.COIN_FLIP;
-				break;
-			
-			
-			case "PRICE":
-				decisionStrat = DecisionStrategy.PRICE;
-				break;
-			
-			
-		}
-
+		dump = debug;	
+		decisionStrat = Enum.valueOf(Player.DecisionStrategy.class, strat); 
+	
 	}
+	
 	
 	/** getThreshold()
 	 * 
@@ -90,13 +76,26 @@ public class Player {
 		return buyThreshold;
 	}
 	
+	
+	/**getMoney()
+	 * 
+	 * @return availableMoney
+	 */
 	public int getMoney() {
 		return availableMoney;
 	}
 	
+	
+	/**setMoney(int money)
+	 * 
+	 * set availableMoney to money
+	 * 
+	 * @param money
+	 */
 	public void setMoney(int money) {
 		availableMoney = money;
 	}
+	
 	
 	/**deductFunds()
 	 * deduct price of lootbox from available funds
@@ -104,6 +103,7 @@ public class Player {
 	public void deductFunds() {
 		setMoney(getMoney() - newLoot.getPrice());
 	}
+	
 	
 	/** recordNewLootboxInHistory()
 	 * 
@@ -120,6 +120,7 @@ public class Player {
 		}
 	}
 	
+	
 	/** buyNewLootbox()
 	 * 
 	 * create new lootbox object
@@ -127,7 +128,7 @@ public class Player {
 	 * @return newly generated lootbox newLoot
 	 */
 	protected Lootbox buyNewLootbox() {
-		System.out.println("decisionStrat:" + decisionStrat);
+//		System.out.println("decisionStrat:" + decisionStrat);
 
 		switch(decisionStrat) {
 		
@@ -158,6 +159,7 @@ public class Player {
 		
 		
 	}
+	
 	
 	/** updateThreshold()
 	 * 
@@ -211,6 +213,7 @@ public class Player {
 		return buyThreshold;
 	}
 	
+	
 	/** move()
 	 * 
 	 * Calculates displacement for Player and moves them
@@ -237,6 +240,7 @@ public class Player {
 		
 	}
 	
+	
 	/** decide()
 	 * Player buying decision structure
 	 * @return
@@ -260,7 +264,7 @@ public class Player {
 			case PRICE:{ 
 				//if money > minLootPrice
 				//buy!
-				if(getMoney() > Lootbox.MIN_PRICE) {
+				if(getMoney() > Lootbox.MIN_PRICE){
 					return true;
 				}
 				
@@ -276,6 +280,7 @@ public class Player {
 		
 
 	}
+	
 	
 	/** infoDump(Boolean Buy)
 	 * print out of a player's internal variables
@@ -301,6 +306,7 @@ public class Player {
 
 	}
 	
+	
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
 	 * and if that new box + or - their likelyhood to buy in future
@@ -308,6 +314,10 @@ public class Player {
 	 */
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {
+		
+		Parameters params = RunEnvironment.getInstance().getParameters();
+
+		System.out.println("yeehaw: " + params.getString("strat"));
 		
 		if(decide()) {
 			buyNewLootbox();
