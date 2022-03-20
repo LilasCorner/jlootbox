@@ -52,15 +52,16 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 		
 		Lootbox.init(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
-		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"), params.getString("strat"), params.getBoolean("debug"));
+		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"),  params.getBoolean("debug"));
 
 		
-		int playerCount = 1;
+		int playerCount = params.getInteger("numPlayers");
+		String strat = params.getString("strat");
 		int money = 100;
 		int buy = 5;
 		
 		for (int i =0; i < playerCount; i++) {
-			context.add(new Player (money, buy, space, grid));
+			context.add(new Player (money, buy, space, grid, strat));
 		}
 		
 		

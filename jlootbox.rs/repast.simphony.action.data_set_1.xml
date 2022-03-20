@@ -1,5 +1,5 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.9.0">
-  <name>MoneySet</name>
+  <name>ThresholdSet</name>
   <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
@@ -11,16 +11,16 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1656485839</hashCode>
+    <hashCode>-1644125677</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>availableMoney</string>
+      <string>getThreshold</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>availableMoney</id>
+        <id>getThreshold</id>
         <className>jlootbox.Player</className>
-        <methodName>getMoney</methodName>
+        <methodName>getThreshold</methodName>
         <aggType>SUM</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>

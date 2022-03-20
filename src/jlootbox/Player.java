@@ -28,7 +28,7 @@ public class Player {
 		}
 
 	private static Uniform coinFlip;
-	private static DecisionStrategy decisionStrat;
+	private DecisionStrategy decisionStrat;
 	private static Boolean dump = false;
 	
 	private int changeRate = 1; //TODO: paramaterize this
@@ -41,11 +41,14 @@ public class Player {
 	
 	
 	//default constructor
-	public Player(int availMoney, int buy, ContinuousSpace <Object> space , Grid <Object> grid) {
+	public Player(int availMoney, int buy, ContinuousSpace <Object> space , Grid <Object> grid, String strat) {
 		this.availableMoney = availMoney;
 		this.buyThreshold = buy;
 		this.space = space;
 		this.grid = grid;
+		
+		decisionStrat = Enum.valueOf(Player.DecisionStrategy.class, strat); 
+
 		
 		//setting player up with free lootbox so hist.size > 1
 		newLoot = new Lootbox();
@@ -60,10 +63,9 @@ public class Player {
 	 * 
 	 * @return void
 	 */
-	public static void init(int lowRange, int upRange, String strat, Boolean debug) {  
+	public static void init(int lowRange, int upRange, Boolean debug) {  
 		coinFlip = RandomHelper.createUniform(lowRange, upRange);
 		dump = debug;	
-		decisionStrat = Enum.valueOf(Player.DecisionStrategy.class, strat); 
 	
 	}
 	
@@ -84,6 +86,17 @@ public class Player {
 	public int getMoney() {
 		return availableMoney;
 	}
+	
+	/** moneySpent()
+	 *  
+	 *  returns money spent on newest lootbox
+	 *  
+	 * @return int price of last lootbox
+	 */
+	public int moneySpent() {
+		return newLoot.getPrice();
+	}
+	
 	
 	
 	/**setMoney(int money)
@@ -128,7 +141,6 @@ public class Player {
 	 * @return newly generated lootbox newLoot
 	 */
 	protected Lootbox buyNewLootbox() {
-//		System.out.println("decisionStrat:" + decisionStrat);
 
 		switch(decisionStrat) {
 		
@@ -146,8 +158,8 @@ public class Player {
 			}
 			
 			case PRICE:{ 
-				newLoot = new Lootbox(getMoney());
-				deductFunds();
+				newLoot = new Lootbox( (buyThreshold / 100) * getMoney());
+//				deductFunds();
 				return newLoot;
 			}
 	
@@ -158,6 +170,23 @@ public class Player {
 		}
 		
 		
+	}
+	
+	/**rangeCheck(int num)
+	 * 
+	 * verifies that increasing/decreasing the passed
+	 * number will not put it out of bounds (0-10)
+	 * 
+	 * @param num - the number we want to be within range
+	 * @return true if operation is within range, false if not
+	 */
+	public Boolean rangeCheck(int num) {
+		
+		if(num + (-1 * changeRate) > 0 && num + changeRate < 10) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	
@@ -175,40 +204,37 @@ public class Player {
 		switch(decisionStrat) {
 			
 			case PRICE:{ 
-				//if loot worse than price paid for it - assuming loot and price scaled same, temporary
-				if(newLoot.getRarity() < newLoot.getPrice()) {
-					if(buyThreshold + (-1 * changeRate) > 0) {  //TODO: turn lines 184/185 into method, too many brackets here ;-;
+				//if loot worse than price paid for it, less likely to buy later
+				if(rangeCheck(buyThreshold)) {
+				
+					if(newLoot.getRarity() < newLoot.getPrice()) {
 						buyThreshold += changeRate * -1;
 					}
-				}
-				else {
-					if(buyThreshold + changeRate < 10 ) {
+					else {
 						buyThreshold += changeRate;
 					}
+			
 				}
+				
 				break;
 			}
 	
 			default:{
-				//old box better than new one
-				if(hist.peek().getRarity() > newLoot.getRarity()) { 
-					
-					if(buyThreshold + (-1 * changeRate) > 0) { 
+				
+				if(rangeCheck(buyThreshold)) {
+					//old box better than new one, less likely to buy
+					if(hist.peek().getRarity() > newLoot.getRarity()) { 
 						buyThreshold += changeRate * -1;
 					}
-					
-				}
-				else { //new box better than old
-					
-					if(buyThreshold + changeRate < 10 ) {
+					else { //new box better than old, more likely to buy
 						buyThreshold += changeRate;
-					}
-				}		
+					}		
+	
+				}
+				
 			}
 			
 		}
-
-		
 
 		return buyThreshold;
 	}
@@ -307,6 +333,11 @@ public class Player {
 	}
 	
 	
+	protected int askOtherPlayer() {
+		return 0;
+	}
+	
+	
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
 	 * and if that new box + or - their likelyhood to buy in future
@@ -314,10 +345,10 @@ public class Player {
 	 */
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {
-		
-		Parameters params = RunEnvironment.getInstance().getParameters();
 
-		System.out.println("yeehaw: " + params.getString("strat"));
+//		Below is how to keep model updated with params from context mid-run
+//		Parameters params = RunEnvironment.getInstance().getParameters();
+
 		
 		if(decide()) {
 			buyNewLootbox();
@@ -343,13 +374,5 @@ public class Player {
 		
 	}
 	
-
-	/**dieCheck()
-	 * 
-	 * If player runs out of money, or becomes too old(?), god strikes them down
-	 */
-	public void dieCheck() {
-		//TODO
-	}
 	
 }

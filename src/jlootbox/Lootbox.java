@@ -33,10 +33,7 @@ public class Lootbox {
 	public Lootbox(int money) {
 		this.rarity = unigen.nextInt();
 		this.price = unigen.nextInt() + 1;
-		
-		while(this.price > money) {
-			this.price = unigen.nextInt() + 1;
-		}
+		this.price = money;
 	}
 	
 	
