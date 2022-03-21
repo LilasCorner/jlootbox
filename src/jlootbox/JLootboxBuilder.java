@@ -49,12 +49,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		Grid<Object> grid =  gridFactory.createGrid("grid", context, 
 				new GridBuilderParameters<Object>(new WrapAroundBorders(),
 				new SimpleGridAdder<Object>(),
-				true, 50, 50));
-		
-		//create Network
-
-		
-		
+				true, 50, 50));	
 		
 		Lootbox.init(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
 		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"),  params.getBoolean("debug"));

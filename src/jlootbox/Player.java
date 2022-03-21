@@ -360,9 +360,8 @@ public class Player {
 
 		//find all players near current player
 		for (Object obj : grid.getObjectsAt(pt.getX(), pt.getY())) {
-			if(obj instanceof Player) {
-				players.add(obj);
-			}
+			players.add(obj);
+//			System.out.println("woooOOOOOOOOOOOOOOOOOOOOOOOOWOWOWOWOWOWOW");
 		}
 		
 		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
@@ -371,9 +370,11 @@ public class Player {
 		Context <Object> context = ContextUtils.getContext(obj);
 		Deque<Lootbox> otherLoot = otherPlayer.getHist();
 		
-		//compare own lootbox to player near us to see how we're doign
+		//compare own lootbox to player near us to see how we're doing
 		compare(otherLoot);
 		
+		
+		//TODO: Check if edge already exists, weight it more strongly if duplicate?
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		net.addEdge(this, otherPlayer);
 		
