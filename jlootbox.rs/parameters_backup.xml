@@ -31,6 +31,11 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="stopTime" displayName="Stop Time" type="int" 
+						defaultValue="10000" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
 				<parameter name="numPlayers" displayName="# Players" type="int" 
 						defaultValue="10" 
 						isReadOnly="false" 
