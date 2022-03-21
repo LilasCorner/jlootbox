@@ -3,7 +3,7 @@
   <dataSet>MoneySpentSet</dataSet>
   <xAxisLabel>Tick Count</xAxisLabel>
   <yAxisLabel>Price</yAxisLabel>
-  <chartTitle>Money Spent Per Lootbox</chartTitle>
+  <chartTitle>Net Money Spent Per Lootbox</chartTitle>
   <type>TIME_SERIES</type>
   <background>
     <red>192</red>

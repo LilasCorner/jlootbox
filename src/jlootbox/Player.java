@@ -107,7 +107,7 @@ public class Player {
 	 * @return int price of last lootbox
 	 */
 	public int moneySpent() {
-		return newLoot.getPrice();
+		return hist.peek().getPrice();
 	}
 	
 	
@@ -220,8 +220,8 @@ public class Player {
 				if(rangeCheck(buyThreshold)) {
 				
 					if(newLoot.getRarity() < newLoot.getPrice()) {
-						buyThreshold -= changeRate;
-					}
+						buyThreshold += changeRate * -1;					
+						}
 					else {
 						buyThreshold += changeRate;
 					}
@@ -300,13 +300,13 @@ public class Player {
 			}
 			
 			case PRICE:{ 
-				//if money > minLootPrice
-				//buy!
-				if(getMoney() > Lootbox.MIN_PRICE){
+				//buyThreshold= % of available money we're willing to spend
+				//that amount has to be above the minimum price of a lootbox for
+				//player to buy
+				if((getThreshold()/100) * getMoney() > Lootbox.MIN_PRICE){
 					return true;
 				}
 				
-				//otherwise wait/acrue dogecoin wealth
 				return false;
 			}
 
