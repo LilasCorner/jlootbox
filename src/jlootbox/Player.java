@@ -4,15 +4,21 @@
 package jlootbox;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+
 import cern.jet.random.Uniform;
-import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
-import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
+import repast.simphony.space.graph.Network;
 import repast.simphony.space.grid.Grid;
+import repast.simphony.space.grid.GridPoint;
+import repast.simphony.util.ContextUtils;
 
 /**
  * @author Lilo
@@ -69,6 +75,13 @@ public class Player {
 	
 	}
 	
+	/** getHist()
+	 *  returns player's lootbox history
+	 */
+	public Deque<Lootbox> getHist(){
+		return hist;
+	}
+	
 	
 	/** getThreshold()
 	 * 
@@ -96,7 +109,6 @@ public class Player {
 	public int moneySpent() {
 		return newLoot.getPrice();
 	}
-	
 	
 	
 	/**setMoney(int money)
@@ -208,7 +220,7 @@ public class Player {
 				if(rangeCheck(buyThreshold)) {
 				
 					if(newLoot.getRarity() < newLoot.getPrice()) {
-						buyThreshold += changeRate * -1;
+						buyThreshold -= changeRate;
 					}
 					else {
 						buyThreshold += changeRate;
@@ -333,11 +345,78 @@ public class Player {
 	}
 	
 	
+	/** askOtherPlayer()
+	 * If player doesn't buy lootbox, they 
+	 * look at other players to decide if 
+	 * they should buy more, or fewer boxes
+	 * 
+	 * temp implementation: grid location based
+	 * @return
+	 */
 	protected int askOtherPlayer() {
+		
+		GridPoint pt = grid.getLocation(this);
+		List<Object> players = new ArrayList<Object>();
+
+		//find all players near current player
+		for (Object obj : grid.getObjectsAt(pt.getX(), pt.getY())) {
+			if(obj instanceof Player) {
+				players.add(obj);
+			}
+		}
+		
+		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
+		Player otherPlayer = (Player) players.get(index);
+		Object obj = players.get(index);
+		Context <Object> context = ContextUtils.getContext(obj);
+		Deque<Lootbox> otherLoot = otherPlayer.getHist();
+		
+		//compare own lootbox to player near us to see how we're doign
+		compare(otherLoot);
+		
+		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		net.addEdge(this, otherPlayer);
+		
 		return 0;
 	}
 	
 	
+	/**compare(Deque<Lootbox> otherLoot) 
+	 * 
+	 * if other player has better history, add changeRate to buyThreshold
+	 * if other player is worse off, subtract changeRate from buyThreshold
+	 * 
+	 * @param otherLoot, lootbox history of another player
+	 */
+	private void compare(Deque<Lootbox> otherLoot) {
+		int ownAvg = 0;
+		int otherAvg = 0;
+		
+		//TODO: find cleaner way of doing this?
+		for (Iterator<Lootbox> itr = otherLoot.iterator(); itr.hasNext();) {
+	            otherAvg += itr.next().getPrice();
+        }
+		for (Iterator<Lootbox> itr = hist.iterator(); itr.hasNext();) {
+            ownAvg += itr.next().getPrice();
+        }
+		
+		otherAvg /= otherLoot.size();
+		ownAvg /= hist.size();
+		
+		if(rangeCheck(buyThreshold)) {
+			
+			if(otherAvg > ownAvg) {
+				buyThreshold += changeRate;
+			}
+			else if ( otherAvg < ownAvg) {
+				buyThreshold -= changeRate;
+			}
+			
+		}
+		
+	}
+
+
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
 	 * and if that new box + or - their likelyhood to buy in future
@@ -364,6 +443,12 @@ public class Player {
 			move();
 		}		
 		else {
+			
+			//if we didnt buy, we look at other players
+			//and edit buyThreshold accordingly
+			
+			askOtherPlayer();
+			
 			if(dump) {
 				infoDump(false);
 			}

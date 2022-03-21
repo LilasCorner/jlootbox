@@ -6,6 +6,7 @@ package jlootbox;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
+import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
@@ -28,9 +29,13 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 	@Override
 	public Context build(Context<Object> context) {
 		
+		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
+		netBuilder.buildNetwork();
+		
 		context.setId("jlootbox");
 		
 		Parameters params = RunEnvironment.getInstance().getParameters();
+		
 		ContinuousSpaceFactory spaceFactory = 
 				ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
 		ContinuousSpace<Object> space = 
@@ -47,7 +52,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				true, 50, 50));
 		
 		//create Network
-		
+
 		
 		
 		

@@ -2,5 +2,7 @@
   	
   	<projection type ="continuous space" id ="space" />
 	<projection type ="grid" id ="grid" />
+	<projection type ="network" id ="player network" />
+	
   	
 </context>
