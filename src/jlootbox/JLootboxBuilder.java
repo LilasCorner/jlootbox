@@ -76,7 +76,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			
 		}
 		
-
+		RunEnvironment.getInstance().endAt(params.getInteger("stopTime"));
 		
 		return context;
 	}
