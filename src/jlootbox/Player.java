@@ -70,9 +70,8 @@ public class Player {
 	 * 
 	 * @return void
 	 */
-	public static void init(int lowRange, int upRange, Boolean debug) {  
+	public static void init(int lowRange, int upRange) {  
 		coinFlip = RandomHelper.createUniform(lowRange, upRange);
-		dump = debug;	
 	
 	}
 	
@@ -385,7 +384,7 @@ public class Player {
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		
 		//only increment if new edge, 
-		if(net.addEdge(this, otherPlayer) != null) {
+		if(net.getEdge(this, otherPlayer) == null) {
 			linksMade++;
 		}
 		

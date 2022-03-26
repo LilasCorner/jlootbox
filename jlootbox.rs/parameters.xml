@@ -21,16 +21,6 @@
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
-				<parameter name="lootMaxVal" displayName="Lootbox Max Value" type="int" 
-						defaultValue="5" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
-				<parameter name="lootMinVal" displayName="Lootbox Min Value" type="int" 
-						defaultValue="1" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
 				<parameter name="stopTime" displayName="Stop Time" type="int" 
 						defaultValue="500" 
 						isReadOnly="false" 

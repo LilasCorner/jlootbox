@@ -53,7 +53,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				true, 50, 50));	
 		
 //		Lootbox.init(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
-		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"),  params.getBoolean("debug"));
+		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"));
 
 		
 		int playerCount = params.getInteger("numPlayers");
@@ -83,8 +83,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		netBuilder.setGenerator(watts);
 		netBuilder.buildNetwork();
 		
-		
-		
+		RunEnvironment.getInstance().setScheduleTickDelay(100);
 		RunEnvironment.getInstance().endAt(params.getInteger("stopTime"));
 		
 		
