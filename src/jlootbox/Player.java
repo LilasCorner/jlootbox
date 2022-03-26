@@ -36,9 +36,11 @@ public class Player {
 	private DecisionStrategy decisionStrat;
 	private static Boolean dump = false;
 	
+	private boolean purchased = false;
 	private int changeRate = 1; //TODO: paramaterize this
 	private int availableMoney;  
 	private int buyThreshold;
+	private int linksMade = 0;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
 	private ContinuousSpace<Object> space; 
@@ -90,6 +92,9 @@ public class Player {
 		return buyThreshold;
 	}
 	
+	public int getEdges() {
+		return linksMade;
+	}
 	
 	/**getMoney()
 	 * 
@@ -106,7 +111,11 @@ public class Player {
 	 * @return int price of last lootbox
 	 */
 	public int moneySpent() {
-		return hist.peek().getPrice();
+		if(purchased) {
+			return hist.peek().getPrice();
+		}
+		
+		return 0;
 	}
 	
 	
@@ -218,7 +227,7 @@ public class Player {
 				//if loot worse than price paid for it, less likely to buy later
 				if(rangeCheck(buyThreshold)) {
 				
-					if(newLoot.getRarity() < newLoot.getPrice()) {
+					if(newLoot.getRarity() < newLoot.getPrice() ) {
 						buyThreshold += changeRate * -1;					
 						}
 					else {
@@ -360,7 +369,6 @@ public class Player {
 		//find all players near current player
 		for (Object obj : grid.getObjectsAt(pt.getX(), pt.getY())) {
 			players.add(obj);
-//			System.out.println("woooOOOOOOOOOOOOOOOOOOOOOOOOWOWOWOWOWOWOW");
 		}
 		
 		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
@@ -375,7 +383,12 @@ public class Player {
 		
 		//TODO: Check if edge already exists, weight it more strongly if duplicate?
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		net.addEdge(this, otherPlayer);
+		
+		//only increment if new edge, 
+		if(net.addEdge(this, otherPlayer) != null) {
+			linksMade++;
+		}
+		
 		
 		return 0;
 	}
@@ -394,10 +407,10 @@ public class Player {
 		
 		//TODO: find cleaner way of doing this?
 		for (Iterator<Lootbox> itr = otherLoot.iterator(); itr.hasNext();) {
-	            otherAvg += itr.next().getPrice();
+	            otherAvg += itr.next().getRarity(); 
         }
 		for (Iterator<Lootbox> itr = hist.iterator(); itr.hasNext();) {
-            ownAvg += itr.next().getPrice();
+            ownAvg += itr.next().getRarity();
         }
 		
 		otherAvg /= otherLoot.size();
@@ -430,6 +443,9 @@ public class Player {
 
 		
 		if(decide()) {
+			
+			purchased = true;
+			
 			buyNewLootbox();
 			
 			if(dump) {
@@ -446,6 +462,7 @@ public class Player {
 			
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
+			purchased = false;
 			
 			askOtherPlayer();
 			

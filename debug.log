@@ -494,3 +494,57 @@ java.lang.NullPointerException
 	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
 	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
 	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+INFO  [AWT-EventQueue-0] 2022-03-21 11:57:11,031 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: D:\Eclipse\jlootbox\output\config.props
+INFO  [AWT-EventQueue-0] 2022-03-21 11:57:11,131 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	D:\Eclipse\jlootbox\batch\batch_params.xml to
+	C:\Users\Lilo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:57:21,633 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\Lilo\AppData\Local\Temp\Lilo_localhost11433126356512260118.zip to 
+C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881839967 ...
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:57:21,662 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:57:21,662 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0.0283
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:57:21,662 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881839967\Lilo_localhost11433126356512260118.zip
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:57:21,973 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [Thread-3] 2022-03-21 11:57:28,292 repast.simphony.batch.ssh.LocalSession - WARNING: An illegal reflective access operation has occurred
+INFO  [Thread-3] 2022-03-21 11:57:28,293 repast.simphony.batch.ssh.LocalSession - WARNING: Illegal reflective access by com.thoughtworks.xstream.core.util.Fields (file:/C:/Users/Lilo/AppData/Local/Temp/simphony_model_1647881839967/lib/xstream-1.4.7.jar) to field java.util.TreeMap.comparator
+INFO  [Thread-3] 2022-03-21 11:57:28,293 repast.simphony.batch.ssh.LocalSession - WARNING: Please consider reporting this to the maintainers of com.thoughtworks.xstream.core.util.Fields
+INFO  [Thread-3] 2022-03-21 11:57:28,293 repast.simphony.batch.ssh.LocalSession - WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+INFO  [Thread-3] 2022-03-21 11:57:28,293 repast.simphony.batch.ssh.LocalSession - WARNING: All illegal access operations will be denied in a future release
+INFO  [Thread-3] 2022-03-21 11:57:28,342 repast.simphony.batch.ssh.LocalSession - WARNING: An illegal reflective access operation has occurred
+INFO  [Thread-3] 2022-03-21 11:57:28,342 repast.simphony.batch.ssh.LocalSession - WARNING: Illegal reflective access by com.thoughtworks.xstream.core.util.Fields (file:/C:/Users/Lilo/AppData/Local/Temp/simphony_model_1647881839967/lib/xstream-1.4.7.jar) to field java.util.TreeMap.comparator
+INFO  [Thread-3] 2022-03-21 11:57:28,342 repast.simphony.batch.ssh.LocalSession - WARNING: Please consider reporting this to the maintainers of com.thoughtworks.xstream.core.util.Fields
+INFO  [Thread-3] 2022-03-21 11:57:28,342 repast.simphony.batch.ssh.LocalSession - WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+INFO  [Thread-3] 2022-03-21 11:57:28,342 repast.simphony.batch.ssh.LocalSession - WARNING: All illegal access operations will be denied in a future release
+INFO  [AWT-EventQueue-0] 2022-03-21 11:58:13,762 repast.simphony.batch.gui.BatchConfigMediator - Writing batch run config file to: D:\Eclipse\jlootbox\output\config.props
+INFO  [AWT-EventQueue-0] 2022-03-21 11:58:13,763 repast.simphony.batch.gui.BatchConfigMediator - Unrolling batch parameter file:
+	D:\Eclipse\jlootbox\batch\batch_params.xml to
+	C:\Users\Lilo\AppData\Local\Temp\unrolledParamFile.txt
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:58:19,392 repast.simphony.batch.ssh.LocalSession - 
+	Copying locally C:\Users\Lilo\AppData\Local\Temp\Lilo_localhost10283583984331030416.zip to 
+C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881897740 ...
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:58:19,421 repast.simphony.batch.ssh.LocalSession - Copying Finished.
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:58:19,421 repast.simphony.batch.ssh.SessionsDriver - Initialization Time: 0.0280
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:58:19,422 repast.simphony.batch.ssh.LocalSession - Unzipping model C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881897740\Lilo_localhost10283583984331030416.zip
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:58:19,729 repast.simphony.batch.ssh.LocalSession - Running model on localhost ...
+INFO  [pool-3-thread-1] 2022-03-21 11:58:21,982 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881839967 for DONE:  yes
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:58:21,982 repast.simphony.batch.ssh.SessionsDriver - Run Time: 1.0053
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:58:21,992 repast.simphony.batch.ssh.LocalSession - Finding output on localhost in C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881839967
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:58:21,997 repast.simphony.batch.ssh.SessionsDriver - Aggregating output into D:/Eclipse/jlootbox/output
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:58:22,009 repast.simphony.batch.ssh.SessionsDriver - Get Output Time: 0.0005
+INFO  [SwingWorker-pool-2-thread-1] 2022-03-21 11:58:22,009 repast.simphony.batch.ssh.SessionsDriver - Finished. Elapsed Time: 1.0341
+INFO  [Thread-4] 2022-03-21 11:58:26,055 repast.simphony.batch.ssh.LocalSession - WARNING: An illegal reflective access operation has occurred
+INFO  [Thread-4] 2022-03-21 11:58:26,056 repast.simphony.batch.ssh.LocalSession - WARNING: Illegal reflective access by com.thoughtworks.xstream.core.util.Fields (file:/C:/Users/Lilo/AppData/Local/Temp/simphony_model_1647881897740/lib/xstream-1.4.7.jar) to field java.util.TreeMap.comparator
+INFO  [Thread-4] 2022-03-21 11:58:26,056 repast.simphony.batch.ssh.LocalSession - WARNING: Please consider reporting this to the maintainers of com.thoughtworks.xstream.core.util.Fields
+INFO  [Thread-4] 2022-03-21 11:58:26,056 repast.simphony.batch.ssh.LocalSession - WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+INFO  [Thread-4] 2022-03-21 11:58:26,056 repast.simphony.batch.ssh.LocalSession - WARNING: All illegal access operations will be denied in a future release
+INFO  [Thread-4] 2022-03-21 11:58:26,064 repast.simphony.batch.ssh.LocalSession - WARNING: An illegal reflective access operation has occurred
+INFO  [Thread-4] 2022-03-21 11:58:26,064 repast.simphony.batch.ssh.LocalSession - WARNING: Illegal reflective access by com.thoughtworks.xstream.core.util.Fields (file:/C:/Users/Lilo/AppData/Local/Temp/simphony_model_1647881897740/lib/xstream-1.4.7.jar) to field java.util.TreeMap.comparator
+INFO  [Thread-4] 2022-03-21 11:58:26,064 repast.simphony.batch.ssh.LocalSession - WARNING: Please consider reporting this to the maintainers of com.thoughtworks.xstream.core.util.Fields
+INFO  [Thread-4] 2022-03-21 11:58:26,064 repast.simphony.batch.ssh.LocalSession - WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+INFO  [Thread-4] 2022-03-21 11:58:26,064 repast.simphony.batch.ssh.LocalSession - WARNING: All illegal access operations will be denied in a future release
+INFO  [pool-4-thread-1] 2022-03-21 11:59:19,733 repast.simphony.batch.ssh.LocalDonePoller - Polled C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881897740 for DONE:  yes
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:59:19,733 repast.simphony.batch.ssh.SessionsDriver - Run Time: 1.0052
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:59:19,737 repast.simphony.batch.ssh.LocalSession - Finding output on localhost in C:\Users\Lilo\AppData\Local\Temp\simphony_model_1647881897740
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:59:19,738 repast.simphony.batch.ssh.SessionsDriver - Aggregating output into D:/Eclipse/jlootbox/output
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:59:19,744 repast.simphony.batch.ssh.SessionsDriver - Get Output Time: 0.0002
+INFO  [SwingWorker-pool-2-thread-2] 2022-03-21 11:59:19,744 repast.simphony.batch.ssh.SessionsDriver - Finished. Elapsed Time: 1.0335

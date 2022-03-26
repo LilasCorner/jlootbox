@@ -19,46 +19,21 @@ public class Lootbox {
 
 	private int rarity;
 	private int price; // current value as calculated 
-	public static Uniform unigen;
-	private ContinuousSpace<Object> space; 
-	private Grid<Object> grid;
+	public static Uniform unigen = RandomHelper.createUniform(1, 5);
 	
 	
 	//default constructor
 	public Lootbox() {
 		this.rarity = unigen.nextInt();
-		this.price = unigen.nextInt() + 1; 
+		this.price = 0; 
 	}
 	
+	//constructor for specific price
 	public Lootbox(int money) {
 		this.rarity = unigen.nextInt();
-		this.price = unigen.nextInt() + 1;
 		this.price = money;
 	}
 	
-	
-	//tbd if this constructor needed
-	/**
-	 * 
-	 * @return
-	 */
-	public Lootbox(int rarity, int price, ContinuousSpace<Object> space, Grid<Object> grid) {
-		this.rarity = rarity;
-		this.price = price;	
-		this.space = space;
-		this.grid = grid;
-	}
-	
-	/** init(int lowRange, int upRange)
-	 * 
-	 * @return void
-	 */
-	//initialize the random generator
-	public static void init(int lowRange, int upRange) {   
-		unigen = RandomHelper.createUniform(lowRange, upRange); 
-		MIN_PRICE = lowRange + 1; //TODO: Parameterize price bounds
-		MAX_PRICE = upRange;
-	}
 	
 	/** getPrice()
 	 * 
@@ -75,17 +50,6 @@ public class Lootbox {
 	public int getRarity() {
 		return rarity;
 	}
-	
-	/** tbd
-	 * 
-	 * @return
-	 */
-	public void step() {
-		
-	}
-
-
-
 	
 	
 }

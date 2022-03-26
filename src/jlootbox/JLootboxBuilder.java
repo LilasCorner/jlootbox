@@ -7,6 +7,7 @@ import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
 import repast.simphony.context.space.graph.NetworkBuilder;
+import repast.simphony.context.space.graph.WattsBetaSmallWorldGenerator;
 import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
@@ -30,7 +31,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 	public Context build(Context<Object> context) {
 		
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
-		netBuilder.buildNetwork();
+
 		
 		context.setId("jlootbox");
 		
@@ -51,7 +52,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				new SimpleGridAdder<Object>(),
 				true, 50, 50));	
 		
-		Lootbox.init(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
+//		Lootbox.init(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
 		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"),  params.getBoolean("debug"));
 
 		
@@ -76,7 +77,18 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			
 		}
 		
+		
+		//beta(probability of rewiring), degree(# links), symmetrical
+		WattsBetaSmallWorldGenerator<Object> watts = new WattsBetaSmallWorldGenerator(.3,  4, true);
+		netBuilder.setGenerator(watts);
+		netBuilder.buildNetwork();
+		
+		
+		
 		RunEnvironment.getInstance().endAt(params.getInteger("stopTime"));
+		
+		
+		
 		
 		return context;
 	}

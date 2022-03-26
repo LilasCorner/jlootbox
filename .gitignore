@@ -1,3 +1,5 @@
-jlootbox/bin/*
 *.log
 *.class
+/bin/
+Repast.settings
+Repast.settings
