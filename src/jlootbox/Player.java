@@ -31,6 +31,7 @@ public class Player {
 		   COIN_FLIP,
 		   PRICE
 		}
+	
 	public static int MIN_RANGE = 1;
 	public static int MAX_RANGE = 10;
 
