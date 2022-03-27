@@ -5,22 +5,6 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
-				<parameter name="buyThresMin" displayName="Buy Threshold Min" type="int" 
-						defaultValue="0" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
-				<parameter name="buyThresMax" displayName="Buy Threshold Max" type="int" 
-						defaultValue="10" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
-				<parameter name="debug" displayName="Debug" type="boolean" 
-						defaultValue="true" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
-												values="true false "
-											/>
 				<parameter name="stopTime" displayName="Stop Time" type="int" 
 						defaultValue="500" 
 						isReadOnly="false" 

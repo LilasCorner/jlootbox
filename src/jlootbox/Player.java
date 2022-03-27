@@ -31,16 +31,18 @@ public class Player {
 		   COIN_FLIP,
 		   PRICE
 		}
+	public static int MIN_RANGE = 1;
+	public static int MAX_RANGE = 10;
 
-	private static Uniform coinFlip;
+	
+	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
 	private static Boolean dump = false;
 	
 	private boolean purchased = false;
-	private int changeRate = 1; //TODO: paramaterize this
+	private int changeRate = 1; 
 	private int availableMoney;  
 	private int buyThreshold;
-	private int linksMade = 0;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
 	private ContinuousSpace<Object> space; 
@@ -62,18 +64,7 @@ public class Player {
 		hist.addLast(newLoot); 
 	}
 	
-	
-	/** init(int lowRange, int upRange, String strat, Boolean debug)
-	 * 
-	 * intializes random generator, decision strategy, 
-	 * and debug print statements according to params
-	 * 
-	 * @return void
-	 */
-	public static void init(int lowRange, int upRange) {  
-		coinFlip = RandomHelper.createUniform(lowRange, upRange);
-	
-	}
+
 	
 	/** getHist()
 	 *  returns player's lootbox history
@@ -91,10 +82,7 @@ public class Player {
 		return buyThreshold;
 	}
 	
-	public int getEdges() {
-		return linksMade;
-	}
-	
+
 	/**getMoney()
 	 * 
 	 * @return availableMoney

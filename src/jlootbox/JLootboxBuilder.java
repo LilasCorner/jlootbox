@@ -52,9 +52,6 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				new GridBuilderParameters<Object>(new WrapAroundBorders(),
 				new SimpleGridAdder<Object>(),
 				true, 50, 50));	
-		
-//		Lootbox.init(params.getInteger("lootMinVal"), params.getInteger("lootMaxVal"));
-		Player.init(params.getInteger("buyThresMin"), params.getInteger("buyThresMax"));
 
 		
 		int playerCount = params.getInteger("numPlayers");
