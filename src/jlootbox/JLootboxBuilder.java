@@ -6,6 +6,7 @@ package jlootbox;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
+import repast.simphony.context.space.graph.Lattice2DGenerator;
 import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.context.space.graph.WattsBetaSmallWorldGenerator;
 import repast.simphony.context.space.grid.GridFactory;
@@ -70,17 +71,23 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			NdPoint pt = space.getLocation(obj);
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
 			
-			// choose another obj in context and create link
-			// can loop thru them all and connect all if small,
-			// or give chance at friendship forming
-			// addEdge
-			
 		}
 		
+		//network experiments!
 		
-		//beta(probability of rewiring), degree(# links), symmetrical
-		WattsBetaSmallWorldGenerator<Object> watts = new WattsBetaSmallWorldGenerator(.3,  4, true);
-		netBuilder.setGenerator(watts);
+		//beta(probability of rewiring), degree, symmetry
+		WattsBetaSmallWorldGenerator<Object> gen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
+		
+		//density, selfLoops, symmetry
+//		RandomDensityGenerator<Object> gen = new RandomDensityGenerator<Object>(2,  false, true);
+
+		//isToroidal - think pacman
+		// BUG: "Pair cannot contain null values"
+//		Lattice2DGenerator<Object> gen = new Lattice2DGenerator<Object>(true);
+
+		
+		
+		netBuilder.setGenerator(gen);
 		netBuilder.buildNetwork();
 		
 		RunEnvironment.getInstance().setScheduleTickDelay(100);

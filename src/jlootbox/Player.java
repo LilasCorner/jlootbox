@@ -146,8 +146,7 @@ public class Player {
 		
 		hist.addLast(newLoot);
 		
-		//temp attempt at size management
-		if(hist.size() > 2) { 
+		if(hist.size() > 5) { 
 			hist.removeFirst();
 		}
 	}
@@ -383,10 +382,7 @@ public class Player {
 		//TODO: Check if edge already exists, weight it more strongly if duplicate?
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		
-		//only increment if new edge, 
-		if(net.getEdge(this, otherPlayer) == null) {
-			linksMade++;
-		}
+
 		
 		
 		return 0;
