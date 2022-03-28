@@ -7,6 +7,6 @@
     <string>tick</string>
     <string>moneySpent</string>
   </sourceIds>
-  <fileName>moneySpentOutput.txt</fileName>
+  <fileName>D:\Eclipse\jlootbox\output\moneySpentOutput.txt</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>

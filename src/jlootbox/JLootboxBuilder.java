@@ -21,6 +21,7 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.WrapAroundBorders;
+import repast.simphony.visualization.visualization2D.ShapeFactory2D;
 
 /**
  * @author Lilo
@@ -53,7 +54,6 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				new SimpleGridAdder<Object>(),
 				true, 50, 50));	
 
-		
 		int playerCount = params.getInteger("numPlayers");
 		String strat = params.getString("strat");
 		int money = 100;

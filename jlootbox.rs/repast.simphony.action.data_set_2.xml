@@ -21,7 +21,7 @@
         <id>moneySpent</id>
         <className>jlootbox.Player</className>
         <methodName>moneySpent</methodName>
-        <aggType>SUM</aggType>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
   </methodDataSources>

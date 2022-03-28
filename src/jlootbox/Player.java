@@ -17,7 +17,6 @@ import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
-import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
 
 /**
@@ -33,12 +32,19 @@ public class Player {
 		   PRICE
 		}
 	
+	public static enum MANIPULATIONS{
+		   NONE,
+		   LIM_ED,
+		   FAV_PLAYER,
+		   FREE_BOX
+		}
+	
 	public static int MIN_RANGE = 1;
 	public static int MAX_RANGE = 10;
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = true;
+	private static Boolean dump = false; //USE FOR DEBUGGING
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -81,6 +87,10 @@ public class Player {
 	 */
 	public int getThreshold() {
 		return buyThreshold;
+	}
+	
+	public boolean getPurchased() {
+		return purchased;
 	}
 	
 	public void addThreshold() {
@@ -141,6 +151,19 @@ public class Player {
 		return 0;
 	}
 
+	
+	public int avgHistValue() {
+		int ownAvg = 0;
+		
+		for (Iterator<Lootbox> itr = hist.iterator(); itr.hasNext();) {
+            ownAvg += itr.next().getRarity();
+        }
+		
+		ownAvg /= hist.size();
+		
+		return ownAvg;
+	}
+	
 	
 	/** recordNewLootboxInHistory()
 	 * 
@@ -358,8 +381,9 @@ public class Player {
 	 * look at other players to decide if 
 	 * they should buy more, or fewer boxes
 	 * 
-	 * temp implementation: grid location based
-	 * @return
+	 * weight of their connection with another
+	 * player increased/decreased depending on
+	 * if the other player has better or worse lo
 	 */
 	protected void askOtherPlayer() {
 		
@@ -404,22 +428,12 @@ public class Player {
 		Context <Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		Deque<Lootbox> otherLoot = otherPlayer.getHist();
-		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will = null if dne
+		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
 
-		int ownAvg = 0;
-		int otherAvg = 0;
-		
-		//TODO: find cleaner way of doing this?
-		for (Iterator<Lootbox> itr = otherLoot.iterator(); itr.hasNext();) {
-	            otherAvg += itr.next().getRarity(); 
-        }
-		for (Iterator<Lootbox> itr = hist.iterator(); itr.hasNext();) {
-            ownAvg += itr.next().getRarity();
-        }
-		
-		otherAvg /= otherLoot.size();
-		ownAvg /= hist.size();
-		
+		int ownAvg = avgHistValue();
+		int otherAvg = otherPlayer.avgHistValue();
+
+		//make edge btwn the two players if none exists
 		if(friendEdge == null){
 			friendEdge = net.addEdge(this, otherPlayer, 0.0);
 		}

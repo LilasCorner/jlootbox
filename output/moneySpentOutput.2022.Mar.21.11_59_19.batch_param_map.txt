@@ -1,2 +1,0 @@
-"run","randomSeed","buyThresMin","buyThresMax","debug","lootMaxVal","lootMinVal","stopTime","numPlayers","strat"
-1,-1385535541,0,10,"false",5,1,500,10,"PRICE"
