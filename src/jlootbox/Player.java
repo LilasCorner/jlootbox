@@ -192,7 +192,7 @@ public class Player {
 	 */
 	public Boolean rangeCheck(int num) {
 		
-		if(num + (-1 * changeRate) > 0 && num + changeRate < 10) {
+		if(num + (-1 * changeRate) > MIN_RANGE-1 && num + changeRate < MAX_RANGE) {
 			return true;
 		}
 		
@@ -349,7 +349,7 @@ public class Player {
 	 * temp implementation: grid location based
 	 * @return
 	 */
-	protected int askOtherPlayer() {
+	protected void askOtherPlayer() {
 		
 		List<Object> players = new ArrayList<Object>();
 		Context <Object> context = ContextUtils.getContext(this);
@@ -362,13 +362,14 @@ public class Player {
 		
 		//no friends ;-; choose anyone
 		if(players.size() < 1) {
-			for (Object obj : net.getEdges()) {
+			for (Object obj : net.getNodes()) {
 				players.add(obj);
 			}
 		}
 		
 		//choose random player from that array
 		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
+		
 		Player otherPlayer = (Player) players.get(index);
 		Object obj = players.get(index);
 
@@ -376,7 +377,6 @@ public class Player {
 		//compare own lootbox to player near us to see how we're doing
 		compare(otherPlayer);		
 				
-		return 0;
 	}
 	
 	

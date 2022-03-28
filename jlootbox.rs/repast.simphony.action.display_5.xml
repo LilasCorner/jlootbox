@@ -1,5 +1,5 @@
 <repast.simphony.visualization.engine.CartesianDisplayDescriptor simphonyVersion="2.9.0">
-  <name>Space Display</name>
+  <name>Player Network</name>
   <type>2D</type>
   <styles>
     <entry>
@@ -10,11 +10,21 @@
   <editedStyles>
     <entry>
       <string>jlootbox.Player</string>
-      <string>jlootbox.Player.style_1.xml</string>
+      <string>jlootbox.Player.style_4.xml</string>
     </entry>
   </editedStyles>
-  <netStyles/>
-  <editedNetStyles/>
+  <netStyles>
+    <entry>
+      <string>player network</string>
+      <string>repast.simphony.visualizationOGL2D.DefaultEdgeStyleOGL2D</string>
+    </entry>
+  </netStyles>
+  <editedNetStyles>
+    <entry>
+      <string>player network</string>
+      <null/>
+    </entry>
+  </editedNetStyles>
   <frequency>ON_MOVE</frequency>
   <schedParams>
     <start>1.0</start>
@@ -23,7 +33,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>563034401</hashCode>
+    <hashCode>2010331872</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -39,6 +49,11 @@
       <id>space</id>
       <attributes/>
       <type>continuous space</type>
+    </repast.simphony.scenario.data.ProjectionData>
+    <repast.simphony.scenario.data.ProjectionData>
+      <id>player network</id>
+      <attributes/>
+      <type>network</type>
     </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <visualizationProperties class="repast.simphony.visualization.UnitSizeLayoutProperties">
@@ -69,6 +84,13 @@
           </entry>
         </props>
       </repast.simphony.visualization.continuous.ContinuousProjectionDescriptor>
+    </entry>
+    <entry>
+      <string>player network</string>
+      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
+        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
+        <props/>
+      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
     </entry>
   </projectionDescriptors>
   <props/>
