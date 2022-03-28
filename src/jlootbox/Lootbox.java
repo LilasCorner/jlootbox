@@ -21,7 +21,7 @@ public class Lootbox {
 	public static int MAX_RARITY = 5;
 
 	
-
+	private boolean biased = false;
 	private int rarity;
 	private int price; // current value as calculated 
 	public static Normal normgen = RandomHelper.createNormal(MIN_RARITY, MIN_RARITY);
@@ -45,6 +45,16 @@ public class Lootbox {
 		}
 		
 		this.price = money;
+	}
+	
+	//constructor for specific price
+	public Lootbox(Boolean biased) {
+		
+		while(this.rarity > MAX_RARITY || this.rarity < MIN_RARITY + 2) { //ensure player gets rarity 3-5
+			this.rarity = normgen.nextInt();
+		}
+		
+		this.price = 0;
 	}
 	
 	

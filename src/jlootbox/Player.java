@@ -15,6 +15,7 @@ import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
+import repast.simphony.space.graph.RepastEdge;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.ContextUtils;
@@ -38,7 +39,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = false;
+	private static Boolean dump = true;
 	
 	private boolean purchased = false;
 	private int changeRate = 1; 
@@ -74,7 +75,6 @@ public class Player {
 		return hist;
 	}
 	
-	
 	/** getThreshold()
 	 * 
 	 * @return the Player's buyThreshold
@@ -83,6 +83,17 @@ public class Player {
 		return buyThreshold;
 	}
 	
+	public void addThreshold() {
+		if(rangeCheck(buyThreshold)) {
+			buyThreshold += changeRate;
+		}
+	}
+	
+	public void subtractThreshold() {
+		if(rangeCheck(buyThreshold)) {
+			buyThreshold += -1 * changeRate;
+		}
+	}
 
 	/**getMoney()
 	 * 
@@ -90,20 +101,6 @@ public class Player {
 	 */
 	public int getMoney() {
 		return availableMoney;
-	}
-	
-	/** moneySpent()
-	 *  
-	 *  returns money spent on newest lootbox
-	 *  
-	 * @return int price of last lootbox
-	 */
-	public int moneySpent() {
-		if(purchased) {
-			return hist.peek().getPrice();
-		}
-		
-		return 0;
 	}
 	
 	
@@ -118,13 +115,20 @@ public class Player {
 	}
 	
 	
-	/**deductFunds()
-	 * deduct price of lootbox from available funds
+	/** moneySpent()
+	 *  
+	 *  returns money spent on newest lootbox
+	 *  
+	 * @return int price of last lootbox
 	 */
-	public void deductFunds() {
-		setMoney(getMoney() - newLoot.getPrice());
+	public int moneySpent() {
+		if(purchased) {
+			return hist.peek().getPrice();
+		}
+		
+		return 0;
 	}
-	
+
 	
 	/** recordNewLootboxInHistory()
 	 * 
@@ -166,7 +170,6 @@ public class Player {
 			
 			case PRICE:{ 
 				newLoot = new Lootbox( (buyThreshold / 100) * getMoney());
-//				deductFunds();
 				return newLoot;
 			}
 	
@@ -212,16 +215,14 @@ public class Player {
 			
 			case PRICE:{ 
 				//if loot worse than price paid for it, less likely to buy later
-				if(rangeCheck(buyThreshold)) {
-				
-					if(newLoot.getRarity() < newLoot.getPrice() ) {
-						buyThreshold += changeRate * -1;					
-						}
-					else {
-						buyThreshold += changeRate;
+				if(newLoot.getRarity() < newLoot.getPrice() ) {
+					subtractThreshold();				
 					}
-			
+				else {
+					addThreshold();
 				}
+			
+				
 				
 				break;
 			}
@@ -231,10 +232,10 @@ public class Player {
 				if(rangeCheck(buyThreshold)) {
 					//old box better than new one, less likely to buy
 					if(hist.peek().getRarity() > newLoot.getRarity()) { 
-						buyThreshold += changeRate * -1;
+						subtractThreshold();
 					}
 					else { //new box better than old, more likely to buy
-						buyThreshold += changeRate;
+						addThreshold();
 					}		
 	
 				}
@@ -350,30 +351,31 @@ public class Player {
 	 */
 	protected int askOtherPlayer() {
 		
-		GridPoint pt = grid.getLocation(this);
 		List<Object> players = new ArrayList<Object>();
-
-		//find all players near current player
-		for (Object obj : grid.getObjectsAt(pt.getX(), pt.getY())) {
+		Context <Object> context = ContextUtils.getContext(this);
+		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		
+		//grab all players this player looks up to
+		for (Object obj : net.getSuccessors(this)) {
 			players.add(obj);
 		}
 		
+		//no friends ;-; choose anyone
+		if(players.size() < 1) {
+			for (Object obj : net.getEdges()) {
+				players.add(obj);
+			}
+		}
+		
+		//choose random player from that array
 		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
 		Player otherPlayer = (Player) players.get(index);
 		Object obj = players.get(index);
-		Context <Object> context = ContextUtils.getContext(obj);
-		Deque<Lootbox> otherLoot = otherPlayer.getHist();
-		
-		//compare own lootbox to player near us to see how we're doing
-		compare(otherLoot);
-		
-		
-		//TODO: Check if edge already exists, weight it more strongly if duplicate?
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		
 
 		
-		
+		//compare own lootbox to player near us to see how we're doing
+		compare(otherPlayer);		
+				
 		return 0;
 	}
 	
@@ -385,7 +387,13 @@ public class Player {
 	 * 
 	 * @param otherLoot, lootbox history of another player
 	 */
-	private void compare(Deque<Lootbox> otherLoot) {
+	private void compare(Player otherPlayer) {
+		
+		Context <Object> context = ContextUtils.getContext(this);
+		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		Deque<Lootbox> otherLoot = otherPlayer.getHist();
+		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will = null if dne
+
 		int ownAvg = 0;
 		int otherAvg = 0;
 		
@@ -400,19 +408,50 @@ public class Player {
 		otherAvg /= otherLoot.size();
 		ownAvg /= hist.size();
 		
-		if(rangeCheck(buyThreshold)) {
+		if(friendEdge == null){
+			friendEdge = net.addEdge(this, otherPlayer, 0.0);
+		}
 			
-			if(otherAvg > ownAvg) {
-				buyThreshold += changeRate;
+		if(otherAvg > ownAvg) {
+			
+			//stronger friendship = stronger influence 
+			for(double i = 0; i < friendEdge.getWeight(); i++) {
+				addThreshold();
 			}
-			else if ( otherAvg < ownAvg) {
-				buyThreshold -= changeRate;
-			}
+
+			
+			friendEdge.setWeight(friendEdge.getWeight() + changeRate); 
 			
 		}
+		else if (otherAvg < ownAvg) {
+			
+			//stronger friendship = stronger influence 
+			for(double i = 0; i < friendEdge.getWeight(); i++) {
+				subtractThreshold();
+			}
+			
+			friendEdge.setWeight(friendEdge.getWeight() - changeRate); 
+
+			if (friendEdge.getWeight() < 0) {
+				net.removeEdge(friendEdge);
+			}
+		}
+			
+		
 		
 	}
 
+	
+
+	/** TODO: placeholder for player manipulations method
+	 * 
+	 */
+	private void manipulate() {
+		
+		
+	}
+	
+	
 
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
@@ -430,6 +469,8 @@ public class Player {
 			
 			purchased = true;
 			
+			manipulate();
+			
 			buyNewLootbox();
 			
 			if(dump) {
@@ -441,12 +482,15 @@ public class Player {
 			recordNewLootboxInHistory();
 
 			move();
+			
 		}		
 		else {
 			
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
 			purchased = false;
+			
+			manipulate();
 			
 			askOtherPlayer();
 			
@@ -459,6 +503,8 @@ public class Player {
 		
 		
 	}
-	
+
+
+
 	
 }
