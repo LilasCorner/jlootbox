@@ -35,13 +35,13 @@ public class Player {
 	
 	public static int MIN_RANGE = 1;
 	public static int MAX_RANGE = 10;
-
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
 	private static Boolean dump = true;
 	
 	private boolean purchased = false;
+	private int timeSinceLastPurchase;
 	private int changeRate = 1; 
 	private int availableMoney;  
 	private int buyThreshold;
@@ -95,6 +95,18 @@ public class Player {
 		}
 	}
 
+	public void addTime() {
+		timeSinceLastPurchase++;
+	}
+	
+	public void resetTime() {
+		timeSinceLastPurchase = 0; 
+	}
+
+	public int getTimeSinceLastPurchase() {
+		return timeSinceLastPurchase;
+	}
+	
 	/**getMoney()
 	 * 
 	 * @return availableMoney
@@ -469,6 +481,8 @@ public class Player {
 			
 			purchased = true;
 			
+			addTime();
+			
 			manipulate();
 			
 			buyNewLootbox();
@@ -489,6 +503,8 @@ public class Player {
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
 			purchased = false;
+			
+			resetTime();
 			
 			manipulate();
 			
