@@ -4,7 +4,7 @@
   <styles>
     <entry>
       <string>jlootbox.Player</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>jlootbox.PlayerStyle</string>
     </entry>
   </styles>
   <editedStyles>
@@ -33,7 +33,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1766263044</hashCode>
+    <hashCode>-335608813</hashCode>
   </schedParams>
   <layoutClassName>repast.simphony.visualization.visualization2D.layout.FRLayout2D</layoutClassName>
   <layoutProjection>player network</layoutProjection>
