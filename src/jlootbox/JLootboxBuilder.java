@@ -3,11 +3,15 @@
  */
 package jlootbox;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
 import repast.simphony.context.space.graph.Lattice2DGenerator;
 import repast.simphony.context.space.graph.NetworkBuilder;
+import repast.simphony.context.space.graph.RandomDensityGenerator;
 import repast.simphony.context.space.graph.WattsBetaSmallWorldGenerator;
 import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
@@ -55,6 +59,11 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				true, 50, 50));	
 
 		int playerCount = params.getInteger("numPlayers");
+		
+		if(playerCount < 10) {
+			throw new IllegalArgumentException("Please re-initialize the model with > 10 players to create the network.");
+		}
+		
 		String strat = params.getString("strat");
 		int money = 100;
 		int buy = 5;
@@ -73,19 +82,36 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		//network experiments!
 		
 		//beta(probability of rewiring), degree, symmetry
-		WattsBetaSmallWorldGenerator<Object> gen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
-		
-		//density, selfLoops, symmetry
-//		RandomDensityGenerator<Object> gen = new RandomDensityGenerator<Object>(2,  false, true);
 
-		//isToroidal - think pacman
-		// BUG: "Pair cannot contain null values"
-//		Lattice2DGenerator<Object> gen = new Lattice2DGenerator<Object>(true);
+		switch(params.getString("network")) {
+			case "WATTS":
+				WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
+				netBuilder.setGenerator(watgen);
+				break;
+			
+			case "RANDOM":
+				RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(.5,  false, true);
+				netBuilder.setGenerator(randgen);
+				break;
+			
+			case "LATTICE":
+				WattsBetaSmallWorldGenerator<Object> tempgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
+				netBuilder.setGenerator(tempgen);
+				netBuilder.buildNetwork();
 
+				
+				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(false);
+				netBuilder.setGenerator(latgen);
+				break;
+			
+		}
 		
+	
+//		netBuilder.buildNetwork();
+	
+		Player.init(params.getString("manip"));
 		
-		netBuilder.setGenerator(gen);
-		netBuilder.buildNetwork();
+
 		
 		RunEnvironment.getInstance().setScheduleTickDelay(100);
 		RunEnvironment.getInstance().endAt(params.getInteger("stopTime"));

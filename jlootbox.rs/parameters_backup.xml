@@ -10,6 +10,12 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="manip" displayName="Manipulation" type="java.lang.String" 
+						defaultValue="NONE" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
+												values="NONE LIM_ED FREE_BOX FAV_PLAYER "
+											/>
 				<parameter name="numPlayers" displayName="# Players" type="int" 
 						defaultValue="10" 
 						isReadOnly="false" 

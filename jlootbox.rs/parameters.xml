@@ -27,6 +27,12 @@
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="ALWAYS_BUY COIN_FLIP PRICE "
 											/>
+				<parameter name="network" displayName="Network Type" type="java.lang.String" 
+						defaultValue="WATTS" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
+												values="WATTS RANDOM LATTICE "
+											/>
 		</parameters>
 
 

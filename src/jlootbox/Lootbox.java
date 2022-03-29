@@ -17,22 +17,20 @@ public class Lootbox {
 
 	public static int MIN_PRICE = 1;
 	public static int MAX_PRICE = 10;
-	public static int MIN_RARITY = 1;
-	public static int MAX_RARITY = 5;
-
 	
+	
+	public static double[] dropRates = {.5,.3,.1,.08};
+	public static Uniform unigen = RandomHelper.createUniform();
+
 	private boolean biased = false;
 	private int rarity;
 	private int price; // current value as calculated 
-	public static Normal normgen = RandomHelper.createNormal(MIN_RARITY, MIN_RARITY);
 	
 	
 	//default constructor
 	public Lootbox() {
 		
-		while(this.rarity > MAX_RARITY || this.rarity < MIN_RARITY) { //CLAMP!
-			this.rarity = normgen.nextInt();
-		}
+
 		
 		this.price = 0; 
 	}
@@ -40,9 +38,7 @@ public class Lootbox {
 	//constructor for specific price
 	public Lootbox(int money) {
 		
-		while(this.rarity > MAX_RARITY || this.rarity < MIN_RARITY) { //CLAMP!
-			this.rarity = normgen.nextInt();
-		}
+
 		
 		this.price = money;
 	}
@@ -50,11 +46,26 @@ public class Lootbox {
 	//constructor for specific price
 	public Lootbox(Boolean biased) {
 		
-		while(this.rarity > MAX_RARITY || this.rarity < MIN_RARITY + 2) { //ensure player gets rarity 3-5
-			this.rarity = normgen.nextInt();
-		}
+
 		
 		this.price = 0;
+	}
+	
+	public int generateRarity() {
+		int rarity = 1;
+		double threshold = 0.0;
+		
+		double rand = unigen.nextDouble();
+		
+		for(double d: dropRates) {
+			if(rand < (threshold = threshold + d)) {
+				return rarity;
+			}
+			
+			rarity++;
+		}
+		
+		return rarity;
 	}
 	
 	

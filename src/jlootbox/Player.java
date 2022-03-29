@@ -32,15 +32,17 @@ public class Player {
 		   PRICE
 		}
 	
-	public static enum MANIPULATIONS{
+	public static enum Manipulate{
 		   NONE,
 		   LIM_ED,
 		   FAV_PLAYER,
 		   FREE_BOX
 		}
 	
-	public static int MIN_RANGE = 1;
-	public static int MAX_RANGE = 10;
+	private static Manipulate manip;
+	private static int changeRate = 1; 
+	private static int MIN_RANGE = 1;
+	private static int MAX_RANGE = 10;
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
@@ -48,7 +50,6 @@ public class Player {
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
-	private int changeRate = 1; 
 	private int availableMoney;  
 	private int buyThreshold;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
@@ -73,6 +74,9 @@ public class Player {
 	}
 	
 
+	public static void init(String manipulation) {
+		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
+	}
 	
 	/** getHist()
 	 *  returns player's lootbox history
