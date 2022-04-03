@@ -19,7 +19,9 @@ public class Lootbox {
 	public static int MAX_PRICE = 10;
 	
 	
-	public static double[] dropRates = {.08, .1, .3, .5}; 
+	public static double[] dropRates = {.5,.3,.1,.08}; 
+//	public static double[] dropRates = {.99,.94,.18,.075}; //overwatch #'s
+
 	public static Uniform unigen = RandomHelper.createUniform(0,1);
 
 	private boolean biased = false;
@@ -30,7 +32,7 @@ public class Lootbox {
 	//default constructor
 	public Lootbox() {
 		
-		this.rarity = generateRarity();
+		this.rarity = generateRarity(0);
 		
 		this.price = 0; 
 	}
@@ -38,27 +40,35 @@ public class Lootbox {
 	//constructor for specific price
 	public Lootbox(int money) {
 		
-		this.rarity = generateRarity();
+		this.rarity = generateRarity(0);
 		
 		this.price = money;
 	}
 	
-	//constructor for specific price
+	//constructor for favorite player biased boxes
 	public Lootbox(Boolean biased) {
 		
-		//this.rarity = generateBias();
+		this.rarity = generateBias();
 		
 		this.price = 0;
 	}
 	
-	public int generateRarity() {
+	//constructor for generating weighted luck 
+	public Lootbox(Boolean biased, int weight) {
+		
+		this.rarity = generateRarity(weight);
+		
+		this.price = 0;
+	}
+	
+	public int generateRarity(int weight) {
 		int rarity = 1;
 		double threshold = 0.0;
 		
 		double rand = unigen.nextDouble();
 		
 		for(double d: dropRates) {
-			if(rand < d) {
+			if(rand < (threshold = threshold + (d + weight))) {
 				return rarity;
 			}
 			
@@ -77,7 +87,7 @@ public class Lootbox {
 		double rand = unigen.nextDouble();
 		
 		for(int d = dropRates.length - 1; d >= 0; d--) {
-			if(rand < (threshold = threshold + dropRates[d])) {
+			if(rand < (threshold = threshold + (dropRates[d]))) {
 				return rarity;
 			}
 			rarity--;
@@ -85,6 +95,8 @@ public class Lootbox {
 		
 		return rarity;
 	}
+	
+
 	
 	/** getPrice()
 	 * 

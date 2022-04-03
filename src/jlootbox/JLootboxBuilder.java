@@ -97,15 +97,17 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				netBuilder.setGenerator(tempgen);
 				netBuilder.buildNetwork();
 
-				
 				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(false);
 				netBuilder.setGenerator(latgen);
 				break;
-			
+
+			default:
+				WattsBetaSmallWorldGenerator<Object> defgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
+				netBuilder.setGenerator(defgen);
 		}
 		
 	
-//		netBuilder.buildNetwork();
+		netBuilder.buildNetwork();
 	
 		Player.init(params.getString("manip"));
 		

@@ -78,9 +78,6 @@ public class Player {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
 	}
 	
-	/** getHist()
-	 *  returns player's lootbox history
-	 */
 	public Deque<Lootbox> getHist(){
 		return hist;
 	}
@@ -89,12 +86,12 @@ public class Player {
 		hist = newHist;
 	}
 	
-	/** getThreshold()
-	 * 
-	 * @return the Player's buyThreshold
-	 */
 	public int getThreshold() {
 		return buyThreshold;
+	}
+	
+	public void setThreshold(int i) {
+		buyThreshold = i;
 	}
 	
 	public boolean getPurchased() {
@@ -159,6 +156,21 @@ public class Player {
 		return 0;
 	}
 
+	/**
+	 * TODO: Just edit recordLootinHist so this method isnt necessary.
+	 * @param biasLoot
+	 */ 
+	private void addBox(Player fav, Lootbox biasLoot) {
+		Deque <Lootbox> oldHist = fav.getHist();
+		
+		oldHist.addLast(biasLoot);
+		
+		if(oldHist.size() > 5) { 
+			oldHist.removeFirst();
+		}
+	}
+
+	
 	
 	public int avgHistValue() {
 		int ownAvg = 0;
@@ -212,7 +224,11 @@ public class Player {
 			}
 			
 			case PRICE:{ 
-				newLoot = new Lootbox( (buyThreshold / 100) * getMoney());
+//				System.out.println(buyThreshold);
+//				System.out.println(getMoney());
+//
+//				System.out.println((double)(buyThreshold / 100) * getMoney());
+				newLoot = new Lootbox((buyThreshold / 100) * getMoney());
 				return newLoot;
 			}
 	
@@ -347,7 +363,7 @@ public class Player {
 				//buyThreshold= % of available money we're willing to spend
 				//that amount has to be above the minimum price of a lootbox for
 				//player to buy
-				if((getThreshold()/100) * getMoney() > Lootbox.MIN_PRICE){
+				if(((getThreshold()/100) * getMoney()) + getMoney() > Lootbox.MIN_PRICE){
 					return true;
 				}
 				
@@ -371,6 +387,8 @@ public class Player {
 	 * @return void
 	 */
 	protected void infoDump(Boolean buy) {
+		
+		System.out.println(decisionStrat);
 		
 		if(buy) {
 			System.out.println("++++BUY++++");
@@ -396,13 +414,14 @@ public class Player {
 	 * 
 	 * weight of their connection with another
 	 * player increased/decreased depending on
-	 * if the other player has better or worse lo
+	 * if the other player has better or worse loot
 	 */
 	protected void askOtherPlayer() {
 		
 		List<Object> players = new ArrayList<Object>();
 		Context <Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		
 		
 		//grab all players this player looks up to
 		for (Object obj : net.getSuccessors(this)) {
@@ -486,7 +505,7 @@ public class Player {
 	 * 
 	 */
 	private void manipulate() {
-		
+		//lol. lmao. imagine having code here
 		
 	}
 	
@@ -506,7 +525,8 @@ public class Player {
 	//players are to buy 
 	@ScheduledMethod(start=50, interval=50)
 	public void limEdition() {
-		
+		setThreshold(9);
+		//TODO code this lol
 	}
 	
 	//node with most in-degrees(most popular) gets consistently better
@@ -532,25 +552,29 @@ public class Player {
 		
 	}
 	
-	/**
-	 * TODO: Just edit recordLootinHist so this method isnt necessary.
-	 * @param biasLoot
-	 */ 
-	private void addBox(Player fav, Lootbox biasLoot) {
-		// TODO Auto-generated method stub
-		Deque <Lootbox> oldHist = fav.getHist();
-		
-		oldHist.addLast(biasLoot);
-		
-		if(oldHist.size() > 5) { 
-			oldHist.removeFirst();
-		}
-	}
 
 
 	//better connected a node is, more likely it is
 	//to pull rare loot
+	//# connections = weighted draw
 	public void biasedBox() {
+		List<Object> players = new ArrayList<Object>();
+		Context <Object> context = ContextUtils.getContext(this);
+		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		Object fav = this;
+		
+		
+		//find most popular player
+		for (Object obj : net.getNodes()) {
+			if(net.getInDegree(obj) > net.getInDegree(fav)) {
+				fav = obj;
+			}
+		}
+		
+		int diff = net.getInDegree(fav) - net.getInDegree(this);		
+		Lootbox biasLoot = new Lootbox(true, diff/100);
+		
+		addBox(this, biasLoot);
 		
 	}
 
