@@ -19,8 +19,8 @@ public class Lootbox {
 	public static int MAX_PRICE = 10;
 	
 	
-	public static double[] dropRates = {.5,.3,.1,.08};
-	public static Uniform unigen = RandomHelper.createUniform();
+	public static double[] dropRates = {.08, .1, .3, .5}; 
+	public static Uniform unigen = RandomHelper.createUniform(0,1);
 
 	private boolean biased = false;
 	private int rarity;
@@ -30,7 +30,7 @@ public class Lootbox {
 	//default constructor
 	public Lootbox() {
 		
-
+		this.rarity = generateRarity();
 		
 		this.price = 0; 
 	}
@@ -38,7 +38,7 @@ public class Lootbox {
 	//constructor for specific price
 	public Lootbox(int money) {
 		
-
+		this.rarity = generateRarity();
 		
 		this.price = money;
 	}
@@ -46,7 +46,7 @@ public class Lootbox {
 	//constructor for specific price
 	public Lootbox(Boolean biased) {
 		
-
+		//this.rarity = generateBias();
 		
 		this.price = 0;
 	}
@@ -58,7 +58,7 @@ public class Lootbox {
 		double rand = unigen.nextDouble();
 		
 		for(double d: dropRates) {
-			if(rand < (threshold = threshold + d)) {
+			if(rand < d) {
 				return rarity;
 			}
 			
@@ -68,6 +68,23 @@ public class Lootbox {
 		return rarity;
 	}
 	
+	//experimenting with reversing the luck for a biased draw,
+	// 5 = more common, 1 = extremely rare
+	public int generateBias() {
+		int rarity = 1;
+		double threshold = 0.0;
+		
+		double rand = unigen.nextDouble();
+		
+		for(int d = dropRates.length - 1; d >= 0; d--) {
+			if(rand < (threshold = threshold + dropRates[d])) {
+				return rarity;
+			}
+			rarity--;
+		}
+		
+		return rarity;
+	}
 	
 	/** getPrice()
 	 * 

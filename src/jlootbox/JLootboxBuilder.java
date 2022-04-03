@@ -3,8 +3,7 @@
  */
 package jlootbox;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+
 
 import repast.simphony.context.Context;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
@@ -25,7 +24,6 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.WrapAroundBorders;
-import repast.simphony.visualization.visualization2D.ShapeFactory2D;
 
 /**
  * @author Lilo

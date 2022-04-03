@@ -85,6 +85,10 @@ public class Player {
 		return hist;
 	}
 	
+	public void setHist(Deque<Lootbox> newHist){
+		hist = newHist;
+	}
+	
 	/** getThreshold()
 	 * 
 	 * @return the Player's buyThreshold
@@ -221,6 +225,13 @@ public class Player {
 		
 	}
 	
+	protected Lootbox giveFreeBox() {
+		
+		newLoot = new Lootbox();
+		
+		return newLoot;
+	}
+	
 	/**rangeCheck(int num)
 	 * 
 	 * verifies that increasing/decreasing the passed
@@ -260,8 +271,6 @@ public class Player {
 				else {
 					addThreshold();
 				}
-			
-				
 				
 				break;
 			}
@@ -481,7 +490,69 @@ public class Player {
 		
 	}
 	
+	// give players a free box every 10 ticks
+	// out of pure generosity :-)
+	@ScheduledMethod(start=10, interval=10)
+	public void freeBox() {
+		if(manip == Manipulate.FREE_BOX) {
+			giveFreeBox();
+			updateThreshold();
+		}
+
+	}
 	
+	//every 50 ticks, start limited edition event
+	//closer timer gets to end of event, more likely
+	//players are to buy 
+	@ScheduledMethod(start=50, interval=50)
+	public void limEdition() {
+		
+	}
+	
+	//node with most in-degrees(most popular) gets consistently better
+	//luck than regular players
+	public void favPlayer() {
+		List<Object> players = new ArrayList<Object>();
+		Context <Object> context = ContextUtils.getContext(this);
+		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		Object fav = this;
+		
+		
+		//loop thru players to find one with most in-degrees/predecessors
+		for (Object obj : net.getNodes()) {
+			if(net.getInDegree(obj) > net.getInDegree(fav)) {
+				fav = obj;
+			}
+		}
+		
+		Player favorite = (Player) fav;
+		Lootbox biasLoot = new Lootbox(true);
+		
+		addBox(favorite, biasLoot);
+		
+	}
+	
+	/**
+	 * TODO: Just edit recordLootinHist so this method isnt necessary.
+	 * @param biasLoot
+	 */ 
+	private void addBox(Player fav, Lootbox biasLoot) {
+		// TODO Auto-generated method stub
+		Deque <Lootbox> oldHist = fav.getHist();
+		
+		oldHist.addLast(biasLoot);
+		
+		if(oldHist.size() > 5) { 
+			oldHist.removeFirst();
+		}
+	}
+
+
+	//better connected a node is, more likely it is
+	//to pull rare loot
+	public void biasedBox() {
+		
+	}
 
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
@@ -494,14 +565,14 @@ public class Player {
 //		Below is how to keep model updated with params from context mid-run
 //		Parameters params = RunEnvironment.getInstance().getParameters();
 
+		manipulate();
 		
 		if(decide()) {
 			
 			purchased = true;
 			
-			addTime();
+			resetTime();
 			
-			manipulate();
 			
 			buyNewLootbox();
 			
@@ -522,9 +593,7 @@ public class Player {
 			//and edit buyThreshold accordingly
 			purchased = false;
 			
-			resetTime();
-			
-			manipulate();
+			addTime();
 			
 			askOtherPlayer();
 			
