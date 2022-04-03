@@ -14,7 +14,7 @@
 						defaultValue="NONE" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
-												values="NONE LIM_ED FREE_BOX FAV_PLAYER "
+												values="NONE LIM_ED FAV_PLAYER FREE_BOX BIAS_BOX "
 											/>
 				<parameter name="numPlayers" displayName="# Players" type="int" 
 						defaultValue="10" 

@@ -36,7 +36,8 @@ public class Player {
 		   NONE,
 		   LIM_ED,
 		   FAV_PLAYER,
-		   FREE_BOX
+		   FREE_BOX,
+		   BIAS_BOX
 		}
 	
 	private static Manipulate manip;
