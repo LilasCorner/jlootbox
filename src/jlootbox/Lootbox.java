@@ -61,6 +61,14 @@ public class Lootbox {
 		this.price = 0;
 	}
 	
+	public int getPrice() {
+		return price;
+	}
+	
+	public int getRarity() {
+		return rarity;
+	}
+	
 	public int generateRarity(int weight) {
 		int rarity = 1;
 		double threshold = 0.0;
@@ -97,22 +105,7 @@ public class Lootbox {
 	}
 	
 
-	
-	/** getPrice()
-	 * 
-	 * @return price
-	 */
-	public int getPrice() {
-		return price;
-	}
-	
-	/**
-	 * 
-	 * @return rarity
-	 */
-	public int getRarity() {
-		return rarity;
-	}
+
 	
 	
 }

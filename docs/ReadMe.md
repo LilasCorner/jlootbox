@@ -55,6 +55,9 @@ or those who share interests with them. They also engage in risk-taking behavior
 in those same events. This model could be extended by allowing players to be influenced more strongly by those who are similar to
 them in such areas as age, gender, work-status, etc. 
 
+Weighing the impact of each lootbox on buyThreshold is another improvement that could be made to the model. If a player spends a small 
+amount of money and gets the rarest item possible, that should impact their future decisions much more sharply than if they recieved
+an average box for an average sum of money.
 
 ## REPAST SIMPHONY FEATURES
 

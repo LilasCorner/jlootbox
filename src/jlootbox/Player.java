@@ -47,7 +47,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = false; //USE FOR DEBUGGING
+	private static Boolean dump = true; //DEBUGGING MODE
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -83,31 +83,45 @@ public class Player {
 		return hist;
 	}
 	
-	public void setHist(Deque<Lootbox> newHist){
-		hist = newHist;
+	public int getMoney() {
+		return availableMoney;
 	}
 	
 	public int getThreshold() {
 		return buyThreshold;
 	}
 	
-	public void setThreshold(int i) {
-		buyThreshold = i;
-	}
-	
 	public boolean getPurchased() {
 		return purchased;
 	}
 	
+	public int getTimeSinceLastPurchase() {
+		return timeSinceLastPurchase;
+	}
+	
+	public void setHist(Deque<Lootbox> newHist){
+		hist = newHist;
+	}
+		
+	public void setMoney(int money) {
+		availableMoney = money;
+	}
+	
+
+	public void setThreshold(int i) {
+		buyThreshold = i;
+	}
+	
+
 	public void addThreshold() {
-		if(rangeCheck(buyThreshold)) {
-			buyThreshold += changeRate;
+		if(rangeCheck(getThreshold())) {
+			setThreshold(getThreshold() + changeRate);
 		}
 	}
 	
 	public void subtractThreshold() {
-		if(rangeCheck(buyThreshold)) {
-			buyThreshold += -1 * changeRate;
+		if(rangeCheck(getThreshold())) {
+			setThreshold(getThreshold() - changeRate);
 		}
 	}
 
@@ -119,30 +133,7 @@ public class Player {
 		timeSinceLastPurchase = 0; 
 	}
 
-	public int getTimeSinceLastPurchase() {
-		return timeSinceLastPurchase;
-	}
-	
-	/**getMoney()
-	 * 
-	 * @return availableMoney
-	 */
-	public int getMoney() {
-		return availableMoney;
-	}
-	
-	
-	/**setMoney(int money)
-	 * 
-	 * set availableMoney to money
-	 * 
-	 * @param money
-	 */
-	public void setMoney(int money) {
-		availableMoney = money;
-	}
-	
-	
+
 	/** moneySpent()
 	 *  
 	 *  returns money spent on newest lootbox
@@ -171,6 +162,26 @@ public class Player {
 		}
 	}
 
+	
+	/**priceHistValue()
+	 * if we get a good return on our cash investment
+	 * overall ($ spent is < cash we have available), 
+	 * we decide to buy again. otherwise no sale
+	 * @return true if cash spent < availableMoney, false for reverse
+	 */
+	public boolean priceHistValue() {
+		int total = 0;
+		
+		for(Lootbox box: hist) {
+			total = box.getPrice() / box.getRarity();
+		}
+		
+		if(total > getMoney()) {
+			return false;
+		}
+		
+		return true;
+	}
 	
 	
 	public int avgHistValue() {
@@ -228,8 +239,12 @@ public class Player {
 //				System.out.println(buyThreshold);
 //				System.out.println(getMoney());
 //
-//				System.out.println((double)(buyThreshold / 100) * getMoney());
-				newLoot = new Lootbox((buyThreshold / 100) * getMoney());
+				int price = (buyThreshold / 100) * getMoney();
+				
+				System.out.println(price);
+
+				
+				newLoot = new Lootbox(price);
 				return newLoot;
 			}
 	
@@ -259,7 +274,7 @@ public class Player {
 	 */
 	public Boolean rangeCheck(int num) {
 		
-		if(num + (-1 * changeRate) > MIN_RANGE-1 && num + changeRate < MAX_RANGE) {
+		if(num - changeRate > MIN_RANGE && num + changeRate < MAX_RANGE) {
 			return true;
 		}
 		
@@ -281,14 +296,18 @@ public class Player {
 		switch(decisionStrat) {
 			
 			case PRICE:{ 
-				//if loot worse than price paid for it, less likely to buy later
-				if(newLoot.getRarity() < newLoot.getPrice() ) {
-					subtractThreshold();				
+
+					int oldVal = hist.peek().getPrice()/ hist.peek().getRarity();
+					int newVal = newLoot.getPrice()/newLoot.getRarity();
+					
+					//lower # means better return on investment
+					if (oldVal < newVal) {
+						subtractThreshold();				
 					}
-				else {
-					addThreshold();
-				}
-				
+					else {
+						addThreshold();
+					}
+		
 				break;
 			}
 	
@@ -361,14 +380,8 @@ public class Player {
 			}
 			
 			case PRICE:{ 
-				//buyThreshold= % of available money we're willing to spend
-				//that amount has to be above the minimum price of a lootbox for
-				//player to buy
-				if(((getThreshold()/100) * getMoney()) + getMoney() > Lootbox.MIN_PRICE){
-					return true;
-				}
-				
-				return false;
+
+				return priceHistValue();
 			}
 
 			default:{
@@ -381,12 +394,7 @@ public class Player {
 	}
 	
 	
-	/** infoDump(Boolean Buy)
-	 * print out of a player's internal variables
-	 * buy = true allows us to print details of transaction, 
-	 * buy = false prints NO BUY
-	 * @return void
-	 */
+
 	protected void infoDump(Boolean buy) {
 		
 		System.out.println(decisionStrat);
@@ -510,6 +518,7 @@ public class Player {
 		
 	}
 	
+	
 	// give players a free box every 10 ticks
 	// out of pure generosity :-)
 	@ScheduledMethod(start=10, interval=10)
@@ -521,6 +530,7 @@ public class Player {
 
 	}
 	
+	
 	//every 50 ticks, start limited edition event
 	//closer timer gets to end of event, more likely
 	//players are to buy 
@@ -529,6 +539,7 @@ public class Player {
 		setThreshold(9);
 		//TODO code this lol
 	}
+	
 	
 	//node with most in-degrees(most popular) gets consistently better
 	//luck than regular players
@@ -553,7 +564,6 @@ public class Player {
 		
 	}
 	
-
 
 	//better connected a node is, more likely it is
 	//to pull rare loot
@@ -582,7 +592,6 @@ public class Player {
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
 	 * and if that new box + or - their likelyhood to buy in future
-	 * @return void
 	 */
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {

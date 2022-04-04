@@ -1,1 +1,1 @@
-This is the jlootbox model. Please contact the developers for more information.
+This is the jlootbox model. See the ReadMe.md file in the docs directory for a detailed explanation of the model's paramaters. Please contact the developers for more information.

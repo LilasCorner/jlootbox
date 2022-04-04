@@ -51,7 +51,7 @@ public class PlayerStyle extends DefaultStyleOGL2D {
     
     @Override
     public int getBorderSize(Object agent) {
-        return 20;
+        return 200;
     }
     
     @Override
