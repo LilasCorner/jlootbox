@@ -76,10 +76,6 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
 			
 		}
-		
-		//network experiments!
-		
-		//beta(probability of rewiring), degree, symmetry
 
 		switch(params.getString("network")) {
 			case "WATTS":
@@ -107,7 +103,9 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		}
 		
 	
-		netBuilder.buildNetwork();
+		if(!params.getString("network").equals("LATTICE")) {
+			netBuilder.buildNetwork();
+		} 
 	
 		Player.init(params.getString("manip"));
 		

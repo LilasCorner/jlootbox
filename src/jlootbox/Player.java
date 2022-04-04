@@ -511,11 +511,18 @@ public class Player {
 	
 
 	/** TODO: placeholder for player manipulations method
-	 * 
+	 * manipulates a player's current purchase. Other manipulations are
+	 * schedule based, and are called based on the time passed
 	 */
 	private void manipulate() {
-		//lol. lmao. imagine having code here
-		
+		switch(manip) {
+			case BIAS_BOX:
+				biasedBox();
+				break;
+			case FAV_PLAYER:
+				favPlayer();
+				break;
+		}
 	}
 	
 	
@@ -532,12 +539,14 @@ public class Player {
 	
 	
 	//every 50 ticks, start limited edition event
-	//closer timer gets to end of event, more likely
-	//players are to buy 
+	//TODO: closer timer gets to end of event, more likely
+	//players are to buy? 
 	@ScheduledMethod(start=50, interval=50)
 	public void limEdition() {
-		setThreshold(9);
-		//TODO code this lol
+		if(manip == Manipulate.LIM_ED) {
+			setThreshold(9); 
+		}
+		
 	}
 	
 	
@@ -599,7 +608,6 @@ public class Player {
 //		Below is how to keep model updated with params from context mid-run
 //		Parameters params = RunEnvironment.getInstance().getParameters();
 
-		manipulate();
 		
 		if(decide()) {
 			
@@ -607,8 +615,12 @@ public class Player {
 			
 			resetTime();
 			
-			
-			buyNewLootbox();
+			if(manip != Manipulate.NONE) {
+				manipulate(); 
+			}
+			else {
+				buyNewLootbox();
+			}
 			
 			if(dump) {
 				infoDump(true);
