@@ -71,6 +71,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		}
 		
 		
+		
 		for (Object obj : context) {
 			NdPoint pt = space.getLocation(obj);
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
@@ -89,12 +90,13 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				break;
 			
 			case "LATTICE":
-				WattsBetaSmallWorldGenerator<Object> tempgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
-				netBuilder.setGenerator(tempgen);
-				netBuilder.buildNetwork();
+//				WattsBetaSmallWorldGenerator<Object> tempgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
+//				netBuilder.setGenerator(tempgen);
+//				netBuilder.buildNetwork();
 
-				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(false);
+				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(true);
 				netBuilder.setGenerator(latgen);
+				
 				break;
 
 			default:
@@ -102,10 +104,20 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				netBuilder.setGenerator(defgen);
 		}
 		
-	
-		if(!params.getString("network").equals("LATTICE")) {
-			netBuilder.buildNetwork();
-		} 
+		boolean keepGoin = true;
+		
+		while(keepGoin) {
+			try {
+				keepGoin = true;
+				netBuilder.buildNetwork();
+				keepGoin = false;
+			}
+			catch(Exception e) {
+				//delete all edges in network, mayb loop & delete successors
+				
+				context.add(new Player (money, buy, space, grid, strat));
+			}
+		}
 	
 		Player.init(params.getString("manip"));
 		

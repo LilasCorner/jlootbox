@@ -239,10 +239,9 @@ public class Player {
 //				System.out.println(buyThreshold);
 //				System.out.println(getMoney());
 //
-				int price = (buyThreshold / 100) * getMoney();
+				int price = (int) ((buyThreshold / 100d) * getMoney());
 				
 				System.out.println(price);
-
 				
 				newLoot = new Lootbox(price);
 				return newLoot;

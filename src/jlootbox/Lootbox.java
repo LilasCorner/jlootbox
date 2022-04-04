@@ -21,6 +21,7 @@ public class Lootbox {
 	
 	public static double[] dropRates = {.5,.3,.1,.08}; 
 //	public static double[] dropRates = {.99,.94,.18,.075}; //overwatch #'s
+//	public static double[] dropRates = {.06, .76, .105}; //overwatch #'s converted
 
 	public static Uniform unigen = RandomHelper.createUniform(0,1);
 
@@ -82,6 +83,20 @@ public class Lootbox {
 			
 			rarity++;
 		}
+//		rarity = 4;
+//		
+//		
+//		for(double d: dropRates) {
+//			if(rand < (d + weight)) {
+//				return rarity;
+//			}
+//			
+//			rarity--;
+//		}
+		
+		
+		
+		
 		
 		return rarity;
 	}
