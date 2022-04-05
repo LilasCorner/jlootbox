@@ -46,6 +46,14 @@ public class Lootbox {
 		this.price = money;
 	}
 	
+	//constructor for specific price and biased box
+	public Lootbox(int money, Boolean biased) {
+		
+		this.rarity = generateBias();
+		
+		this.price = money;
+	}
+	
 	//constructor for favorite player biased boxes
 	public Lootbox(Boolean biased) {
 		
@@ -60,6 +68,14 @@ public class Lootbox {
 		this.rarity = generateRarity(weight);
 		
 		this.price = 0;
+	}
+	
+	//constructor for generating weighted luck 
+	public Lootbox(Boolean biased, int weight, int money) {
+		
+		this.rarity = generateRarity(weight);
+		
+		this.price = money;
 	}
 	
 	public int getPrice() {

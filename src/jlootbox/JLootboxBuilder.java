@@ -6,6 +6,7 @@ package jlootbox;
 
 
 import repast.simphony.context.Context;
+import java.lang.Math;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
 import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
 import repast.simphony.context.space.graph.Lattice2DGenerator;
@@ -60,6 +61,13 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 		if(playerCount < 10) {
 			throw new IllegalArgumentException("Please re-initialize the model with > 10 players to create the network.");
+		}
+		
+		//check that number is perfect square for lattice - temp implementation
+		int sqrt = (int) Math.sqrt(playerCount);
+		
+		if(params.getString("network").equals("LATTICE") && (sqrt * sqrt) != playerCount) {
+			throw new IllegalArgumentException("For Lattice networks, player # must be a perfect square. Please re-initialize the model with a player number that is a perfect square");
 		}
 		
 		String strat = params.getString("strat");

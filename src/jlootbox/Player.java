@@ -553,10 +553,21 @@ public class Player {
 	//node with most in-degrees(most popular) gets consistently better
 	//luck than regular players
 	public void favPlayer() {
-
-		Lootbox biasLoot = new Lootbox(true);
 		
-		addBox(favorite, biasLoot);
+		if (favorite == this) { //don't call this method for every agent, only fav player
+			Lootbox biasLoot = null;
+		
+			if(decisionStrat == DecisionStrategy.PRICE) {
+				int price = (int) ((buyThreshold / 100d) * getMoney());
+				biasLoot = new Lootbox(price, true);
+
+			}
+			else {
+				biasLoot = new Lootbox(true);
+			}
+			
+			addBox(favorite, biasLoot);
+		}
 		
 	}
 	
@@ -568,10 +579,22 @@ public class Player {
 		List<Object> players = new ArrayList<Object>();
 		Context <Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		
 
-		int diff = net.getInDegree(favorite) - net.getInDegree(this);		
-		Lootbox biasLoot = new Lootbox(true, diff/100);
+		int diff = net.getInDegree(favorite) - net.getInDegree(this);	
+		Lootbox biasLoot = null;
+		
+		if(decisionStrat == DecisionStrategy.PRICE) {
+			
+			int price = (int) ((buyThreshold / 100d) * getMoney());
+			biasLoot = new Lootbox(true, diff/100, price);
+
+		}
+		else {
+			
+			biasLoot = new Lootbox(true, diff/100);
+		
+		}
+				
 		
 		addBox(this, biasLoot);
 		
