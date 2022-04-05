@@ -128,7 +128,6 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 		
 		
-		
 		return context;
 	}
 

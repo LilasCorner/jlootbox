@@ -47,7 +47,8 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = true; //DEBUGGING MODE
+	private static Boolean dump = false; //DEBUGGING MODE
+	private static Player favorite = null;
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -552,20 +553,7 @@ public class Player {
 	//node with most in-degrees(most popular) gets consistently better
 	//luck than regular players
 	public void favPlayer() {
-		List<Object> players = new ArrayList<Object>();
-		Context <Object> context = ContextUtils.getContext(this);
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		Object fav = this;
-		
-		
-		//loop thru players to find one with most in-degrees/predecessors
-		for (Object obj : net.getNodes()) {
-			if(net.getInDegree(obj) > net.getInDegree(fav)) {
-				fav = obj;
-			}
-		}
-		
-		Player favorite = (Player) fav;
+
 		Lootbox biasLoot = new Lootbox(true);
 		
 		addBox(favorite, biasLoot);
@@ -580,28 +568,47 @@ public class Player {
 		List<Object> players = new ArrayList<Object>();
 		Context <Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		Object fav = this;
 		
-		
-		//find most popular player
-		for (Object obj : net.getNodes()) {
-			if(net.getInDegree(obj) > net.getInDegree(fav)) {
-				fav = obj;
-			}
-		}
-		
-		int diff = net.getInDegree(fav) - net.getInDegree(this);		
+
+		int diff = net.getInDegree(favorite) - net.getInDegree(this);		
 		Lootbox biasLoot = new Lootbox(true, diff/100);
 		
 		addBox(this, biasLoot);
 		
 	}
 
+	@ScheduledMethod(start=1.2, interval=1)
+	public void clearFavorite() {
+		favorite = null;
+	}
+	
+	@ScheduledMethod(start=1.0, interval=1)
+	public void findFavorite() {
+		if(favorite == null) {
+			
+			List<Object> players = new ArrayList<Object>();
+			Context <Object> context = ContextUtils.getContext(this);
+			Network<Object> net = (Network<Object>)context.getProjection("player network");
+			
+			Object fav = this;
+			
+			//find most popular player
+			for (Object obj : net.getNodes()) {
+				if(net.getInDegree(obj) > net.getInDegree(fav)) {
+					favorite = (Player) obj;
+				}
+			}
+		}
+	}
+	
+	
+	
+	
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
 	 * and if that new box + or - their likelyhood to buy in future
 	 */
-	@ScheduledMethod(start=1, interval=1)
+	@ScheduledMethod(start=1.1, interval=1)
 	public void step() {
 
 //		Below is how to keep model updated with params from context mid-run
