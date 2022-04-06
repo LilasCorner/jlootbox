@@ -297,11 +297,25 @@ public class Player {
 		switch(decisionStrat) {
 			
 			case PRICE:{ 
-
-					int oldVal = hist.peek().getPrice()/ hist.peek().getRarity();
-					int newVal = newLoot.getPrice()/newLoot.getRarity();
+					int oldVal;
+					int newVal;
 					
+					if(hist.peek().getPrice() == 0 || hist.peek().getRarity() == 0) {
+						oldVal = 0;
+					}
+					else {
+						oldVal =  hist.peek().getPrice()/ hist.peek().getRarity();
+					}
+				
+					 
 					
+					if(newLoot.getPrice() == 0 || newLoot.getRarity() == 0) {
+						newVal = 0;
+					} 
+					else {
+						newVal = newLoot.getPrice()/newLoot.getRarity();
+					}
+						
 					//lower # means better return on investment
 					if (oldVal < newVal) {
 						subtractThreshold();				
