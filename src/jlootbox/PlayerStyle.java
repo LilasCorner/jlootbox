@@ -44,9 +44,9 @@ public class PlayerStyle extends DefaultStyleOGL2D {
     public Color getBorderColor(Object agent) {
     	Player player = (Player)agent;
         if (player.getPurchased()) {
-            return Color.decode("#CDA50A");
+            return Color.green;
         }
-        return Color.black;
+        return Color.red;
     }
     
     @Override

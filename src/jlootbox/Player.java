@@ -47,7 +47,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = false; //DEBUGGING MODE
+	private static Boolean dump = true; //DEBUGGING MODE
 	private static Player favorite = null;
 	
 	private boolean purchased = false;
@@ -110,20 +110,26 @@ public class Player {
 	
 
 	public void setThreshold(int i) {
-		buyThreshold = i;
+		if(i > 10) {
+			buyThreshold = 10;
+		}
+		else if(i < 1) {
+			buyThreshold = 1;
+		}
+		else {
+			buyThreshold = i;
+		}
 	}
 	
 
 	public void addThreshold() {
-		if(rangeCheck(getThreshold())) {
 			setThreshold(getThreshold() + changeRate);
-		}
+		
 	}
 	
 	public void subtractThreshold() {
-		if(rangeCheck(getThreshold())) {
 			setThreshold(getThreshold() - changeRate);
-		}
+		
 	}
 
 	public void addTime() {
@@ -150,7 +156,7 @@ public class Player {
 	}
 
 	/**
-	 * TODO: Just edit recordLootinHist so this method isnt necessary.
+	 * TODO: documentation
 	 * @param biasLoot
 	 */ 
 	private void addBox(Player fav, Lootbox biasLoot) {
@@ -171,17 +177,22 @@ public class Player {
 	 * @return true if cash spent < availableMoney, false for reverse
 	 */
 	public boolean priceHistValue() {
-		int total = 0;
+		Lootbox oldBox = hist.peek();
 		
-		for(Lootbox box: hist) {
-			total = box.getPrice() / box.getRarity();
+		System.out.println("value:" + avgHistValue());
+		System.out.println("price:" + avgHistPrice());
+		
+		//buy again if we've been getting good return on investment
+		if(avgHistValue() >= avgHistPrice()) {
+			return true;
 		}
-		
-		if(total > getMoney()) {
+		else {//else it's up to (small)chance
+			if(coinFlip.nextInt() - changeRate <= buyThreshold) {
+				return true;
+			}
 			return false;
 		}
 		
-		return true;
 	}
 	
 	
@@ -197,6 +208,17 @@ public class Player {
 		return ownAvg;
 	}
 	
+	public int avgHistPrice() {
+		int ownAvg = 0;
+		
+		for (Iterator<Lootbox> itr = hist.iterator(); itr.hasNext();) {
+            ownAvg += itr.next().getPrice();
+        }
+		
+		ownAvg /= hist.size();
+		
+		return ownAvg;
+	}
 	
 	/** recordNewLootboxInHistory()
 	 * 
@@ -237,13 +259,9 @@ public class Player {
 			}
 			
 			case PRICE:{ 
-//				System.out.println(buyThreshold);
-//				System.out.println(getMoney());
-//
+
 				int price = (int) ((buyThreshold / 100d) * getMoney());
-				
-				System.out.println(price);
-				
+								
 				newLoot = new Lootbox(price);
 				return newLoot;
 			}
@@ -262,23 +280,6 @@ public class Player {
 		newLoot = new Lootbox();
 		
 		return newLoot;
-	}
-	
-	/**rangeCheck(int num)
-	 * 
-	 * verifies that increasing/decreasing the passed
-	 * number will not put it out of bounds (0-10)
-	 * 
-	 * @param num - the number we want to be within range
-	 * @return true if operation is within range, false if not
-	 */
-	public Boolean rangeCheck(int num) {
-		
-		if(num - changeRate > MIN_RANGE && num + changeRate < MAX_RANGE) {
-			return true;
-		}
-		
-		return false;
 	}
 	
 	
@@ -300,6 +301,7 @@ public class Player {
 					int oldVal = hist.peek().getPrice()/ hist.peek().getRarity();
 					int newVal = newLoot.getPrice()/newLoot.getRarity();
 					
+					
 					//lower # means better return on investment
 					if (oldVal < newVal) {
 						subtractThreshold();				
@@ -313,7 +315,7 @@ public class Player {
 	
 			default:{
 				
-				if(rangeCheck(buyThreshold)) {
+			
 					//old box better than new one, less likely to buy
 					if(hist.peek().getRarity() > newLoot.getRarity()) { 
 						subtractThreshold();
@@ -322,7 +324,7 @@ public class Player {
 						addThreshold();
 					}		
 	
-				}
+				
 				
 			}
 			
@@ -510,7 +512,7 @@ public class Player {
 
 	
 
-	/** TODO: placeholder for player manipulations method
+	/** 
 	 * manipulates a player's current purchase. Other manipulations are
 	 * schedule based, and are called based on the time passed
 	 */
@@ -544,7 +546,7 @@ public class Player {
 	@ScheduledMethod(start=50, interval=50)
 	public void limEdition() {
 		if(manip == Manipulate.LIM_ED) {
-			setThreshold(9); 
+			setThreshold(getThreshold() * 2); 
 		}
 		
 	}
@@ -605,6 +607,9 @@ public class Player {
 		favorite = null;
 	}
 	
+	/**
+	 * TODO: write documentation for this
+	 */
 	@ScheduledMethod(start=1.0, interval=1)
 	public void findFavorite() {
 		if(favorite == null) {
