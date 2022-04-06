@@ -187,7 +187,7 @@ public class Player {
 			return true;
 		}
 		else {//else it's up to (small)chance
-			if(coinFlip.nextInt() - changeRate <= buyThreshold) {
+			if(coinFlip.nextInt() + changeRate <= buyThreshold) {
 				return true;
 			}
 			return false;
@@ -602,7 +602,8 @@ public class Player {
 		
 	}
 
-	@ScheduledMethod(start=1.2, interval=1)
+	
+	@ScheduledMethod(start=0.5, interval=1)
 	public void clearFavorite() {
 		favorite = null;
 	}
