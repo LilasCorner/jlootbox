@@ -1,12 +1,12 @@
 <repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.9.0">
-  <name>MoneySpentSink</name>
-  <dataSet>MoneySpentSet</dataSet>
+  <name>PurchaseFreqSink</name>
+  <dataSet>PurchaseFrequencySet</dataSet>
   <delimiter>,</delimiter>
   <format>TABULAR</format>
   <sourceIds class="linked-hash-set">
+    <string>timeSinceLastPurchase</string>
     <string>tick</string>
-    <string>moneySpent</string>
   </sourceIds>
-  <fileName>D:\Eclipse\jlootbox\output\moneySpentOutput.txt</fileName>
+  <fileName>D:\Eclipse\jlootbox\output\PurchaseFreqOutput.txt</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>

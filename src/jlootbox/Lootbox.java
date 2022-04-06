@@ -110,10 +110,6 @@ public class Lootbox {
 //			rarity--;
 //		}
 		
-		
-		
-		
-		
 		return rarity;
 	}
 	

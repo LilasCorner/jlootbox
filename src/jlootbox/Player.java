@@ -47,7 +47,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = true; //DEBUGGING MODE
+	private static Boolean dump = false; //DEBUGGING MODE
 	private static Player favorite = null;
 	
 	private boolean purchased = false;
@@ -603,7 +603,7 @@ public class Player {
 	}
 
 	
-	@ScheduledMethod(start=0.5, interval=1)
+	@ScheduledMethod(start=0.9, interval=1)
 	public void clearFavorite() {
 		favorite = null;
 	}

@@ -1,0 +1,12 @@
+<repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.9.0">
+  <name>ThresholdSink</name>
+  <dataSet>ThresholdSet</dataSet>
+  <delimiter>,</delimiter>
+  <format>TABULAR</format>
+  <sourceIds class="linked-hash-set">
+    <string>getThreshold</string>
+    <string>tick</string>
+  </sourceIds>
+  <fileName>D:\Eclipse\jlootbox\output\ThresholdOutput.txt</fileName>
+  <addTimeStamp>true</addTimeStamp>
+</repast.simphony.data2.engine.FileSinkDescriptor>
