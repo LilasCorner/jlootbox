@@ -98,11 +98,8 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				break;
 			
 			case "LATTICE":
-//				WattsBetaSmallWorldGenerator<Object> tempgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
-//				netBuilder.setGenerator(tempgen);
-//				netBuilder.buildNetwork();
 
-				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(true);
+				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(false);
 				netBuilder.setGenerator(latgen);
 				
 				break;
