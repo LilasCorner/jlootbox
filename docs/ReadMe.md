@@ -73,16 +73,16 @@ an average box for an average sum of money.
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
-
 - Insert COMSES link  
 
+Dr. Murphy for his area expertise and boundless patience!
 
-- Hing, N., Russell, A., Tolchard, B. et al. Risk Factors for Gambling Problems: An Analysis by Gender. J Gambl Stud 32, 511–534 (2016). https://doi.org/10.1007/s10899-015-9548-8
+Hing, N., Russell, A., Tolchard, B. et al. Risk Factors for Gambling Problems: An Analysis by Gender. J Gambl Stud 32, 511–534 (2016). https://doi.org/10.1007/s10899-015-9548-8
 
+N Schuhmacher, P Van Geert, L Ballato (2019, April 08). “Agent-based model of risk behavior in adolescence” (Version 1.1.0). CoMSES Computational Model Library. Retrieved from: https://www.comses.net/codebases/3844/releases/1.1.0/
 
-- N Schuhmacher, P Van Geert, L Ballato (2019, April 08). “Agent-based model of risk behavior in adolescence” (Version 1.1.0). CoMSES Computational Model Library. Retrieved from: https://www.comses.net/codebases/3844/releases/1.1.0/
+North, MJ, NT Collier, J Ozik, E Tatara, M Altaweel, CM Macal, M Bragen, and P Sydelko, "Complex Adaptive Systems Modeling with Repast Simphony", Complex Adaptive Systems Modeling, Springer, Heidelberg, FRG (2013). https://doi.org/10.1186/2194-3206-1-3
 
+Romanowska, Iza, et al. Agent-Based Modeling for Archaeology: Simulating the Complexity of Societies. Santa Fe Institute Press, 2021. 
 
-- Zendle David, Meyer Rachel and Over Harriet (2019) Adolescents and loot boxes: links with problem gambling and motivations for purchaseR. Soc. open sci.6190049190049
-http://doi.org/10.1098/rsos.190049
+Zendle David, Meyer Rachel and Over Harriet (2019) Adolescents and loot boxes: links with problem gambling and motivations for purchaseR. Soc. open sci![image](https://user-images.githubusercontent.com/59840908/162547898-152a469f-c1af-4425-9345-5e969473f549.png)
