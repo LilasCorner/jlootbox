@@ -26,7 +26,7 @@ the player paid for it, buyThreshold goes down, and vice versa (TEMP).
 After selecting the parameter values for a specific run, click the blue power button at the top of the s
 If you would like to slow down the model, on the bottom left panel labled "Run Options" increase the "Scheduled Tick Delay". 
 
-- # Players: the number of player agents interacting in the model
+- Num Players: the number of player agents interacting in the model
 - Buy Threshold Max/Min: 
 - Decision Strategy: The buying strategy each agent utilizes to decide if they want to make a purchase
 	- ALWAYS_BUY: Players purchase a box every round, regardless of price/buyThreshold
@@ -78,10 +78,10 @@ an average box for an average sum of money.
 - Insert COMSES link  
 
 
-- Hing, N., Russell, A., Tolchard, B. et al. Risk Factors for Gambling Problems: An Analysis by Gender. J Gambl Stud 32, 511ñ534 (2016). https://doi.org/10.1007/s10899-015-9548-8
+- Hing, N., Russell, A., Tolchard, B. et al. Risk Factors for Gambling Problems: An Analysis by Gender. J Gambl Stud 32, 511‚Äì534 (2016). https://doi.org/10.1007/s10899-015-9548-8
 
 
-- N Schuhmacher, P Van Geert, L Ballato (2019, April 08). ìAgent-based model of risk behavior in adolescenceî (Version 1.1.0). CoMSES Computational Model Library. Retrieved from: https://www.comses.net/codebases/3844/releases/1.1.0/
+- N Schuhmacher, P Van Geert, L Ballato (2019, April 08). ‚ÄúAgent-based model of risk behavior in adolescence‚Äù (Version 1.1.0). CoMSES Computational Model Library. Retrieved from: https://www.comses.net/codebases/3844/releases/1.1.0/
 
 
 - Zendle David, Meyer Rachel and Over Harriet (2019) Adolescents and loot boxes: links with problem gambling and motivations for purchaseR. Soc. open sci.6190049190049
