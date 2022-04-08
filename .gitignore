@@ -1,0 +1,8 @@
+*.log
+*.class
+/bin/
+Repast.settings
+Repast.settings
+*.txt
+velocity.log.1
+*.log

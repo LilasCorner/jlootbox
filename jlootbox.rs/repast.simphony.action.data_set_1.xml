@@ -1,7 +1,6 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.9.0">
-  <name>buyThreshold</name>
-  <type>NON_AGGREGATE</type>
-  <sourceType>jlootbox.Player</sourceType>
+  <name>ThresholdSet</name>
+  <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
   <inclRandomSeed>false</inclRandomSeed>
@@ -12,16 +11,17 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1649158098</hashCode>
+    <hashCode>-1644125677</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>Threshold</string>
+      <string>getThreshold</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Threshold</id>
+        <id>getThreshold</id>
         <className>jlootbox.Player</className>
         <methodName>getThreshold</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
   </methodDataSources>

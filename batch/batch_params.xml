@@ -1,3 +1,1 @@
-<?xml version="1.0"?>
-<sweep runs="1">
-</sweep>
+<?xml version="1.0" ?><sweep runs="1"><parameter name="stopTime" type="constant" constant_type="int" value="500"></parameter><parameter name="numPlayers" type="constant" constant_type="int" value="1024"></parameter><parameter name="network" type="constant" constant_type="java.lang.String" value="LATTICE"></parameter><parameter name="manip" type="list" value_type="java.lang.String" values="NONE BIAS_BOX FAV_PLAYER FREE_BOX LIM_ED"><parameter name="strat" type="list" value_type="java.lang.String" values="ALWAYS_BUY COIN_FLIP PRICE"></parameter></parameter></sweep>
