@@ -85,4 +85,4 @@ North, MJ, NT Collier, J Ozik, E Tatara, M Altaweel, CM Macal, M Bragen, and P S
 
 Romanowska, Iza, et al. Agent-Based Modeling for Archaeology: Simulating the Complexity of Societies. Santa Fe Institute Press, 2021. 
 
-Zendle David, Meyer Rachel and Over Harriet (2019) Adolescents and loot boxes: links with problem gambling and motivations for purchaseR. Soc. open sci![image](https://user-images.githubusercontent.com/59840908/162547898-152a469f-c1af-4425-9345-5e969473f549.png)
+Zendle David, Meyer Rachel and Over Harriet (2019) Adolescents and loot boxes: links with problem gambling and motivations for purchaseR. Soc. open sci![image]
