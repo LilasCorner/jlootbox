@@ -128,7 +128,6 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 
 		
-		RunEnvironment.getInstance().setScheduleTickDelay(100);
 		RunEnvironment.getInstance().endAt(params.getInteger("stopTime"));
 		
 		
