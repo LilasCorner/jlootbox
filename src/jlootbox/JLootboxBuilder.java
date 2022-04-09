@@ -27,7 +27,7 @@ import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.WrapAroundBorders;
 
 /**
- * @author Lilo
+ * @author Lila Zayed
  *
  */
 public class JLootboxBuilder implements ContextBuilder<Object> {

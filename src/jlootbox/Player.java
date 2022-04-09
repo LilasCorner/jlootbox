@@ -20,7 +20,7 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.util.ContextUtils;
 
 /**
- * @author Lilo
+ * @author Lila Zayed
  *
  */
 public class Player {

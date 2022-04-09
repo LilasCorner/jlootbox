@@ -10,7 +10,7 @@ import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 
 /**
- * @author Lilo
+ * @author Lila Zayed
  *
  */
 public class Lootbox {
