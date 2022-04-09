@@ -67,7 +67,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		int sqrt = (int) Math.sqrt(playerCount);
 		
 		if(params.getString("network").equals("LATTICE") && (sqrt * sqrt) != playerCount) {
-			throw new IllegalArgumentException("For Lattice networks, player # must be a perfect square. Please re-initialize the model with a player number that is a perfect square");
+			throw new IllegalArgumentException("For Lattice networks, player # must be a perfect square. Please re-initialize");
 		}
 		
 		String strat = params.getString("strat");

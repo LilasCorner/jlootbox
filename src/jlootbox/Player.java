@@ -179,8 +179,8 @@ public class Player {
 	public boolean priceHistValue() {
 		Lootbox oldBox = hist.peek();
 		
-		System.out.println("value:" + avgHistValue());
-		System.out.println("price:" + avgHistPrice());
+//		System.out.println("value:" + avgHistValue());
+//		System.out.println("price:" + avgHistPrice());
 		
 		//buy again if we've been getting good return on investment
 		if(avgHistValue() >= avgHistPrice()) {
@@ -695,6 +695,8 @@ public class Player {
 			if(dump) {
 				infoDump(false);
 			}
+			
+			
 
 		}
 		
