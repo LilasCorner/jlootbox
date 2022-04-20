@@ -1,5 +1,5 @@
 <repast.simphony.visualization.engine.CartesianDisplayDescriptor simphonyVersion="2.9.0">
-  <name>New Display</name>
+  <name>Circle Layout</name>
   <type>2D</type>
   <styles>
     <entry>
@@ -33,7 +33,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-980201084</hashCode>
+    <hashCode>-1455546392</hashCode>
   </schedParams>
   <layoutClassName>repast.simphony.visualization.visualization2D.layout.CircleLayout2D</layoutClassName>
   <layoutProjection>player network</layoutProjection>

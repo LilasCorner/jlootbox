@@ -64,7 +64,7 @@ public class Lootbox {
 		return rarity;
 	}
 	
-	public int generateRarity(int weight) {
+	private static int generateRarity(int weight) {
 		int rarity = 1;
 		double threshold = 0.0;
 		
@@ -93,7 +93,7 @@ public class Lootbox {
 	
 	//experimenting with reversing the luck for a biased draw,
 	// 5 = more common, 1 = extremely rare
-	public int generateFav() {
+	private static int generateFav() {
 		int rarity = 1;
 		double threshold = 0.0;
 		
