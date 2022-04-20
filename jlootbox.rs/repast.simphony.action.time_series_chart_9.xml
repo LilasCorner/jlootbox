@@ -3,7 +3,7 @@
   <dataSet>ThresholdSet</dataSet>
   <xAxisLabel>Tick Count</xAxisLabel>
   <yAxisLabel>Threshold</yAxisLabel>
-  <chartTitle>AvgThresholdChart</chartTitle>
+  <chartTitle>Average Buy Threshold</chartTitle>
   <type>TIME_SERIES</type>
   <background>
     <red>192</red>

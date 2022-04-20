@@ -20,7 +20,7 @@
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
         <id>timeSinceLastPurchase</id>
         <className>jlootbox.Player</className>
-        <methodName>getTimeSinceLastPurchase</methodName>
+        <methodName>getBuyTime</methodName>
         <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>

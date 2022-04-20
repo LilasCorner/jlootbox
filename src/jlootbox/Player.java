@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import cern.jet.random.Uniform;
 import repast.simphony.context.Context;
+import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.ContinuousSpace;
@@ -96,8 +97,12 @@ public class Player {
 		return purchased;
 	}
 	
-	public int getTimeSinceLastPurchase() {
-		return timeSinceLastPurchase;
+	public int getBuyTime() {
+		return (int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount() - timeSinceLastPurchase);
+	}
+	
+	public void setBuyTime(int time) {
+		timeSinceLastPurchase = time;
 	}
 	
 	public void setHist(Deque<Lootbox> newHist){
@@ -108,7 +113,6 @@ public class Player {
 		availableMoney = money;
 	}
 	
-
 	public void setThreshold(int i) {
 		if(i > 10) {
 			buyThreshold = 10;
@@ -121,7 +125,6 @@ public class Player {
 		}
 	}
 	
-
 	public void addThreshold() {
 			setThreshold(getThreshold() + changeRate);
 		
@@ -132,13 +135,7 @@ public class Player {
 		
 	}
 
-	public void addTime() {
-		timeSinceLastPurchase++;
-	}
-	
-	public void resetTime() {
-		timeSinceLastPurchase = 0; 
-	}
+
 
 
 	/** moneySpent()
@@ -155,8 +152,11 @@ public class Player {
 		return 0;
 	}
 
-	/**
-	 * TODO: documentation
+	/**addBox(Player fav, Lootbox biasLoot)
+	 * 
+	 * adds a biased box to the history of the
+	 * current favorite player 
+	 * 
 	 * @param biasLoot
 	 */ 
 	private void addBox(Player fav, Lootbox biasLoot) {
@@ -622,8 +622,9 @@ public class Player {
 		favorite = null;
 	}
 	
-	/**
-	 * TODO: write documentation for this
+	/**findFavorite()
+	 * loops through all players in the network to find
+	 * the player with the most in-degrees
 	 */
 	@ScheduledMethod(start=1.0, interval=1)
 	public void findFavorite() {
@@ -662,7 +663,7 @@ public class Player {
 			
 			purchased = true;
 			
-			resetTime();
+			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
 			
 			if(manip != Manipulate.NONE) {
 				manipulate(); 
@@ -687,9 +688,7 @@ public class Player {
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
 			purchased = false;
-			
-			addTime();
-			
+						
 			askOtherPlayer();
 			
 			if(dump) {
