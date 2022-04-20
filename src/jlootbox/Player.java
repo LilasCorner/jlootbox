@@ -575,11 +575,11 @@ public class Player {
 		
 			if(decisionStrat == DecisionStrategy.PRICE) {
 				int price = (int) ((buyThreshold / 100d) * getMoney());
-				biasLoot = new Lootbox(price, true);
+				biasLoot = new Lootbox(price, 0, true);
 
 			}
 			else {
-				biasLoot = new Lootbox(true);
+				biasLoot = new Lootbox(0, 0, true);
 			}
 			
 			addBox(favorite, biasLoot);
@@ -602,12 +602,12 @@ public class Player {
 		if(decisionStrat == DecisionStrategy.PRICE) {
 			
 			int price = (int) ((buyThreshold / 100d) * getMoney());
-			biasLoot = new Lootbox(true, diff/100, price);
+			biasLoot = new Lootbox(price, diff/100, false);
 
 		}
 		else {
 			
-			biasLoot = new Lootbox(true, diff/100);
+			biasLoot = new Lootbox(0, diff/100, false);
 		
 		}
 				

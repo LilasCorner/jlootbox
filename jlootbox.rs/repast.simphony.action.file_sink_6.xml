@@ -7,6 +7,6 @@
     <string>getThreshold</string>
     <string>tick</string>
   </sourceIds>
-  <fileName>D:\Eclipse\jlootbox\output\ThresholdOutput.txt</fileName>
+  <fileName>ThresholdOutput.txt</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>

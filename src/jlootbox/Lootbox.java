@@ -29,54 +29,32 @@ public class Lootbox {
 	private int rarity;
 	private int price; // current value as calculated 
 	
+
 	
-	//default constructor
-	public Lootbox() {
-		
-		this.rarity = generateRarity(0);
-		
-		this.price = 0; 
+	public Lootbox(){
+		this(0, 0, false); 
 	}
-	
-	//constructor for specific price
-	public Lootbox(int money) {
-		
-		this.rarity = generateRarity(0);
-		
+
+	public Lootbox(int money){
+		this(money, 0, false);
+	}
+
+	public Lootbox(int money, int weight){
+		this(money, weight, true);
+	}
+
+	//
+	public Lootbox(int money, int weight, Boolean biased){
 		this.price = money;
+		
+		if(biased){
+			this.rarity = generateFav();
+			}
+		else{
+			this.rarity = generateRarity(weight);
+		}
 	}
 	
-	//constructor for specific price and biased box
-	public Lootbox(int money, Boolean biased) {
-		
-		this.rarity = generateBias();
-		
-		this.price = money;
-	}
-	
-	//constructor for favorite player biased boxes
-	public Lootbox(Boolean biased) {
-		
-		this.rarity = generateBias();
-		
-		this.price = 0;
-	}
-	
-	//constructor for generating weighted luck 
-	public Lootbox(Boolean biased, int weight) {
-		
-		this.rarity = generateRarity(weight);
-		
-		this.price = 0;
-	}
-	
-	//constructor for generating weighted luck 
-	public Lootbox(Boolean biased, int weight, int money) {
-		
-		this.rarity = generateRarity(weight);
-		
-		this.price = money;
-	}
 	
 	public int getPrice() {
 		return price;
@@ -115,7 +93,7 @@ public class Lootbox {
 	
 	//experimenting with reversing the luck for a biased draw,
 	// 5 = more common, 1 = extremely rare
-	public int generateBias() {
+	public int generateFav() {
 		int rarity = 1;
 		double threshold = 0.0;
 		

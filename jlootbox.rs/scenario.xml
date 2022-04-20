@@ -13,5 +13,4 @@
 <repast.simphony.action.display context="jlootbox" file="repast.simphony.action.display_10.xml" />
 <repast.simphony.action.display context="jlootbox" file="repast.simphony.action.display_11.xml" />
 <repast.simphony.action.display context="jlootbox" file="repast.simphony.action.display_12.xml" />
-<repast.simphony.action.display context="jlootbox" file="repast.simphony.action.display_13.xml" />
 </Scenario>

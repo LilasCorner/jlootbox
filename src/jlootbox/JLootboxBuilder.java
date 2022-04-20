@@ -35,6 +35,8 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 	@Override
 	public Context build(Context<Object> context) {
 		
+		//add sleep for 1 second 
+		
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
 
 		
@@ -58,19 +60,28 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				true, 50, 50));	
 
 		int playerCount = params.getInteger("numPlayers");
+		int sqrt = (int) Math.sqrt(playerCount);
 		
 		if(playerCount < 10) {
 			throw new IllegalArgumentException("Please re-initialize the model with > 10 players to create the network.");
 		}
 		
 		//check that number is perfect square for lattice - temp implementation
-		int sqrt = (int) Math.sqrt(playerCount);
-		
 		if(params.getString("network").equals("LATTICE") && (sqrt * sqrt) != playerCount) {
 			throw new IllegalArgumentException("For Lattice networks, player # must be a perfect square. Please re-initialize");
 		}
 		
 		String strat = params.getString("strat");
+		
+//		String[] temp = strat.split(",");
+//        int[] ratios = new int[temp.length];
+//        
+//
+//        for (int i = 0; i < temp.length; i++) {
+//        	ratios[i] = Integer.parseInt(temp[i]);
+//        }
+        
+        
 		int money = 100;
 		int buy = 5;
 		

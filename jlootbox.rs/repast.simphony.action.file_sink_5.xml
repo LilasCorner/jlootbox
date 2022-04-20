@@ -7,6 +7,6 @@
     <string>timeSinceLastPurchase</string>
     <string>tick</string>
   </sourceIds>
-  <fileName>D:\Eclipse\jlootbox\output\PurchaseFreqOutput.txt</fileName>
+  <fileName>PurchaseFreqOutput.txt</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>

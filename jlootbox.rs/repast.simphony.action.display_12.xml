@@ -1,10 +1,10 @@
 <repast.simphony.visualization.engine.CartesianDisplayDescriptor simphonyVersion="2.9.0">
-  <name>3dDisplay</name>
-  <type>3D</type>
+  <name>New Display</name>
+  <type>2D</type>
   <styles>
     <entry>
       <string>jlootbox.Player</string>
-      <string>repast.simphony.visualization.visualization3D.style.DefaultStyle3D</string>
+      <string>jlootbox.PlayerStyle</string>
     </entry>
   </styles>
   <editedStyles>
@@ -16,13 +16,13 @@
   <netStyles>
     <entry>
       <string>player network</string>
-      <string>repast.simphony.visualization.visualization3D.style.DefaultEdgeStyle3D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedEdgeStyle2D</string>
     </entry>
   </netStyles>
   <editedNetStyles>
     <entry>
       <string>player network</string>
-      <null/>
+      <string>playernetwork.style_4.xml</string>
     </entry>
   </editedNetStyles>
   <frequency>AT_UPDATE</frequency>
@@ -35,7 +35,7 @@
     <frequency>REPEAT</frequency>
     <hashCode>-980201084</hashCode>
   </schedParams>
-  <layoutClassName>repast.simphony.visualization.visualization3D.layout.GEM3DLayout</layoutClassName>
+  <layoutClassName>repast.simphony.visualization.visualization2D.layout.CircleLayout2D</layoutClassName>
   <layoutProjection>player network</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
@@ -62,9 +62,9 @@
   </projectionDescriptors>
   <props/>
   <backgroundColor>
-    <red>0</red>
-    <green>0</green>
-    <blue>0</blue>
+    <red>255</red>
+    <green>255</green>
+    <blue>255</blue>
     <alpha>255</alpha>
   </backgroundColor>
   <valueLayers/>
