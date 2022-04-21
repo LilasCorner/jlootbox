@@ -45,6 +45,7 @@ public class Player {
 	private static int changeRate = 1; 
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
+	private static Boolean breakTies = false;
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
@@ -77,8 +78,9 @@ public class Player {
 	}
 	
 
-	public static void init(String manipulation) {
+	public static void init(String manipulation, Boolean ties) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
+		breakTies = ties;
 	}
 	
 	public Deque<Lootbox> getHist(){
@@ -455,13 +457,9 @@ public class Player {
 		
 		//no friends ;-; choose anyone
 		if(players.size() < 1) {
-			for (Object obj : net.getNodes()) {
-				if((Player)obj != this) {
-					players.add(obj);
-				}
-			}
+			players = soloPlayer();
 		}
-		
+
 		//choose random player from that array
 		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
 		
@@ -472,6 +470,37 @@ public class Player {
 		//compare own lootbox to player near us to see how we're doing
 		compare(otherPlayer);		
 				
+	}
+	
+	/**soloPlayer()
+	 * If a player has no edges, choose a node
+	 * in the network at random and create an edge
+	 * 
+	 * @return List<Object> player - the list of player edges the current agent has
+	 */
+	public List<Object> soloPlayer() {
+		List<Object> allPlayers = new ArrayList<Object>();
+		List<Object> player = new ArrayList<Object>();
+		Context <Object> context = ContextUtils.getContext(this);
+		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		
+		
+		for (Object obj : net.getNodes()) {
+			if((Player)obj != this) {
+				allPlayers.add(obj);
+			}
+		}
+		
+		//choose random player from that array
+		int index = RandomHelper.nextIntFromTo(0, allPlayers.size() - 1);
+		
+		Player otherPlayer = (Player) allPlayers.get(index);
+		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
+		player.add(otherPlayer);
+		friendEdge = net.addEdge(this, otherPlayer, 0.0);
+		
+		return player;
+		
 	}
 	
 	
@@ -491,12 +520,6 @@ public class Player {
 
 		int ownAvg = avgHistValue();
 		int otherAvg = otherPlayer.avgHistValue();
-
-		//make edge btwn the two players if none exists
-		if(friendEdge == null){
-			friendEdge = net.addEdge(this, otherPlayer, 0.0);
-		}
-			
 		if(otherAvg > ownAvg) {
 			
 			//stronger friendship = stronger influence 
@@ -517,13 +540,11 @@ public class Player {
 			
 			friendEdge.setWeight(friendEdge.getWeight() - changeRate); 
 
-			if (friendEdge.getWeight() < 0) {
+			if (friendEdge.getWeight() < 0 && breakTies) {
 				net.removeEdge(friendEdge);
 			}
 		}
 			
-		
-		
 	}
 
 	
