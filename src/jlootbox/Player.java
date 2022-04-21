@@ -54,7 +54,7 @@ public class Player {
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
-	private int availableMoney;  
+	private double availableMoney;  
 	private int buyThreshold;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
@@ -87,7 +87,7 @@ public class Player {
 		return hist;
 	}
 	
-	public int getMoney() {
+	public double getMoney() {
 		return availableMoney;
 	}
 	
@@ -111,7 +111,7 @@ public class Player {
 		hist = newHist;
 	}
 		
-	public void setMoney(int money) {
+	public void setMoney(double money) {
 		availableMoney = money;
 	}
 	
@@ -146,7 +146,7 @@ public class Player {
 	 *  
 	 * @return int price of last lootbox
 	 */
-	public int moneySpent() {
+	public double moneySpent() {
 		if(purchased) {
 			return hist.peek().getPrice();
 		}
@@ -181,9 +181,6 @@ public class Player {
 	public boolean priceHistValue() {
 		Lootbox oldBox = hist.peek();
 		
-//		System.out.println("value:" + avgHistValue());
-//		System.out.println("price:" + avgHistPrice());
-		
 		//buy again if we've been getting good return on investment
 		if(avgHistValue() >= avgHistPrice()) {
 			return true;
@@ -198,8 +195,8 @@ public class Player {
 	}
 	
 	
-	public int avgHistValue() {
-		int ownAvg = 0;
+	public double avgHistValue() {
+		double ownAvg = 0;
 		
 		for (Iterator<Lootbox> itr = hist.iterator(); itr.hasNext();) {
             ownAvg += itr.next().getRarity();
@@ -210,8 +207,8 @@ public class Player {
 		return ownAvg;
 	}
 	
-	public int avgHistPrice() {
-		int ownAvg = 0;
+	public double avgHistPrice() {
+		double ownAvg = 0;
 		
 		for (Iterator<Lootbox> itr = hist.iterator(); itr.hasNext();) {
             ownAvg += itr.next().getPrice();
@@ -262,7 +259,7 @@ public class Player {
 			
 			case PRICE:{ 
 
-				int price = (int) ((buyThreshold / 100d) * getMoney());
+				double price = ((buyThreshold / 100d) * getMoney());
 								
 				newLoot = new Lootbox(price);
 				return newLoot;
@@ -299,8 +296,8 @@ public class Player {
 		switch(decisionStrat) {
 			
 			case PRICE:{ 
-					int oldVal;
-					int newVal;
+					double oldVal;
+					double newVal;
 					
 					if(hist.peek().getPrice() == 0 || hist.peek().getRarity() == 0) {
 						oldVal = 0;
@@ -518,8 +515,8 @@ public class Player {
 		Deque<Lootbox> otherLoot = otherPlayer.getHist();
 		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
 
-		int ownAvg = avgHistValue();
-		int otherAvg = otherPlayer.avgHistValue();
+		double ownAvg = avgHistValue();
+		double otherAvg = otherPlayer.avgHistValue();
 		if(otherAvg > ownAvg) {
 			
 			//stronger friendship = stronger influence 
@@ -597,7 +594,7 @@ public class Player {
 			Lootbox biasLoot = null;
 		
 			if(decisionStrat == DecisionStrategy.PRICE) {
-				int price = (int) ((buyThreshold / 100d) * getMoney());
+				double price =  ((buyThreshold / 100d) * getMoney());
 				biasLoot = new Lootbox(price, 0, true);
 
 			}
@@ -627,7 +624,7 @@ public class Player {
 		
 		if(decisionStrat == DecisionStrategy.PRICE) {
 			
-			int price = (int) ((buyThreshold / 100d) * getMoney());
+			double price = ((buyThreshold / 100d) * getMoney());
 			biasLoot = new Lootbox(price, diff/100, false);
 
 		}

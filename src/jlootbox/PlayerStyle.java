@@ -23,7 +23,7 @@ public class PlayerStyle extends DefaultStyleOGL2D {
     public Color getColor(Object agent) {
         Player player = (Player)agent;
 
-        switch (player.avgHistValue()) {
+        switch ((int)player.avgHistValue()) {
 	    	case 1: //common
 	    		return Color.GRAY;
 	    	case 2: //rare

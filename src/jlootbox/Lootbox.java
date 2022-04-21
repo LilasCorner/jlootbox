@@ -27,7 +27,7 @@ public class Lootbox {
 
 	private boolean biased = false;
 	private int rarity;
-	private int price; // current value as calculated 
+	private double price; // current value as calculated 
 	
 
 	
@@ -35,16 +35,16 @@ public class Lootbox {
 		this(0, 0, false); 
 	}
 
-	public Lootbox(int money){
+	public Lootbox(double money){
 		this(money, 0, false);
 	}
 
-	public Lootbox(int money, int weight){
+	public Lootbox(double money, int weight){
 		this(money, weight, true);
 	}
 
 	//
-	public Lootbox(int money, int weight, Boolean biased){
+	public Lootbox(double money, int weight, Boolean biased){
 		this.price = money;
 		
 		if(biased){
@@ -56,7 +56,7 @@ public class Lootbox {
 	}
 	
 	
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 	
