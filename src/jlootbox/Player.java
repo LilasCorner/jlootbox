@@ -456,7 +456,9 @@ public class Player {
 		//no friends ;-; choose anyone
 		if(players.size() < 1) {
 			for (Object obj : net.getNodes()) {
-				players.add(obj);
+				if((Player)obj != this) {
+					players.add(obj);
+				}
 			}
 		}
 		
@@ -583,6 +585,9 @@ public class Player {
 			}
 			
 			addBox(favorite, biasLoot);
+		}
+		else {
+			buyNewLootbox();
 		}
 		
 	}

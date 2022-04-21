@@ -6,3 +6,8 @@ Repast.settings
 *.txt
 velocity.log.1
 *.log
+complete_model.jar
+config.props
+debug.log.1
+jlootbox.rs/parameters_backup.xml
+output/config.props
