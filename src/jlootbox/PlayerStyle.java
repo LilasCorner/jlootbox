@@ -23,6 +23,10 @@ public class PlayerStyle extends DefaultStyleOGL2D {
     public Color getColor(Object agent) {
         Player player = (Player)agent;
 
+        if(player == Player.favorite) {
+        	return Color.green;
+        }
+        
         switch ((int)player.avgHistValue()) {
 	    	case 1: //common
 	    		return Color.GRAY;

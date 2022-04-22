@@ -50,7 +50,7 @@ public class Player {
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
 	private static Boolean dump = false; //DEBUGGING MODE
-	private static Player favorite = null;
+	public static Player favorite = null;
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -658,13 +658,17 @@ public class Player {
 			Network<Object> net = (Network<Object>)context.getProjection("player network");
 			
 			Object fav = this;
+			int favNodes =0;
 			
 			//find most popular player
 			for (Object obj : net.getNodes()) {
-				if(net.getInDegree(obj) > net.getInDegree(fav)) {
-					favorite = (Player) obj;
+				if(net.getInDegree(obj) > favNodes) {
+					fav =  obj;
+					favNodes = net.getInDegree(fav);
 				}
 			}
+			
+			favorite = (Player)fav;
 		}
 	}
 	
