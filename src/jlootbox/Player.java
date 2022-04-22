@@ -564,7 +564,7 @@ public class Player {
 	
 	// give players a free box every 10 ticks
 	// out of pure generosity :-)
-	@ScheduledMethod(start=10, interval=10)
+	@ScheduledMethod(start=15, interval=20)
 	public void freeBox() {
 		if(manip == Manipulate.FREE_BOX) {
 			giveFreeBox();
