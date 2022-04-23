@@ -5,6 +5,8 @@ package jlootbox;
 
 import repast.simphony.visualizationOGL2D.DefaultStyleOGL2D;
 import java.awt.Color;
+
+import jlootbox.Player.Manipulate;
 import repast.simphony.gis.styleEditor.SimpleMarkFactory;
 import repast.simphony.visualizationOGL2D.DefaultStyleOGL2D;
 import saf.v3d.ShapeFactory2D;
@@ -23,7 +25,7 @@ public class PlayerStyle extends DefaultStyleOGL2D {
     public Color getColor(Object agent) {
         Player player = (Player)agent;
 
-        if(player == Player.favorite) {
+        if(player == Player.favorite && Player.manip == Manipulate.FAV_PLAYER) {
         	return Color.green;
         }
         

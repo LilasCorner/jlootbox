@@ -41,7 +41,8 @@ public class Player {
 		   BIAS_BOX
 		}
 	
-	private static Manipulate manip;
+	
+	public static Manipulate manip;
 	private static int changeRate = 1; 
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
@@ -258,9 +259,9 @@ public class Player {
 			}
 			
 			case PRICE:{ 
-
 				double price = ((buyThreshold / 100d) * getMoney());
-								
+				System.out.println("Price: buyNewLoot =" + price);
+
 				newLoot = new Lootbox(price);
 				return newLoot;
 			}
@@ -687,12 +688,12 @@ public class Player {
 
 		
 		if(decide()) {
-			
+
 			purchased = true;
 			
 			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
 			
-			if(manip != Manipulate.NONE) {
+			if(manip == Manipulate.BIAS_BOX || manip == Manipulate.FAV_PLAYER) {
 				manipulate(); 
 			}
 			else {
@@ -702,7 +703,6 @@ public class Player {
 			if(dump) {
 				infoDump(true);
 			}
-
 			updateThreshold();
 
 			recordNewLootboxInHistory();
@@ -711,7 +711,6 @@ public class Player {
 			
 		}		
 		else {
-			
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
 			purchased = false;
