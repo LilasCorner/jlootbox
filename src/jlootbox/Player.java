@@ -260,7 +260,6 @@ public class Player {
 			
 			case PRICE:{ 
 				double price = ((buyThreshold / 100d) * getMoney());
-				System.out.println("Price: buyNewLoot =" + price);
 
 				newLoot = new Lootbox(price);
 				return newLoot;
