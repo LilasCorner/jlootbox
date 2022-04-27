@@ -490,7 +490,6 @@ public class Player {
 		
 		//choose random player from that array
 		int index = RandomHelper.nextIntFromTo(0, allPlayers.size() - 1);
-		
 		Player otherPlayer = (Player) allPlayers.get(index);
 		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
 		player.add(otherPlayer);
@@ -619,18 +618,19 @@ public class Player {
 		Context <Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 
-		int diff = net.getInDegree(favorite) - net.getInDegree(this);	
+		double diff = (net.getInDegree(favorite) - net.getInDegree(this))/100d;	
 		Lootbox biasLoot = null;
 		
 		if(decisionStrat == DecisionStrategy.PRICE) {
 			
 			double price = ((buyThreshold / 100d) * getMoney());
-			biasLoot = new Lootbox(price, diff/100, false);
+			biasLoot = new Lootbox(price, diff, false);
+			System.out.println(price + " " + diff);
 
 		}
 		else {
 			
-			biasLoot = new Lootbox(0, diff/100, false);
+			biasLoot = new Lootbox(0, diff, false);
 		
 		}
 				

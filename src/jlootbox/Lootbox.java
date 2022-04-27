@@ -39,12 +39,12 @@ public class Lootbox {
 		this(money, 0, false);
 	}
 
-	public Lootbox(double money, int weight){
+	public Lootbox(double money, double weight){
 		this(money, weight, true);
 	}
 
 	//
-	public Lootbox(double money, int weight, Boolean biased){
+	public Lootbox(double money, double weight, Boolean biased){
 		this.price = money;
 		
 		if(biased){
@@ -64,7 +64,7 @@ public class Lootbox {
 		return rarity;
 	}
 	
-	private static int generateRarity(int weight) {
+	private static int generateRarity(double weight) {
 		int rarity = 1;
 		double threshold = 0.0;
 		
