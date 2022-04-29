@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.help.FavoritesAction;
+
 import cern.jet.random.Uniform;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
@@ -59,16 +62,14 @@ public class Player {
 	private int buyThreshold;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
-	private ContinuousSpace<Object> space; 
-	private Grid<Object> grid;
+
 	
 	
 	//default constructor
-	public Player(int availMoney, int buy, ContinuousSpace <Object> space , Grid <Object> grid, String strat) {
+	public Player(int availMoney, int buy, String strat) {
 		this.availableMoney = availMoney;
 		this.buyThreshold = buy;
-		this.space = space;
-		this.grid = grid;
+
 		
 		decisionStrat = Enum.valueOf(Player.DecisionStrategy.class, strat); 
 
@@ -215,7 +216,7 @@ public class Player {
             ownAvg += itr.next().getPrice();
         }
 		
-		ownAvg /= hist.size();
+		ownAvg /= hist.size() ;
 		
 		return ownAvg;
 	}
@@ -247,13 +248,13 @@ public class Player {
 		
 			case ALWAYS_BUY:{ 
 				
-				newLoot = new Lootbox();
+				newLoot = Platform.sellLootbox(0, this);
 				return newLoot;
 			}
 			
 			case COIN_FLIP:{ 
 	
-				newLoot = new Lootbox();
+				newLoot = Platform.sellLootbox(0, this);
 				return newLoot;
 				
 			}
@@ -261,7 +262,7 @@ public class Player {
 			case PRICE:{ 
 				double price = ((buyThreshold / 100d) * getMoney());
 
-				newLoot = new Lootbox(price);
+				newLoot = Platform.sellLootbox(price, this);
 				return newLoot;
 			}
 	
@@ -344,33 +345,6 @@ public class Player {
 		}
 
 		return buyThreshold;
-	}
-	
-	
-	/** move()
-	 * 
-	 * Calculates displacement for Player and moves them
-	 * to new location
-	 * 
-	 * Only runs when lootbox is purchased - player holds still
-	 * when no purchase is made
-	 * 
-	 * @return true for positive displacement, false for negative
-	 */
-	protected Boolean move() {
-		
-		
-		//temp implementation
-		NdPoint myPoint = space.getLocation (this);
-		int disp = hist.peekLast().getRarity() - hist.peekFirst().getRarity();
-		
-		space.moveByDisplacement(this, 1, disp); //x, y displacement
-		myPoint = space.getLocation(this);
-		grid.moveTo(this, (int)myPoint.getX(), (int)myPoint.getY());
-		
-		
-		return (disp > 0); 
-		
 	}
 	
 	
@@ -625,7 +599,7 @@ public class Player {
 			
 			double price = ((buyThreshold / 100d) * getMoney());
 			biasLoot = new Lootbox(price, diff, false);
-			System.out.println(price + " " + diff);
+			System.out.println(price + " " + diff + " " + biasLoot.getRarity());
 
 		}
 		else {
@@ -654,19 +628,38 @@ public class Player {
 		if(favorite == null) {
 			
 			List<Object> players = new ArrayList<Object>();
+			List<Object> favorites = new ArrayList<Object>();
 			Context <Object> context = ContextUtils.getContext(this);
 			Network<Object> net = (Network<Object>)context.getProjection("player network");
 			
 			Object fav = this;
 			int favNodes =0;
+			int count = 0;
 			
 			//find most popular player
 			for (Object obj : net.getNodes()) {
 				if(net.getInDegree(obj) > favNodes) {
+					favorites.clear();
 					fav =  obj;
 					favNodes = net.getInDegree(fav);
 				}
+				
+				if (net.getInDegree(obj) == favNodes){
+					favorites.add(obj);
+				}
 			}
+			
+			if(favorites.size() > 0) {
+				for (Object obj : net.getNodes()) {
+					Player player = (Player) obj;
+					Player favorite = (Player) fav;
+
+					if( player.avgHistValue() > favorite.avgHistValue()) {
+						fav = obj;
+					}
+				}
+			}
+			
 			
 			favorite = (Player)fav;
 		}
@@ -702,11 +695,11 @@ public class Player {
 			if(dump) {
 				infoDump(true);
 			}
+			
 			updateThreshold();
 
 			recordNewLootboxInHistory();
 
-			move();
 			
 		}		
 		else {

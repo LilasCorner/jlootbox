@@ -34,30 +34,27 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 
 	@Override
 	public Context build(Context<Object> context) {
+		Parameters params = RunEnvironment.getInstance().getParameters();
+
+		//validation block here!!!
 		
-		//add sleep for 1 second 
+		double nwbeta = params.getDouble("NWBeta"); //definition
+		
+		//validating w/ comment abt valid ranges sos agents 
+//		if( ) {
+//			
+//		}
+		
+		
+		
+		
 		
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
 
 		
 		context.setId("jlootbox");
 		
-		Parameters params = RunEnvironment.getInstance().getParameters();
-		
-		ContinuousSpaceFactory spaceFactory = 
-				ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
-		ContinuousSpace<Object> space = 
-				spaceFactory.createContinuousSpace("space", context, 
-						new RandomCartesianAdder<Object>(),
-						new repast.simphony.space.continuous.WrapAroundBorders(),
-						50, 50);
-		
-		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
-		
-		Grid<Object> grid =  gridFactory.createGrid("grid", context, 
-				new GridBuilderParameters<Object>(new WrapAroundBorders(),
-				new SimpleGridAdder<Object>(),
-				true, 50, 50));	
+	
 
 		int playerCount = params.getInteger("numPlayers");
 		int sqrt = (int) Math.sqrt(playerCount);
@@ -86,31 +83,27 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		int buy = 5;
 		
 		for (int i =0; i < playerCount; i++) {
-			context.add(new Player (money, buy, space, grid, strat));
+			context.add(new Player (money, buy, strat));
 		}
 		
 		
-		
-		for (Object obj : context) {
-			NdPoint pt = space.getLocation(obj);
-			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
-			
-		}
 
 		switch(params.getString("network")) {
 			case "WATTS":
-				WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
+				WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
+						params.getInteger("NWDegree"), params.getBoolean("NWSym"));
 				netBuilder.setGenerator(watgen);
 				break;
 			
 			case "RANDOM":
-				RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(.5,  false, true);
+				RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(params.getDouble("NRDensity"), 
+						params.getBoolean("NRLoop"), params.getBoolean("NRSym"));
 				netBuilder.setGenerator(randgen);
 				break;
 			
 			case "LATTICE":
 
-				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(false);
+				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(params.getBoolean("NLToroidal"));
 				netBuilder.setGenerator(latgen);
 				
 				break;
@@ -131,7 +124,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			catch(Exception e) {
 				//delete all edges in network, mayb loop & delete successors
 				
-				context.add(new Player (money, buy, space, grid, strat));
+				context.add(new Player (money, buy,  strat));
 			}
 		}
 	

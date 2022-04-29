@@ -44,10 +44,10 @@ public class Lootbox {
 	}
 
 	//
-	public Lootbox(double money, double weight, Boolean biased){
+	public Lootbox(double money, double weight, Boolean fav){
 		this.price = money;
 		
-		if(biased){
+		if(fav){
 			this.rarity = generateFav();
 			}
 		else{
@@ -55,6 +55,8 @@ public class Lootbox {
 		}
 	}
 	
+	
+
 	
 	public double getPrice() {
 		return price;
@@ -94,7 +96,7 @@ public class Lootbox {
 	//experimenting with reversing the luck for a biased draw,
 	// 5 = more common, 1 = extremely rare
 	private static int generateFav() {
-		int rarity = 1;
+		int rarity = 5;
 		double threshold = 0.0;
 		
 		double rand = unigen.nextDouble();
