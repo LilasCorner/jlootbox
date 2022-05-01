@@ -181,7 +181,6 @@ public class Player {
 	 * @return true if cash spent < availableMoney, false for reverse
 	 */
 	public boolean priceHistValue() {
-		Lootbox oldBox = hist.peek();
 		
 		//buy again if we've been getting good return on investment
 		if(avgHistValue() >= avgHistPrice()) {
@@ -243,43 +242,11 @@ public class Player {
 	 * @return newly generated lootbox newLoot
 	 */
 	protected Lootbox buyNewLootbox() {
-
-		switch(decisionStrat) {
-		
-			case ALWAYS_BUY:{ 
-				
-				newLoot = Platform.sellLootbox(0, this);
-				return newLoot;
-			}
-			
-			case COIN_FLIP:{ 
-	
-				newLoot = Platform.sellLootbox(0, this);
-				return newLoot;
-				
-			}
-			
-			case PRICE:{ 
-				double price = ((buyThreshold / 100d) * getMoney());
-
-				newLoot = Platform.sellLootbox(price, this);
-				return newLoot;
-			}
-	
-			default:
-				newLoot = new Lootbox();
-				return newLoot;
-			
-		}
-		
-		
+		return Platform.offerLootbox(((buyThreshold / 100d) * getMoney()), this);
 	}
 	
 	protected Lootbox giveFreeBox() {
-		
-		newLoot = new Lootbox();
-		
-		return newLoot;
+		return Platform.offerLootbox(0, this);
 	}
 	
 	

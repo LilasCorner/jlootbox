@@ -130,7 +130,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 	
 		
 		Player.init(params.getString("manip"), params.getBoolean("breakTies"));
-		
+		Platform.init(params.getString("manip"), context);
 		RunEnvironment.getInstance().endAt(params.getInteger("stopTime"));
 		
 		
