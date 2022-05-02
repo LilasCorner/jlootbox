@@ -8,19 +8,13 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.help.FavoritesAction;
-
 import cern.jet.random.Uniform;
 import repast.simphony.context.Context;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
-import repast.simphony.space.continuous.ContinuousSpace;
-import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.graph.Network;
 import repast.simphony.space.graph.RepastEdge;
-import repast.simphony.space.grid.Grid;
 import repast.simphony.util.ContextUtils;
 
 /**
@@ -83,6 +77,10 @@ public class Player {
 	public static void init(String manipulation, Boolean ties) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
 		breakTies = ties;
+	}
+	
+	public Player getPlayer() {
+		return this;
 	}
 	
 	public Deque<Lootbox> getHist(){
@@ -158,23 +156,6 @@ public class Player {
 		}
 		
 		return 0;
-	}
-
-	/**addBox(Player fav, Lootbox biasLoot)
-	 * 
-	 * adds a biased box to the history of the
-	 * current favorite player 
-	 * 
-	 * @param biasLoot
-	 */ 
-	private void addBox(Player fav, Lootbox biasLoot) {
-		Deque <Lootbox> oldHist = fav.getHist();
-		
-		oldHist.addLast(biasLoot);
-		
-		if(oldHist.size() > 5) { 
-			oldHist.removeFirst();
-		}
 	}
 
 	
@@ -406,7 +387,6 @@ public class Player {
 		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
 		
 		Player otherPlayer = (Player) players.get(index);
-		Object obj = players.get(index);
 		
 		compare(otherPlayer);		
 				

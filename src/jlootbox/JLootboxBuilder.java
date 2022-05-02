@@ -34,50 +34,50 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 
 	@Override
 	public Context build(Context<Object> context) {
+
 		Parameters params = RunEnvironment.getInstance().getParameters();
 
-		//validation block here!!!
+		String manip = params.getString("manip");
+		String network = params.getString("network");
+		String strat = params.getString("strat");
+		Boolean breakTies = params.getBoolean("breakTies");
+		int stopTime = params.getInteger("stopTime");
+		int playerCount = params.getInteger("numPlayers");
+		int sqrt = (int) Math.sqrt(playerCount);
+
+		//network params
+		double nwbeta = params.getDouble("NWBeta"); //Watts beta: probability of edge being rewired. Must be btwn 0-1
+		int nwdegree = params.getInteger("NWDegree"); // Watts degree: # edges connected to each vertex in neighborhood. Must be even #
+		Boolean nwsymm = params.getBoolean("NWSym"); // Watts symmetry: generated edges symmetrical t/f
+		double nrdensity = params.getDouble("NRDensity"); // Random density: the approximate density of the network. Must be btwn 0-1
+		Boolean nrloop = params.getBoolean("NRLoop"); // Random self loops: are self loops allowed t/f
+		Boolean nrsymm = params.getBoolean("NRSym"); //Random symmetry: generated edges symmetrical/bidirectional t/f
+		Boolean nltoroid = params.getBoolean("NLToroidal"); //Lattice Toroidal: whether lattice is toroidal t/f
 		
-		double nwbeta = params.getDouble("NWBeta"); //definition
 		
-		//validating w/ comment abt valid ranges sos agents 
-//		if( ) {
-//			
-//		}
-		
+		//TODO: this is so ugly ;-; switch statement perhaps
+		if(nwbeta > 1 || nwbeta < 0) {
+			throw new IllegalArgumentException("NWBeta must be between 0 and 1. Please re-initialize");
+		}
+		if(nwdegree % 2 != 0) {
+			throw new IllegalArgumentException("NWDegree must be an even number. Please re-initialize");
+		}
+		if(nrdensity > 1 || nrdensity < 0) {
+			throw new IllegalArgumentException("NRDensity must be between 0 and 1. Please re-initialize");
+		}
+		if(playerCount < 10) {
+			throw new IllegalArgumentException("Please re-initialize the model with > 10 players to create the network.");
+		}
+		if(network.equals("LATTICE") && (sqrt * sqrt) != playerCount) {
+			throw new IllegalArgumentException("For Lattice networks, player # must be a perfect square. Please re-initialize");
+		}
 		
 		
 		
 		
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
 
-		
 		context.setId("jlootbox");
-		
-	
-
-		int playerCount = params.getInteger("numPlayers");
-		int sqrt = (int) Math.sqrt(playerCount);
-		
-		if(playerCount < 10) {
-			throw new IllegalArgumentException("Please re-initialize the model with > 10 players to create the network.");
-		}
-		
-		//check that number is perfect square for lattice - temp implementation
-		if(params.getString("network").equals("LATTICE") && (sqrt * sqrt) != playerCount) {
-			throw new IllegalArgumentException("For Lattice networks, player # must be a perfect square. Please re-initialize");
-		}
-		
-		String strat = params.getString("strat");
-		
-//		String[] temp = strat.split(",");
-//        int[] ratios = new int[temp.length];
-//        
-//
-//        for (int i = 0; i < temp.length; i++) {
-//        	ratios[i] = Integer.parseInt(temp[i]);
-//        }
-        
         
 		int money = 100;
 		int buy = 5;
@@ -87,29 +87,29 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		}
 		
 		
-
-		switch(params.getString("network")) {
+		switch(network) {
 			case "WATTS":
 				WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
-						params.getInteger("NWDegree"), params.getBoolean("NWSym"));
+						nwdegree, nwsymm);
 				netBuilder.setGenerator(watgen);
 				break;
 			
 			case "RANDOM":
-				RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(params.getDouble("NRDensity"), 
-						params.getBoolean("NRLoop"), params.getBoolean("NRSym"));
+				RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(nrdensity, 
+						nrloop, nrsymm);
 				netBuilder.setGenerator(randgen);
 				break;
 			
 			case "LATTICE":
 
-				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(params.getBoolean("NLToroidal"));
+				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(nltoroid);
 				netBuilder.setGenerator(latgen);
 				
 				break;
 
 			default:
-				WattsBetaSmallWorldGenerator<Object> defgen = new WattsBetaSmallWorldGenerator<Object>(.3,  4, true);
+				WattsBetaSmallWorldGenerator<Object> defgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
+						nwdegree, nwsymm);
 				netBuilder.setGenerator(defgen);
 		}
 		
@@ -127,11 +127,12 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 				context.add(new Player (money, buy,  strat));
 			}
 		}
-	
 		
-		Player.init(params.getString("manip"), params.getBoolean("breakTies"));
-		Platform.init(params.getString("manip"), context);
-		RunEnvironment.getInstance().endAt(params.getInteger("stopTime"));
+
+		
+		Player.init(manip, breakTies);
+		Platform.init(manip, context);
+		RunEnvironment.getInstance().endAt(stopTime);
 		
 		
 		
