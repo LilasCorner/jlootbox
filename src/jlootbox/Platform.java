@@ -6,11 +6,11 @@ package jlootbox;
 import java.util.ArrayList;
 import java.util.List;
 
+import jlootbox.Player.DecisionStrategy;
 import jlootbox.Player.Manipulate;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.graph.Network;
-import repast.simphony.util.ContextUtils;
 
 /**
  * @author Lilo
@@ -25,7 +25,6 @@ public class Platform {
 		   FREE_BOX,
 		   BIAS_BOX
 		}
-	
 	
 	public static Manipulate manip;
 	public static Player favorite = null;
@@ -42,10 +41,15 @@ public class Platform {
 		//check manipulations
 		switch(manip) {
 			case BIAS_BOX:
-				
-				break;
+				return biasedBox(money, buyer);
+			
 			case FAV_PLAYER:
+				if (favorite == buyer) {
+					return favPlayer(money, buyer);
+				}
+				break;
 				
+			default:
 				break;
 		}
 			
@@ -62,16 +66,11 @@ public class Platform {
 	@ScheduledMethod(start=0.95, interval=1)
 	public static void findFavorite() {
 		
-		System.out.println("yeehaw");
-
-		
-		List<Object> players = new ArrayList<Object>();
 		List<Object> favorites = new ArrayList<Object>();
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		
 		Object fav = null;
 		int favNodes =0;
-		int count = 0;
 		
 		//find most popular player
 		for (Object obj : net.getNodes()) {
@@ -100,9 +99,29 @@ public class Platform {
 		
 		favorite = (Player)fav;
 		
-		System.out.println(favorite.toString());
+//		System.out.println(favorite.toString());
 		
 	}
 	
 	
+	//node with most in-degrees(most popular) gets consistently better
+	//luck than regular players
+	public static Lootbox favPlayer(double money, Player buyer) {
+		double price =  ((buyer.getThreshold() / 100d) * buyer.getMoney());
+		return new Lootbox(price, 0, true);
+	}
+
+	//better connected a node is, more likely it is
+	//to pull rare loot
+	//# connections = weighted draw
+	public static Lootbox biasedBox(double money, Player buyer) {
+		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		double diff = (net.getInDegree(favorite) - net.getInDegree(buyer))/100d;				
+		double price = ((buyer.getThreshold() / 100d) * buyer.getMoney());
+		
+		return new Lootbox(price, diff, false);
+		
+	}
+
+
 }

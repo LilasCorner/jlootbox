@@ -101,6 +101,10 @@ public class Player {
 		return purchased;
 	}
 	
+	public DecisionStrategy getStrat() {
+		return decisionStrat;
+	}
+	
 	public int getBuyTime() {
 		return (int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount() - timeSinceLastPurchase);
 	}
@@ -403,9 +407,7 @@ public class Player {
 		
 		Player otherPlayer = (Player) players.get(index);
 		Object obj = players.get(index);
-
 		
-		//compare own lootbox to player near us to see how we're doing
 		compare(otherPlayer);		
 				
 	}
@@ -452,7 +454,6 @@ public class Player {
 		
 		Context <Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		Deque<Lootbox> otherLoot = otherPlayer.getHist();
 		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
 
 		double ownAvg = avgHistValue();
@@ -486,20 +487,7 @@ public class Player {
 
 	
 
-	/** 
-	 * manipulates a player's current purchase. Other manipulations are
-	 * schedule based, and are called based on the time passed
-	 */
-	private void manipulate() {
-		switch(manip) {
-			case BIAS_BOX:
-				biasedBox();
-				break;
-			case FAV_PLAYER:
-				favPlayer();
-				break;
-		}
-	}
+
 	
 	
 	// give players a free box every 10 ticks
@@ -526,61 +514,6 @@ public class Player {
 	}
 	
 	
-	//node with most in-degrees(most popular) gets consistently better
-	//luck than regular players
-	public void favPlayer() {
-		
-		if (favorite == this) { //don't call this method for every agent, only fav player
-			Lootbox biasLoot = null;
-		
-			if(decisionStrat == DecisionStrategy.PRICE) {
-				double price =  ((buyThreshold / 100d) * getMoney());
-				biasLoot = new Lootbox(price, 0, true);
-
-			}
-			else {
-				biasLoot = new Lootbox(0, 0, true);
-			}
-			
-			addBox(favorite, biasLoot);
-		}
-		else {
-			buyNewLootbox();
-		}
-		
-	}
-	
-
-	//better connected a node is, more likely it is
-	//to pull rare loot
-	//# connections = weighted draw
-	public void biasedBox() {
-		List<Object> players = new ArrayList<Object>();
-		Context <Object> context = ContextUtils.getContext(this);
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
-
-		double diff = (net.getInDegree(favorite) - net.getInDegree(this))/100d;	
-		Lootbox biasLoot = null;
-		
-		if(decisionStrat == DecisionStrategy.PRICE) {
-			
-			double price = ((buyThreshold / 100d) * getMoney());
-			biasLoot = new Lootbox(price, diff, false);
-			System.out.println(price + " " + diff + " " + biasLoot.getRarity());
-
-		}
-		else {
-			
-			biasLoot = new Lootbox(0, diff, false);
-		
-		}
-				
-		
-		addBox(this, biasLoot);
-		
-	}
-
-	
 	@ScheduledMethod(start=0.9, interval=1)
 	public void clearFavorite() {
 		favorite = null;
@@ -594,14 +527,12 @@ public class Player {
 	public void findFavorite() {
 		if(favorite == null) {
 			
-			List<Object> players = new ArrayList<Object>();
 			List<Object> favorites = new ArrayList<Object>();
 			Context <Object> context = ContextUtils.getContext(this);
 			Network<Object> net = (Network<Object>)context.getProjection("player network");
 			
 			Object fav = this;
 			int favNodes =0;
-			int count = 0;
 			
 			//find most popular player
 			for (Object obj : net.getNodes()) {
@@ -651,13 +582,9 @@ public class Player {
 			purchased = true;
 			
 			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
+		
+			newLoot = buyNewLootbox();
 			
-			if(manip == Manipulate.BIAS_BOX || manip == Manipulate.FAV_PLAYER) {
-				manipulate(); 
-			}
-			else {
-				buyNewLootbox();
-			}
 			
 			if(dump) {
 				infoDump(true);
