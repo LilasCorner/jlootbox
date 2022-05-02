@@ -78,22 +78,31 @@ public class Platform {
 				favorites.clear();
 				fav =  obj;
 				favNodes = net.getInDegree(fav);
+				System.out.println("NodeCount:" + favNodes);
+
 			}
 			
-			if (net.getInDegree(obj) == favNodes){
+			if (net.getInDegree(obj) == favNodes && obj != fav){
 				favorites.add(obj);
 			}
 		}
 		
+		System.out.println("Current Fav:" + fav);
+		System.out.println("Opponent array: " + favorites);
+		
 		if(favorites.size() > 0) {
-			for (Object obj : net.getNodes()) {
+			for (Object obj : favorites) {
 				Player player = (Player) obj;
 				Player favorite = (Player) fav;
 
 				if( player.avgHistValue() > favorite.avgHistValue()) {
+					System.out.println("Opponent Up!");
+					System.out.println("Opp-"+ player + ": " + player.avgHistValue() + "\nFav-" + fav + ": " + favorite.avgHistValue());
 					fav = obj;
 				}
 			}
+			
+			System.out.println("New Fav:" + fav);
 		}
 		
 		
