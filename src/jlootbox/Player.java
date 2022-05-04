@@ -41,7 +41,7 @@ public class Player {
 	
 	public static Manipulate manip;
 	private static int changeRate = 1; 
-	private static int count = 1;
+	private static int count = 0;
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
 	private static int memorySize = 5;
@@ -69,7 +69,6 @@ public class Player {
 		this.id = ++count;
 		
 		decisionStrat = Enum.valueOf(Player.DecisionStrategy.class, strat); 
-
 		
 		//setting player up with free lootbox so hist.size > 1
 		newLoot = new Lootbox();
@@ -236,7 +235,7 @@ public class Player {
 		return Platform.offerLootbox(((buyThreshold / 100d) * getMoney()), this);
 	}
 	
-	protected Lootbox giveFreeBox() {
+	protected Lootbox getFreeBox() {
 		return Platform.offerLootbox(0, this);
 	}
 	
@@ -470,32 +469,21 @@ public class Player {
 		}
 			
 	}
-
-	
-
-
 	
 	
-	// give players a free box every 10 ticks
-	// out of pure generosity :-)
-	@ScheduledMethod(start=15, interval=20)
-	public void freeBox() {
-		if(manip == Manipulate.FREE_BOX) {
-			giveFreeBox();
-			updateThreshold();
+	/**platformCheck()
+	 * check if platform has events/manipulations 
+	 * going on
+	 */
+	public void platformCheck() {
+		
+		if(Platform.limEd) {
+			setThreshold(getThreshold() + 1); 
 		}
-
-	}
-	
-	
-	//every 50 ticks, start limited edition event
-	//TODO: closer timer gets to end of event, more likely
-	//players are to buy? 
-	@ScheduledMethod(start=50, interval=50)
-	public void limEdition() {
-		if(manip == Manipulate.LIM_ED) {
-			setThreshold(getThreshold() * 2); 
-			
+		
+		if(Platform.freeBox) {
+			getFreeBox();
+			updateThreshold();
 		}
 		
 	}
@@ -505,7 +493,7 @@ public class Player {
 	 * Every tick, determine if player wants to buy a new box, 
 	 * and if that new box + or - their likelyhood to buy in future
 	 */
-	@ScheduledMethod(start=1.1, interval=1)
+	@ScheduledMethod(start=1, interval=1)
 	public void step() {
 
 //		Below is how to keep model updated with params from context mid-run
@@ -518,6 +506,8 @@ public class Player {
 			
 			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
 		
+			platformCheck();
+			
 			newLoot = buyNewLootbox();
 			
 			
@@ -535,7 +525,9 @@ public class Player {
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
 			purchased = false;
-						
+			
+			platformCheck();
+			
 			askOtherPlayer();
 			
 			if(dump) {

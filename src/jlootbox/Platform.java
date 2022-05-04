@@ -28,7 +28,9 @@ public class Platform {
 	
 	public static Manipulate manip;
 	public static Player favorite = null;
-	private static Context <Object> context ;
+	public static Boolean limEd = false;
+	public static Boolean freeBox = false;
+	private static Context <Object> context;
 	
 	public static void init(String manipulation, Context <Object> newContext) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 
@@ -37,7 +39,7 @@ public class Platform {
 	
 	
 	public static Lootbox offerLootbox(double money, Player buyer) {
-		
+
 		//check manipulations
 		switch(manip) {
 			case BIAS_BOX:
@@ -58,6 +60,37 @@ public class Platform {
 		return new Lootbox(money);
 	}
 	
+	@ScheduledMethod(start=50, interval=50)
+	public static void limEdOn() {
+		if(manip == Manipulate.LIM_ED) {
+			limEd = true;
+		}
+	}
+	
+	@ScheduledMethod(start=60, interval=50)
+	public static void limEdOff() {
+		if(manip == Manipulate.LIM_ED) {
+			limEd = false;
+		}
+	}
+	
+	// give players a free box every 10 ticks
+	// out of pure generosity :-)
+	@ScheduledMethod(start=15, interval=20)
+	public static void freeBoxOn() {
+		if(manip == Manipulate.FREE_BOX) {
+			freeBox = true;
+		}
+	}
+	
+	// give players a free box every 10 ticks
+	// out of pure generosity :-)
+	@ScheduledMethod(start=16, interval=20)
+	public static void freeBoxOff() {
+		if(manip == Manipulate.FREE_BOX) {
+			freeBox = false;
+		}
+	}
 	
 	/**findFavorite()
 	 * loops through all players in the network to find
@@ -78,7 +111,7 @@ public class Platform {
 				favorites.clear();
 				fav =  obj;
 				favNodes = net.getInDegree(fav);
-				System.out.println("NodeCount:" + favNodes);
+//				System.out.println("NodeCount:" + favNodes);
 
 			}
 			
@@ -87,22 +120,22 @@ public class Platform {
 			}
 		}
 		
-		System.out.println("Current Fav:" + fav);
-		System.out.println("Opponent array: " + favorites);
-		
+//		System.out.println("Current Fav:" + fav);
+//		System.out.println("Opponent array: " + favorites);
+//		
 		if(favorites.size() > 0) {
 			for (Object obj : favorites) {
 				Player player = (Player) obj;
 				Player favorite = (Player) fav;
 
 				if( player.avgHistValue() > favorite.avgHistValue()) {
-					System.out.println("Opponent Up!");
-					System.out.println("Opp-"+ player + ": " + player.avgHistValue() + "\nFav-" + fav + ": " + favorite.avgHistValue());
+//					System.out.println("Opponent Up!");
+//					System.out.println("Opp-"+ player + ": " + player.avgHistValue() + "\nFav-" + fav + ": " + favorite.avgHistValue());
 					fav = obj;
 				}
 			}
 			
-			System.out.println("New Fav:" + fav);
+//			System.out.println("New Fav:" + fav);
 		}
 		
 		
