@@ -32,6 +32,28 @@ import repast.simphony.space.grid.WrapAroundBorders;
  */
 public class JLootboxBuilder implements ContextBuilder<Object> {
 
+	public void validate(double value, double lowerBound, double upperBound, String msg) {
+		
+		//Lattice
+		if(lowerBound == -1 && upperBound == -1) {
+			int sqrt = (int) Math.sqrt(value);
+		
+			if((sqrt * sqrt) != value) {
+				throw new IllegalArgumentException(msg);
+			}
+		} //NWDegree
+		else if(lowerBound == 0 && upperBound == 0) {
+			
+			if(value % 2 != 0) {
+			
+				throw new IllegalArgumentException(msg);
+			}
+		} //Everything else
+		else if(value < lowerBound || value > upperBound) {
+			throw new IllegalArgumentException(msg);
+		}
+	}
+	
 	@Override
 	public Context build(Context<Object> context) {
 
@@ -44,7 +66,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		int stopTime = params.getInteger("stopTime");
 		int playerCount = params.getInteger("numPlayers");
 		int memorySize = params.getInteger("memorySize");
-		int sqrt = (int) Math.sqrt(playerCount);
+		
 
 		//network params
 		double nwbeta = params.getDouble("NWBeta"); //Watts beta: probability of edge being rewired. Must be btwn 0-1
@@ -57,22 +79,12 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 		
 		//validation method here
-		
-		//TODO: this is so ugly ;-; switch statement perhaps
-		if(nwbeta > 1 || nwbeta < 0) {
-			throw new IllegalArgumentException("NWBeta must be between 0 and 1. Please re-initialize");
-		}
-		if(nwdegree % 2 != 0) {
-			throw new IllegalArgumentException("NWDegree must be an even number. Please re-initialize");
-		}
-		if(nrdensity > 1 || nrdensity < 0) {
-			throw new IllegalArgumentException("NRDensity must be between 0 and 1. Please re-initialize");
-		}
-		if(playerCount < 10) {
-			throw new IllegalArgumentException("Please re-initialize the model with > 10 players to create the network.");
-		}
-		if(network.equals("LATTICE") && (sqrt * sqrt) != playerCount) {
-			throw new IllegalArgumentException("For Lattice networks, player # must be a perfect square. Please re-initialize");
+		validate(nwbeta, 0, 1, "NWBeta must be between 0 and 1. Please re-initialize");
+		validate(nwdegree, 0, 0, "NWDegree must be an even number. Please re-initialize");
+		validate(nrdensity, 0, 1,"NRDensity must be between 0 and 1. Please re-initialize");
+		validate(playerCount, 10, 99999, "Please re-initialize the model with > 10 players to create the network." );
+		if(network.equals("LATTICE")) {
+			validate (playerCount, -1, -1, "For Lattice networks, player # must be a perfect square. Please re-initialize");
 		}
 		
 		
