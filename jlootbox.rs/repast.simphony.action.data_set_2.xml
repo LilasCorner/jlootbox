@@ -1,5 +1,5 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.9.0">
-  <name>PurchaseFrequencySet</name>
+  <name>MoneySpentSet</name>
   <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
@@ -11,16 +11,16 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1825168331</hashCode>
+    <hashCode>1415663724</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>timeSinceLastPurchase</string>
+      <string>moneySpent</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>timeSinceLastPurchase</id>
+        <id>moneySpent</id>
         <className>jlootbox.Player</className>
-        <methodName>getBuyTime</methodName>
+        <methodName>moneySpent</methodName>
         <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>

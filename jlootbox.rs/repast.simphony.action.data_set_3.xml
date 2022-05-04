@@ -1,7 +1,6 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.9.0">
-  <name>pivotAttempt</name>
-  <type>NON_AGGREGATE</type>
-  <sourceType>jlootbox.Player</sourceType>
+  <name>PurchaseFrequencySet</name>
+  <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>false</inclBatchRun>
   <inclRandomSeed>false</inclRandomSeed>
@@ -12,24 +11,17 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1003203344</hashCode>
+    <hashCode>1825168331</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>Threshold</string>
+      <string>timeSinceLastPurchase</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Threshold</id>
+        <id>timeSinceLastPurchase</id>
         <className>jlootbox.Player</className>
-        <methodName>getThreshold</methodName>
-      </repast.simphony.data2.engine.MethodDataSourceDefinition>
-    </entry>
-    <entry>
-      <string>toString</string>
-      <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>toString</id>
-        <className>jlootbox.Player</className>
-        <methodName>toString</methodName>
+        <methodName>getBuyTime</methodName>
+        <aggType>MEAN</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
   </methodDataSources>

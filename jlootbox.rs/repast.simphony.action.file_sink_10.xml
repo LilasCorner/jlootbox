@@ -1,12 +1,13 @@
 <repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.9.0">
-  <name>MoneySpentSink</name>
-  <dataSet>MoneySpentSet</dataSet>
+  <name>IndividualLuckSink</name>
+  <dataSet>pivotLuck</dataSet>
   <delimiter>,</delimiter>
   <format>TABULAR</format>
   <sourceIds class="linked-hash-set">
     <string>tick</string>
-    <string>moneySpent</string>
+    <string>toString</string>
+    <string>avgHistValue</string>
   </sourceIds>
-  <fileName>moneySpentOutput.txt</fileName>
+  <fileName>IndividualLuckOutput.txt</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>
