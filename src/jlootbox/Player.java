@@ -49,7 +49,6 @@ public class Player {
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
 	private static Boolean dump = false; //DEBUGGING MODE
-	public static Player favorite = null;
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -494,58 +493,6 @@ public class Player {
 		}
 		
 	}
-	
-	
-	@ScheduledMethod(start=0.9, interval=1)
-	public void clearFavorite() {
-		favorite = null;
-	}
-	
-	/**findFavorite()
-	 * loops through all players in the network to find
-	 * the player with the most in-degrees
-	 */
-	@ScheduledMethod(start=1.0, interval=1)
-	public void findFavorite() {
-		if(favorite == null) {
-			
-			List<Object> favorites = new ArrayList<Object>();
-			Context <Object> context = ContextUtils.getContext(this);
-			Network<Object> net = (Network<Object>)context.getProjection("player network");
-			
-			Object fav = this;
-			int favNodes =0;
-			
-			//find most popular player
-			for (Object obj : net.getNodes()) {
-				if(net.getInDegree(obj) > favNodes) {
-					favorites.clear();
-					fav =  obj;
-					favNodes = net.getInDegree(fav);
-				}
-				
-				if (net.getInDegree(obj) == favNodes){
-					favorites.add(obj);
-				}
-			}
-			
-			if(favorites.size() > 0) {
-				for (Object obj : net.getNodes()) {
-					Player player = (Player) obj;
-					Player favorite = (Player) fav;
-
-					if( player.avgHistValue() > favorite.avgHistValue()) {
-						fav = obj;
-					}
-				}
-			}
-			
-			
-			favorite = (Player)fav;
-		}
-	}
-	
-	
 	
 	
 	/** step()

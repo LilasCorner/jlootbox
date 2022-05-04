@@ -25,7 +25,7 @@ public class PlayerStyle extends DefaultStyleOGL2D {
     public Color getColor(Object agent) {
         Player player = (Player)agent;
 
-        if(player == Player.favorite && Player.manip == Manipulate.FAV_PLAYER) {
+        if(player == Platform.favorite && Player.manip == Manipulate.FAV_PLAYER) {
         	return Color.green;
         }
         
