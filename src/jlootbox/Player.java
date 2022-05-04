@@ -49,7 +49,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = false; //DEBUGGING MODE
+	private static Boolean dump = true; //DEBUGGING MODE
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -343,20 +343,18 @@ public class Player {
 
 	protected void infoDump(Boolean buy) {
 		
-		System.out.println(decisionStrat);
 		
 		if(buy) {
-			System.out.println("++++BUY++++");
-			System.out.println("Old Loot Val: " + hist.peek().getRarity());
-			System.out.println("New Loot Val: " + newLoot.getRarity());
-			if(decisionStrat == DecisionStrategy.PRICE) {
-				System.out.println("Price: " + newLoot.getPrice());
-			}
-			System.out.println("BuyThreshold: " + getThreshold());
+			System.out.println(this.toString() + "- BUY");
+			System.out.println(this.toString() + "- Old Loot Val: " + hist.peek().getRarity());
+			System.out.println(this.toString() + "- New Loot Val: " + newLoot.getRarity());
+			System.out.println(this.toString() + "- Price: " + newLoot.getPrice());
+			System.out.println(this.toString() + "- BuyThreshold: " + getThreshold());
 
 		}
 		else {
-			System.out.println("----NO BUY----");
+			System.out.println(this.toString() + "- NO BUY");
+			System.out.println(this.toString() + "- TimeSincePurchase: " + this.getBuyTime());
 		}
 
 	}
@@ -444,18 +442,19 @@ public class Player {
 		double ownAvg = avgHistValue();
 		double otherAvg = otherPlayer.avgHistValue();
 		if(otherAvg > ownAvg) {
-			
+
 			//stronger friendship = stronger influence 
 			for(double i = 0; i < friendEdge.getWeight(); i++) {
 				addThreshold();
 			}
 
-			
+			System.out.println(this.toString() + "- increasing my threshold to "+ this.getThreshold() +" after comparing to player "+ otherPlayer.toString());
+
 			friendEdge.setWeight(friendEdge.getWeight() + changeRate); 
 			
 		}
 		else if (otherAvg < ownAvg) {
-			
+			System.out.println(this.toString() + "- reducing my threshold to "+ this.getThreshold() +" after comparing to player "+ otherPlayer.toString());
 			//stronger friendship = stronger influence 
 			for(double i = 0; i < friendEdge.getWeight(); i++) {
 				subtractThreshold();
