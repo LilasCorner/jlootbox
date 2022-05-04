@@ -41,6 +41,7 @@ public class Player {
 	
 	public static Manipulate manip;
 	private static int changeRate = 1; 
+	private static int count = 1;
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
 	private static int memorySize = 5;
@@ -52,6 +53,8 @@ public class Player {
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
+	private int id;
+	
 	private double availableMoney;  
 	private int buyThreshold;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
@@ -63,7 +66,7 @@ public class Player {
 	public Player(int availMoney, int buy, String strat) {
 		this.availableMoney = availMoney;
 		this.buyThreshold = buy;
-
+		this.id = ++count;
 		
 		decisionStrat = Enum.valueOf(Player.DecisionStrategy.class, strat); 
 
@@ -73,7 +76,10 @@ public class Player {
 		hist.addLast(newLoot); 
 	}
 	
-
+	public String toString() {
+		return ""+id; 
+	}
+	
 	public static void init(String manipulation, Boolean ties) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
 		breakTies = ties;
