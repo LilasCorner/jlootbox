@@ -43,6 +43,7 @@ public class Player {
 	private static int changeRate = 1; 
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
+	private static int memorySize = 5;
 	private static Boolean breakTies = false;
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
@@ -214,7 +215,7 @@ public class Player {
 		
 		hist.addLast(newLoot);
 		
-		if(hist.size() > 5) { 
+		if(hist.size() > memorySize) { 
 			hist.removeFirst();
 		}
 	}
@@ -489,6 +490,7 @@ public class Player {
 	public void limEdition() {
 		if(manip == Manipulate.LIM_ED) {
 			setThreshold(getThreshold() * 2); 
+			
 		}
 		
 	}

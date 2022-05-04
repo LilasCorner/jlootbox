@@ -43,6 +43,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		Boolean breakTies = params.getBoolean("breakTies");
 		int stopTime = params.getInteger("stopTime");
 		int playerCount = params.getInteger("numPlayers");
+		int memorySize = params.getInteger("memorySize");
 		int sqrt = (int) Math.sqrt(playerCount);
 
 		//network params
@@ -54,6 +55,8 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		Boolean nrsymm = params.getBoolean("NRSym"); //Random symmetry: generated edges symmetrical/bidirectional t/f
 		Boolean nltoroid = params.getBoolean("NLToroidal"); //Lattice Toroidal: whether lattice is toroidal t/f
 		
+		
+		//validation method here
 		
 		//TODO: this is so ugly ;-; switch statement perhaps
 		if(nwbeta > 1 || nwbeta < 0) {

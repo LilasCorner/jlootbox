@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
-					<parameter name="NRLoop" displayName="NRLoop" type="boolean" 
+
+				<parameter name="NLToroidal" displayName="NLToroidal" type="boolean" 
+						defaultValue="true" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
+												values="true false "
+											/>
+				<parameter name="NRLoop" displayName="NRLoop" type="boolean" 
 						defaultValue="false" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
-				<parameter name="manip" displayName="Manipulation" type="java.lang.String" 
+				<parameter name="manip" displayName="Manipulation" type="java.lang.String"  displayOrder="3"
 						defaultValue="NONE" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
@@ -18,18 +25,18 @@
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
-				<parameter name="numPlayers" displayName="# Players" type="int" 
+				<parameter name="numPlayers" displayName="# Players" type="int" displayOrder="1"
 						defaultValue="10" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
-				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" 
+				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" displayOrder="2" 
 						defaultValue="COIN_FLIP" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="ALWAYS_BUY COIN_FLIP PRICE "
 											/>
-				<parameter name="network" displayName="Network Type" type="java.lang.String" 
+				<parameter name="network" displayName="Network Type" type="java.lang.String" displayOrder="4"
 						defaultValue="WATTS" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
@@ -51,7 +58,7 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
-				<parameter name="stopTime" displayName="Stop Time" type="int" 
+				<parameter name="stopTime" displayName="Stop Time" type="int" displayOrder="6"
 						defaultValue="500" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
@@ -66,7 +73,7 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 											/>
-				<parameter name="breakTies" displayName="Break Network Ties" type="boolean" 
+				<parameter name="breakTies" displayName="Break Network Ties" type="boolean" displayOrder="5"
 						defaultValue="true" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"

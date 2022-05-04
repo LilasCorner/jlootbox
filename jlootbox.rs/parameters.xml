@@ -17,7 +17,8 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="NONE LIM_ED FAV_PLAYER FREE_BOX BIAS_BOX "
-											/>
+												displayOrder="4"
+					/>
 				<parameter name="NWSym" displayName="NWSym" type="boolean" 
 						defaultValue="true" 
 						isReadOnly="false" 
@@ -28,19 +29,22 @@
 						defaultValue="10" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
+												displayOrder="1.0"
+					/>
 				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" 
 						defaultValue="COIN_FLIP" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="ALWAYS_BUY COIN_FLIP PRICE "
-											/>
+												displayOrder="3"
+					/>
 				<parameter name="network" displayName="Network Type" type="java.lang.String" 
 						defaultValue="WATTS" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="WATTS RANDOM LATTICE "
-											/>
+												displayOrder="5"
+					/>
 				<parameter name="randomSeed" displayName="Default Random Seed" type="int" 
 						defaultValue="__NULL__"
 						isReadOnly="false" 
@@ -52,6 +56,11 @@
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
+				<parameter name="memorySize" displayName="Player Memory Size" type="int" displayOrder="2"
+						defaultValue="5" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
 				<parameter name="NWDegree" displayName="NWDegree" type="int" 
 						defaultValue="4" 
 						isReadOnly="false" 
@@ -61,7 +70,8 @@
 						defaultValue="500" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
+												displayOrder="7"
+					/>
 				<parameter name="NWBeta" displayName="NWBeta" type="double" 
 						defaultValue="0.3" 
 						isReadOnly="false" 
@@ -77,7 +87,8 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
-											/>
+												displayOrder="6"
+					/>
 		</parameters>
 
 

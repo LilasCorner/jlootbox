@@ -1,12 +1,12 @@
 <repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.9.0">
-  <name>PurchaseFreqSink</name>
-  <dataSet>PurchaseFrequencySet</dataSet>
+  <name>ThresholdSink</name>
+  <dataSet>ThresholdSet</dataSet>
   <delimiter>,</delimiter>
   <format>TABULAR</format>
   <sourceIds class="linked-hash-set">
-    <string>timeSinceLastPurchase</string>
+    <string>getThreshold</string>
     <string>tick</string>
   </sourceIds>
-  <fileName>PurchaseFreqOutput.txt</fileName>
+  <fileName>ThresholdOutput.txt</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>
