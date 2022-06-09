@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
-
-				<parameter name="NLToroidal" displayName="NLToroidal" type="boolean" 
+					<parameter name="NLToroidal" displayName="NLToroidal" type="boolean" 
 						defaultValue="true" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
@@ -13,35 +12,39 @@
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
-				<parameter name="manip" displayName="Manipulation" type="java.lang.String"  displayOrder="3"
+				<parameter name="manip" displayName="Manipulation" type="java.lang.String" 
 						defaultValue="NONE" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="NONE LIM_ED FAV_PLAYER FREE_BOX BIAS_BOX "
-											/>
+												displayOrder="4.0"
+					/>
 				<parameter name="NWSym" displayName="NWSym" type="boolean" 
 						defaultValue="true" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
-				<parameter name="numPlayers" displayName="# Players" type="int" displayOrder="1"
+				<parameter name="numPlayers" displayName="# Players" type="int" 
 						defaultValue="10" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
-				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" displayOrder="2" 
+												displayOrder="1.0"
+					/>
+				<parameter name="strat" displayName="Decision Strategy" type="java.lang.String" 
 						defaultValue="COIN_FLIP" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="ALWAYS_BUY COIN_FLIP PRICE "
-											/>
-				<parameter name="network" displayName="Network Type" type="java.lang.String" displayOrder="4"
+												displayOrder="3.0"
+					/>
+				<parameter name="network" displayName="Network Type" type="java.lang.String" 
 						defaultValue="WATTS" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="WATTS RANDOM LATTICE "
-											/>
+												displayOrder="5.0"
+					/>
 				<parameter name="randomSeed" displayName="Default Random Seed" type="int" 
 						defaultValue="__NULL__"
 						isReadOnly="false" 
@@ -53,16 +56,23 @@
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
+				<parameter name="memorySize" displayName="Player Memory Size" type="int" 
+						defaultValue="5" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+												displayOrder="2.0"
+					/>
 				<parameter name="NWDegree" displayName="NWDegree" type="int" 
 						defaultValue="4" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
-				<parameter name="stopTime" displayName="Stop Time" type="int" displayOrder="6"
+				<parameter name="stopTime" displayName="Stop Time" type="int" 
 						defaultValue="500" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
+												displayOrder="7.0"
+					/>
 				<parameter name="NWBeta" displayName="NWBeta" type="double" 
 						defaultValue="0.3" 
 						isReadOnly="false" 
@@ -73,12 +83,13 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 											/>
-				<parameter name="breakTies" displayName="Break Network Ties" type="boolean" displayOrder="5"
+				<parameter name="breakTies" displayName="Break Network Ties" type="boolean" 
 						defaultValue="true" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
-											/>
+												displayOrder="6.0"
+					/>
 		</parameters>
 
 

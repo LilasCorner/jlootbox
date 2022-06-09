@@ -173,11 +173,14 @@ public class Player {
 	public boolean priceHistValue() {
 		
 		//buy again if we've been getting good return on investment
+
 		if(avgHistValue() >= avgHistPrice()) {
 			return true;
 		}
 		else {//else it's up to (small)chance
-			if(coinFlip.nextInt() + changeRate <= buyThreshold) {
+			System.out.println(this.toString() + "- value " + coinFlip.nextInt() + changeRate);
+			System.out.println(this.toString() + "- threshold " + buyThreshold);
+			if(coinFlip.nextInt() <= buyThreshold) {
 				return true;
 			}
 			return false;
@@ -523,11 +526,14 @@ public class Player {
 		else {
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
-			purchased = false;
+			purchased = false; 
 			
 			platformCheck();
 			
-			askOtherPlayer();
+			if(Platform.networkPresent) {
+				askOtherPlayer();
+			}
+			
 			
 			if(dump) {
 				infoDump(false);

@@ -30,30 +30,35 @@ public class Platform {
 	public static Player favorite = null;
 	public static Boolean limEd = false;
 	public static Boolean freeBox = false;
+	public static Boolean networkPresent = false; 
 	private static Context <Object> context;
 	
-	public static void init(String manipulation, Context <Object> newContext) {
+	public static void init(String manipulation, Context <Object> newContext, Boolean noNet) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 
 		context = newContext;
+		networkPresent = noNet;
 	}
 	
 	
 	public static Lootbox offerLootbox(double money, Player buyer) {
 
 		//check manipulations
-		switch(manip) {
-			case BIAS_BOX:
-				return biasedBox(money, buyer);
-			
-			case FAV_PLAYER:
-				if (favorite == buyer) {
-					return favPlayer(money, buyer);
-				}
-				break;
+		if(networkPresent) {
+			switch(manip) {
+				case BIAS_BOX:
+					return biasedBox(money, buyer);
 				
-			default:
-				break;
+				case FAV_PLAYER:
+					if (favorite == buyer) {
+						return favPlayer(money, buyer);
+					}
+					break;
+					
+				default:
+					break;
+			}
 		}
+
 			
 		
 		//creating lootbox
@@ -98,6 +103,10 @@ public class Platform {
 	 */
 	@ScheduledMethod(start=0.95, interval=1)
 	public static void findFavorite() {
+		
+		if(!networkPresent) {
+			return;
+		}
 		
 		List<Object> favorites = new ArrayList<Object>();
 		Network<Object> net = (Network<Object>)context.getProjection("player network");

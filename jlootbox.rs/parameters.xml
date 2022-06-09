@@ -17,7 +17,7 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="NONE LIM_ED FAV_PLAYER FREE_BOX BIAS_BOX "
-												displayOrder="4"
+												displayOrder="4.0"
 					/>
 				<parameter name="NWSym" displayName="NWSym" type="boolean" 
 						defaultValue="true" 
@@ -36,14 +36,14 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="ALWAYS_BUY COIN_FLIP PRICE "
-												displayOrder="3"
+												displayOrder="3.0"
 					/>
 				<parameter name="network" displayName="Network Type" type="java.lang.String" 
 						defaultValue="WATTS" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
 												values="WATTS RANDOM LATTICE "
-												displayOrder="5"
+												displayOrder="5.0"
 					/>
 				<parameter name="randomSeed" displayName="Default Random Seed" type="int" 
 						defaultValue="__NULL__"
@@ -56,21 +56,29 @@
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
 											/>
-				<parameter name="memorySize" displayName="Player Memory Size" type="int" displayOrder="2"
+				<parameter name="memorySize" displayName="Player Memory Size" type="int" 
 						defaultValue="5" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-											/>
+												displayOrder="2.0"
+					/>
 				<parameter name="NWDegree" displayName="NWDegree" type="int" 
 						defaultValue="4" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="networkPresent" displayName="Network Present" type="boolean" 
+						defaultValue="true" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
+												values="true false "
+												displayOrder="7.0"
+											/>
 				<parameter name="stopTime" displayName="Stop Time" type="int" 
 						defaultValue="500" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-												displayOrder="7"
+												
 					/>
 				<parameter name="NWBeta" displayName="NWBeta" type="double" 
 						defaultValue="0.3" 
@@ -87,7 +95,7 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
 												values="true false "
-												displayOrder="6"
+												displayOrder="6.0"
 					/>
 		</parameters>
 

@@ -5,32 +5,28 @@ package jlootbox;
 
 
 
+import java.util.ArrayList;
+import java.util.ListIterator;
+
 import repast.simphony.context.Context;
-import java.lang.Math;
-import repast.simphony.context.space.continuous.ContinuousSpaceFactory;
-import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
 import repast.simphony.context.space.graph.Lattice2DGenerator;
 import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.context.space.graph.RandomDensityGenerator;
 import repast.simphony.context.space.graph.WattsBetaSmallWorldGenerator;
-import repast.simphony.context.space.grid.GridFactory;
-import repast.simphony.context.space.grid.GridFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
-import repast.simphony.space.continuous.ContinuousSpace;
-import repast.simphony.space.continuous.NdPoint;
-import repast.simphony.space.continuous.RandomCartesianAdder;
-import repast.simphony.space.grid.Grid;
-import repast.simphony.space.grid.GridBuilderParameters;
-import repast.simphony.space.grid.SimpleGridAdder;
-import repast.simphony.space.grid.WrapAroundBorders;
+import repast.simphony.space.graph.Network;
 
 /**
  * @author Lila Zayed
  *
  */
 public class JLootboxBuilder implements ContextBuilder<Object> {
+	
+	public static int INIT_THRES = 5;
+	public static int INIT_MONEY = 100;
+	
 
 	public void validate(double value, double lowerBound, double upperBound, String msg) {
 		
@@ -63,6 +59,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		String network = params.getString("network");
 		String strat = params.getString("strat");
 		Boolean breakTies = params.getBoolean("breakTies");
+		Boolean networkPresent = params.getBoolean("networkPresent");
 		int stopTime = params.getInteger("stopTime");
 		int playerCount = params.getInteger("numPlayers");
 		int memorySize = params.getInteger("memorySize");
@@ -77,76 +74,91 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		Boolean nrsymm = params.getBoolean("NRSym"); //Random symmetry: generated edges symmetrical/bidirectional t/f
 		Boolean nltoroid = params.getBoolean("NLToroidal"); //Lattice Toroidal: whether lattice is toroidal t/f
 		
+		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
 		
-		//validation method here
-		validate(nwbeta, 0, 1, "NWBeta must be between 0 and 1. Please re-initialize");
-		validate(nwdegree, 0, 0, "NWDegree must be an even number. Please re-initialize");
-		validate(nrdensity, 0, 1,"NRDensity must be between 0 and 1. Please re-initialize");
-		validate(playerCount, 10, 99999, "Please re-initialize the model with > 10 players to create the network." );
-		if(network.equals("LATTICE")) {
-			validate (playerCount, -1, -1, "For Lattice networks, player # must be a perfect square. Please re-initialize");
+		context.setId("jlootbox");
+	
+		if(networkPresent) { 
+			
+			//networks present, validate params
+			validate(nwbeta, 0, 1, "NWBeta must be between 0 and 1. Please re-initialize");
+			validate(nwdegree, 0, 0, "NWDegree must be an even number. Please re-initialize");
+			validate(nrdensity, 0, 1,"NRDensity must be between 0 and 1. Please re-initialize");
+			validate(playerCount, 10, 99999, "Please re-initialize the model with > 10 players to create the network." );
+			if(network.equals("LATTICE")) {
+				validate (playerCount, -1, -1, "For Lattice networks, player # must be a perfect square. Please re-initialize");
+			}
+			
+			//create corresponding network
+			switch(network) {
+				case "WATTS":
+					WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
+							nwdegree, nwsymm);
+					netBuilder.setGenerator(watgen);
+					break;
+				
+				case "RANDOM":
+					RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(nrdensity, 
+							nrloop, nrsymm);
+					netBuilder.setGenerator(randgen);
+					break;
+				
+				case "LATTICE":
+	
+					Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(nltoroid);
+					netBuilder.setGenerator(latgen);
+					
+					break;
+	
+				default:
+					WattsBetaSmallWorldGenerator<Object> defgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
+							nwdegree, nwsymm);
+					netBuilder.setGenerator(defgen);
+			}
+			
 		}
 		
+		netBuilder.buildNetwork();
 		
 		
-		
-		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
-
-		context.setId("jlootbox");
-        
-		int money = 100;
-		int buy = 5;
+		//create players
+		int money = INIT_MONEY;
+		int buy = INIT_THRES;
+		Player tempPlayer;
+		ArrayList<Player> tempList = new ArrayList<Player>();
 		
 		for (int i =0; i < playerCount; i++) {
-			context.add(new Player (money, buy, strat));
+			tempPlayer = new Player (money, buy, strat);
+			tempList.add(tempPlayer);
+			context.add(tempPlayer);
 		}
 		
-		
-		switch(network) {
-			case "WATTS":
-				WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
-						nwdegree, nwsymm);
-				netBuilder.setGenerator(watgen);
-				break;
+		//manually add symmetrical edges
+		if(playerCount > 1 && !networkPresent) {
 			
-			case "RANDOM":
-				RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(nrdensity, 
-						nrloop, nrsymm);
-				netBuilder.setGenerator(randgen);
-				break;
+			Network<Object> net = (Network<Object>)context.getProjection("player network");
+			ListIterator<Player> it = tempList.listIterator();
 			
-			case "LATTICE":
-
-				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(nltoroid);
-				netBuilder.setGenerator(latgen);
-				
-				break;
-
-			default:
-				WattsBetaSmallWorldGenerator<Object> defgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
-						nwdegree, nwsymm);
-				netBuilder.setGenerator(defgen);
-		}
-		
-		boolean keepGoin = true;
-		
-		while(keepGoin) {
-			try {
-				keepGoin = true;
-				netBuilder.buildNetwork();
-				keepGoin = false;
+			Player p1 = it.next();
+			Player p2;
+			
+			while (it.hasNext())
+			{
+			    p2 = it.next();
+			    
+			    // Process p1 and p2
+			    net.addEdge(p1, p2);
+			    net.addEdge(p2, p1);
+			    
+			    // Maintain previous player?
+			    p2 = p1;
 			}
-			catch(Exception e) {
-				//delete all edges in network, mayb loop & delete successors
-				
-				context.add(new Player (money, buy,  strat));
-			}
+			
 		}
-		
 
 		
 		Player.init(manip, breakTies);
-		Platform.init(manip, context);
+		Platform.init(manip, context, networkPresent);
 		RunEnvironment.getInstance().endAt(stopTime);
 		
 		

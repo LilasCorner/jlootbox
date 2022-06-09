@@ -1,5 +1,5 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.9.0">
-  <name>pivotAttempt</name>
+  <name>pivotLuck</name>
   <type>NON_AGGREGATE</type>
   <sourceType>jlootbox.Player</sourceType>
   <inclTick>true</inclTick>
@@ -12,16 +12,16 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1003203344</hashCode>
+    <hashCode>-364543002</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>Threshold</string>
+      <string>avgHistValue</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Threshold</id>
+        <id>avgHistValue</id>
         <className>jlootbox.Player</className>
-        <methodName>getThreshold</methodName>
+        <methodName>avgHistValue</methodName>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
