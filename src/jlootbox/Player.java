@@ -113,7 +113,7 @@ public class Player {
 	}
 	
 	public void setBuyTime(int time) {
-		timeSinceLastPurchase = time;
+		timeSinceLastPurchase = time - 1;
 	}
 	
 	public void setHist(Deque<Lootbox> newHist){
@@ -178,8 +178,7 @@ public class Player {
 			return true;
 		}
 		else {//else it's up to (small)chance
-			System.out.println(this.toString() + "- value " + coinFlip.nextInt() + changeRate);
-			System.out.println(this.toString() + "- threshold " + buyThreshold);
+
 			if(coinFlip.nextInt() <= buyThreshold) {
 				return true;
 			}

@@ -84,7 +84,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			validate(nwbeta, 0, 1, "NWBeta must be between 0 and 1. Please re-initialize");
 			validate(nwdegree, 0, 0, "NWDegree must be an even number. Please re-initialize");
 			validate(nrdensity, 0, 1,"NRDensity must be between 0 and 1. Please re-initialize");
-			validate(playerCount, 10, 99999, "Please re-initialize the model with > 10 players to create the network." );
+			validate(playerCount, 9, 99999, "Please re-initialize the model with > 9 players to create the network." );
 			if(network.equals("LATTICE")) {
 				validate (playerCount, -1, -1, "For Lattice networks, player # must be a perfect square. Please re-initialize");
 			}
@@ -118,7 +118,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			
 		}
 		
-		netBuilder.buildNetwork();
+		
 		
 		
 		//create players
@@ -132,6 +132,8 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			tempList.add(tempPlayer);
 			context.add(tempPlayer);
 		}
+		
+		netBuilder.buildNetwork();
 		
 		//manually add symmetrical edges
 		if(playerCount > 1 && !networkPresent) {
