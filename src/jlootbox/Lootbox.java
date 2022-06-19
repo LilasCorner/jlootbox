@@ -26,7 +26,6 @@ public class Lootbox {
 
 	public static Uniform unigen = RandomHelper.createUniform(0,1);
 
-	private boolean biased = false;
 	private int rarity;
 	private double price; // current value as calculated 
 	

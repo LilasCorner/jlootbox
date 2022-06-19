@@ -40,7 +40,7 @@ public class Player {
 	
 	
 	public static Manipulate manip;
-	private static int changeRate = 1; 
+	private static final int changeRate = 1; 
 	private static int count = 0;
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
@@ -55,7 +55,7 @@ public class Player {
 	private int timeSinceLastPurchase;
 	private int id;
 	
-	private double availableMoney;  
+	private final double  availableMoney;  
 	private int buyThreshold;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
@@ -120,9 +120,9 @@ public class Player {
 		hist = newHist;
 	}
 		
-	public void setMoney(double money) {
-		availableMoney = money;
-	}
+//	public void setMoney(double money) {
+//		availableMoney = money;
+//	}
 	
 	public void setThreshold(int i) {
 		if(i > 10) {
@@ -146,7 +146,9 @@ public class Player {
 		
 	}
 
-
+	public void changeThreshold(int d) {
+		setThreshold(getThreshold() + d);
+	}
 
 
 	/** moneySpent()
@@ -276,28 +278,16 @@ public class Player {
 					}
 						
 					//lower # means better return on investment
-					if (oldVal < newVal) {
-						subtractThreshold();				
+					if (oldVal <= newVal) {
+						changeThreshold( (int) (newVal-oldVal) );
 					}
-					else {
-						addThreshold();
-					}
-		
 				break;
 			}
 	
 			default:{
 				
-			
-					//old box better than new one, less likely to buy
-					if(hist.peek().getRarity() > newLoot.getRarity()) { 
-						subtractThreshold();
-					}
-					else { //new box better than old, more likely to buy
-						addThreshold();
-					}		
-	
-				
+				//old box better than new one, less likely to buy				
+				changeThreshold( (int) newLoot.getRarity() - hist.peek().getRarity() );	
 				
 			}
 			
