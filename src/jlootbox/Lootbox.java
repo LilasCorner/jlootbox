@@ -55,7 +55,10 @@ public class Lootbox {
 		}
 	}
 	
-	
+	 @Override
+    public String toString() {
+        return " " + this.getRarity();
+    }
 
 	
 	public double getPrice() {

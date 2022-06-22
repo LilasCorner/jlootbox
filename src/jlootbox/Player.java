@@ -147,6 +147,7 @@ public class Player {
 	}
 
 	public void changeThreshold(int d) {
+		System.out.println("Change Rate:" + d);
 		setThreshold(getThreshold() + d);
 	}
 
@@ -261,11 +262,11 @@ public class Player {
 					double oldVal;
 					double newVal;
 					
-					if(hist.peek().getPrice() == 0 || hist.peek().getRarity() == 0) {
+					if(hist.peekLast().getPrice() == 0 || hist.peekLast().getRarity() == 0) {
 						oldVal = 0;
 					}
 					else {
-						oldVal =  hist.peek().getPrice()/ hist.peek().getRarity();
+						oldVal =  hist.peekLast().getPrice()/ hist.peekLast().getRarity();
 					}
 				
 					 
@@ -287,7 +288,7 @@ public class Player {
 			default:{
 				
 				//old box better than new one, less likely to buy				
-				changeThreshold( (int) newLoot.getRarity() - hist.peek().getRarity() );	
+				changeThreshold( (int) newLoot.getRarity() - hist.peekLast().getRarity() );	
 				
 			}
 			
@@ -335,10 +336,17 @@ public class Player {
 
 	protected void infoDump(Boolean buy) {
 		
+		 Iterator value = hist.iterator();
+		  
+		 System.out.print("Current Hist:");
+		 while (value.hasNext()) {
+	            System.out.print(value.next().toString());
+	        }
+		 System.out.println("");
 		
 		if(buy) {
 			System.out.println(this.toString() + "- BUY");
-			System.out.println(this.toString() + "- Old Loot Val: " + hist.peek().getRarity());
+			System.out.println(this.toString() + "- Old Loot Val: " + hist.peekLast().getRarity());
 			System.out.println(this.toString() + "- New Loot Val: " + newLoot.getRarity());
 			System.out.println(this.toString() + "- Price: " + newLoot.getPrice());
 			System.out.println(this.toString() + "- BuyThreshold: " + getThreshold());
@@ -490,7 +498,7 @@ public class Player {
 //		Below is how to keep model updated with params from context mid-run
 //		Parameters params = RunEnvironment.getInstance().getParameters();
 
-		
+		 
 		if(decide()) {
 
 			purchased = true;
