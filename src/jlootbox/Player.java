@@ -55,8 +55,8 @@ public class Player {
 	private int timeSinceLastPurchase;
 	private int id;
 	
-	private final double  availableMoney;  
-	private int buyThreshold;
+	private final double availableMoney;  
+	private int buyProb;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
 
@@ -65,7 +65,7 @@ public class Player {
 	//default constructor
 	public Player(int availMoney, int buy, String strat) {
 		this.availableMoney = availMoney;
-		this.buyThreshold = buy;
+		this.buyProb = buy;
 		this.id = ++count;
 		
 		decisionStrat = Enum.valueOf(Player.DecisionStrategy.class, strat); 
@@ -97,7 +97,7 @@ public class Player {
 	}
 	
 	public int getThreshold() {
-		return buyThreshold;
+		return buyProb;
 	}
 	
 	public boolean getPurchased() {
@@ -126,14 +126,15 @@ public class Player {
 	
 	public void setThreshold(int i) {
 		if(i > 10) {
-			buyThreshold = 10;
+			buyProb = 10;
 		}
 		else if(i < 1) {
-			buyThreshold = 1;
+			buyProb = 1;
 		}
 		else {
-			buyThreshold = i;
+			buyProb = i;
 		}
+		System.out.println(this.toString() + "- New Threshold: "+ buyProb);
 	}
 	
 	public void addThreshold() {
@@ -147,7 +148,17 @@ public class Player {
 	}
 
 	public void changeThreshold(int d) {
-		System.out.println("Change Rate:" + d);
+		if(d < 0) {
+			System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);
+		}
+		else if(d == 0) {
+			System.out.println(this.toString() + "- Got the SAME lootbox, no magnitude change");
+
+		}
+		else{
+			System.out.println(this.toString() + "- Got a +GOOD+ lootbox, increasing by magnitude: " + d);
+		}
+
 		setThreshold(getThreshold() + d);
 	}
 
@@ -173,22 +184,23 @@ public class Player {
 	 * we decide to buy again. otherwise no sale
 	 * @return true if cash spent < availableMoney, false for reverse
 	 */
-	public boolean priceHistValue() {
+//	public boolean priceDecision() {
 		
 		//buy again if we've been getting good return on investment
 
-		if(avgHistValue() >= avgHistPrice()) {
-			return true;
-		}
-		else {//else it's up to (small)chance
-
-			if(coinFlip.nextInt() <= buyThreshold) {
-				return true;
-			}
-			return false;
-		}
 		
-	}
+//		if(avgHistValue() >= avgHistPrice()) {
+//			return true;
+//		}
+//		else {//else it's up to (small)chance
+//
+//			if(coinFlip.nextInt() <= buyThreshold) {
+//				return true;
+//			}
+//			return false;
+//		}
+		
+//	}
 	
 	
 	public double avgHistValue() {
@@ -236,9 +248,14 @@ public class Player {
 	 * 
 	 * @return newly generated lootbox newLoot
 	 */
-	protected Lootbox buyNewLootbox() {
-		return Platform.offerLootbox(((buyThreshold / 100d) * getMoney()), this);
+	protected Lootbox buyNewLootbox(double amtSpent) {
+		return Platform.offerLootbox(amtSpent, this);
 	}
+	
+	protected double amtToSpend() {
+		return (buyProb / 100d) * getMoney();
+	}
+	
 	
 	protected Lootbox getFreeBox() {
 		return Platform.offerLootbox(0, this);
@@ -262,12 +279,12 @@ public class Player {
 					double oldVal;
 					double newVal;
 					
-					if(hist.peekLast().getPrice() == 0 || hist.peekLast().getRarity() == 0) {
-						oldVal = 0;
-					}
-					else {
-						oldVal =  hist.peekLast().getPrice()/ hist.peekLast().getRarity();
-					}
+					if(hist.peekLast().getPrice() == 0 || hist.peekLast().getRarity() == 0) { 
+						oldVal = 0; 
+					} 
+					else { 
+						oldVal =  hist.peekLast().getPrice()/ hist.peekLast().getRarity(); 
+					} 
 				
 					 
 					
@@ -279,9 +296,9 @@ public class Player {
 					}
 						
 					//lower # means better return on investment
-					if (oldVal <= newVal) {
-						changeThreshold( (int) (newVal-oldVal) );
-					}
+					
+					changeThreshold( (int) (newVal-oldVal) );
+					
 				break;
 			}
 	
@@ -294,7 +311,7 @@ public class Player {
 			
 		}
 
-		return buyThreshold;
+		return buyProb;
 	}
 	
 	
@@ -305,31 +322,11 @@ public class Player {
 	protected Boolean decide() {
 		
 		switch(decisionStrat) {
-		
-			case ALWAYS_BUY:{ 
-				return true;
-			}
-			
-			case COIN_FLIP:{ 
-				
-				if(coinFlip.nextInt() <= buyThreshold) { 
-					return true;
-				}
-				return false;
-			}
-			
-			case PRICE:{ 
-
-				return priceHistValue();
-			}
-
-			default:{
-				 return false; //impossible
-			}
+			case ALWAYS_BUY: 	return true;
+			case COIN_FLIP: 	return (coinFlip.nextInt() <= buyProb);	
+			case PRICE: 		return (avgHistPrice() <= buyProb ) || (coinFlip.nextInt() <= buyProb); 
+			default: 			return false; //impossible 
 		}
-		
-		
-
 	}
 	
 	
@@ -337,23 +334,23 @@ public class Player {
 	protected void infoDump(Boolean buy) {
 		
 		 Iterator value = hist.iterator();
-		  
-		 System.out.print("Current Hist:");
+		 System.out.println("-------------------");
+		 System.out.print(this.toString() + "- Current Hist:");
 		 while (value.hasNext()) {
 	            System.out.print(value.next().toString());
 	        }
 		 System.out.println("");
-		
+		 System.out.println(this.toString() + "- BuyThreshold: " + getThreshold());
+
 		if(buy) {
-			System.out.println(this.toString() + "- BUY");
+			System.out.println(this.toString() + "- *BUY*");
 			System.out.println(this.toString() + "- Old Loot Val: " + hist.peekLast().getRarity());
 			System.out.println(this.toString() + "- New Loot Val: " + newLoot.getRarity());
 			System.out.println(this.toString() + "- Price: " + newLoot.getPrice());
-			System.out.println(this.toString() + "- BuyThreshold: " + getThreshold());
 
 		}
 		else {
-			System.out.println(this.toString() + "- NO BUY");
+			System.out.println(this.toString() + "- *NO BUY*");
 			System.out.println(this.toString() + "- TimeSincePurchase: " + this.getBuyTime());
 		}
 
@@ -391,7 +388,7 @@ public class Player {
 		
 		Player otherPlayer = (Player) players.get(index);
 		
-		compare(otherPlayer);		
+		compareAndUpdateRelationship(otherPlayer);		
 				
 	}
 	
@@ -433,7 +430,7 @@ public class Player {
 	 * 
 	 * @param otherLoot, lootbox history of another player
 	 */
-	private void compare(Player otherPlayer) {
+	private void compareAndUpdateRelationship(Player otherPlayer) {
 		
 		Context <Object> context = ContextUtils.getContext(this);
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
@@ -441,6 +438,7 @@ public class Player {
 
 		double ownAvg = avgHistValue();
 		double otherAvg = otherPlayer.avgHistValue();
+		
 		if(otherAvg > ownAvg) {
 
 			//stronger friendship = stronger influence 
@@ -497,18 +495,14 @@ public class Player {
 
 //		Below is how to keep model updated with params from context mid-run
 //		Parameters params = RunEnvironment.getInstance().getParameters();
-
-		 
-		if(decide()) {
-
-			purchased = true;
-			
-			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
 		
-			platformCheck();
+		platformCheck();
+		 
+		if(decide()) {	
 			
-			newLoot = buyNewLootbox();
+			double amtToSpend = amtToSpend();
 			
+			newLoot = buyNewLootbox(amtToSpend);
 			
 			if(dump) {
 				infoDump(true);
@@ -518,14 +512,14 @@ public class Player {
 
 			recordNewLootboxInHistory();
 
+			purchased = true;
 			
+			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
 		}		
 		else {
 			//if we didnt buy, we look at other players
 			//and edit buyThreshold accordingly
 			purchased = false; 
-			
-			platformCheck();
 			
 			if(Platform.networkPresent) {
 				askOtherPlayer();

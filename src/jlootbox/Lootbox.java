@@ -3,11 +3,8 @@
  */
 package jlootbox;
 
-import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
 import repast.simphony.random.RandomHelper;
-import repast.simphony.space.continuous.ContinuousSpace;
-import repast.simphony.space.grid.Grid;
 
 /**
  * @author Lila Zayed
