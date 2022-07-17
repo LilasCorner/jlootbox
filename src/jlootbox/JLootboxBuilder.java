@@ -24,7 +24,7 @@ import repast.simphony.space.graph.Network;
  */
 public class JLootboxBuilder implements ContextBuilder<Object> {
 	
-	public static int INIT_THRES = 5;
+	public static double INIT_PROB = 0.5;
 	public static int INIT_MONEY = 100;
 	
 
@@ -123,7 +123,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 		//create players
 		int money = INIT_MONEY;
-		int buy = INIT_THRES;
+		double buy = INIT_PROB;
 		Player tempPlayer;
 		ArrayList<Player> tempList = new ArrayList<Player>();
 		

@@ -40,7 +40,7 @@ public class Player {
 	
 	
 	public static Manipulate manip;
-	private static final int changeRate = 1; 
+	private static final double changeRate = 0.01; 
 	private static int count = 0;
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
@@ -56,14 +56,26 @@ public class Player {
 	private int id;
 	
 	private final double availableMoney;  
-	private int buyProb;
+	private double buyProb;
 	private Deque<Lootbox> hist = new ArrayDeque<Lootbox>();
 	private Lootbox newLoot;
 
+	private static ProbAdjuster q1;
+	private static ProbAdjuster q2;
+	private static ProbAdjuster q3;
+	private static ProbAdjuster q4;
+	
+	static {
+		q1 = new ProbAdjuster(-100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05);
+		q2 = new ProbAdjuster(0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05);
+		q3 = new ProbAdjuster( 0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5);
+		q4 = new ProbAdjuster(-100 , 0, -4, 0, 0.1, 0.05, -0.1, -0.1);
+	}
 	
 	
 	//default constructor
-	public Player(int availMoney, int buy, String strat) {
+	public Player(int availMoney, double buy, String strat) {
+		
 		this.availableMoney = availMoney;
 		this.buyProb = buy;
 		this.id = ++count;
@@ -75,10 +87,27 @@ public class Player {
 		hist.addLast(newLoot); 
 	}
 	
+	public static void main(String[] args) {
+		
+		System.out.println(deltaProbwBoost(4, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println("--------------------------");
+		System.out.println(deltaProbwBoost(3, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println("--------------------------");
+		System.out.println(deltaProbwBoost(2, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println("--------------------------");
+		System.out.println(deltaProbwBoost(1, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println("--------------------------");
+		System.out.println(deltaProbwBoost(0, 0,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+
+	}
+	
+	
+	
 	public String toString() {
 		return ""+id; 
 	}
 	
+	//TODO: could init quadrant info here
 	public static void init(String manipulation, Boolean ties) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
 		breakTies = ties;
@@ -96,7 +125,7 @@ public class Player {
 		return availableMoney;
 	}
 	
-	public int getThreshold() {
+	public double getThreshold() {
 		return buyProb;
 	}
 	
@@ -124,12 +153,12 @@ public class Player {
 //		availableMoney = money;
 //	}
 	
-	public void setThreshold(int i) {
-		if(i > 10) {
-			buyProb = 10;
+	public void setThreshold(double i) {
+		if(i > 1) {
+			buyProb = 1.0;
 		}
-		else if(i < 1) {
-			buyProb = 1;
+		else if(i < 0) {
+			buyProb = 0.0;
 		}
 		else {
 			buyProb = i;
@@ -138,16 +167,18 @@ public class Player {
 	}
 	
 	public void addThreshold() {
-			setThreshold(getThreshold() + changeRate);
-		
+		System.out.println("About to call setThreshold from addThreshold");	
+		setThreshold(getThreshold() + changeRate);
+			
 	}
 	
 	public void subtractThreshold() {
-			setThreshold(getThreshold() - changeRate);
+		System.out.println("About to call setThreshold from subtractThreshold");	
+		setThreshold(getThreshold() - changeRate);
 		
 	}
 
-	public void changeThreshold(int d) {
+	public void changeThreshold(double d) {
 		if(d < 0) {
 			System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);
 		}
@@ -222,9 +253,7 @@ public class Player {
             ownAvg += itr.next().getPrice();
         }
 		
-		ownAvg /= hist.size() ;
-		
-		return ownAvg;
+		return ownAvg /= hist.size() ;
 	}
 	
 	/** recordNewLootboxInHistory()
@@ -271,48 +300,170 @@ public class Player {
 	 * 
 	 * @return int new buyThreshold
 	 */
-	protected int updateThreshold() {
+	protected double updateThreshold() {
+		double priceDiff = newLoot.getPrice() - hist.peekLast().getPrice();
+		double rarityDiff = newLoot.getRarity() - hist.peekLast().getRarity();
+		
 		
 		switch(decisionStrat) {
-			
-			case PRICE:{ 
-					double oldVal;
-					double newVal;
-					
-					if(hist.peekLast().getPrice() == 0 || hist.peekLast().getRarity() == 0) { 
-						oldVal = 0; 
-					} 
-					else { 
-						oldVal =  hist.peekLast().getPrice()/ hist.peekLast().getRarity(); 
-					} 
+			case PRICE:
 				
-					 
-					
-					if(newLoot.getPrice() == 0 || newLoot.getRarity() == 0) {
-						newVal = 0;
-					} 
-					else {
-						newVal = newLoot.getPrice()/newLoot.getRarity();
+				if (priceDiff < 0) {
+					if(rarityDiff < 0) {//fourth quadrant
+						changeThreshold( deltaProb(rarityDiff, priceDiff, -100 , 0, -4, 0, 0.1, 0.05, -0.1, -0.1));
 					}
-						
-					//lower # means better return on investment
+					else {//first quadrant
+						changeThreshold( deltaProb(rarityDiff, priceDiff, -100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+					}
+				}
+				else {
 					
-					changeThreshold( (int) (newVal-oldVal) );
-					
+					if(rarityDiff < 0) { //third quadrant
+						changeThreshold( deltaProb(rarityDiff, priceDiff, 0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5));
+					}
+					else { //second quadrant
+						changeThreshold(deltaProb(rarityDiff, priceDiff, 0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05));
+					}
+				}
 				break;
-			}
-	
-			default:{
-				
-				//old box better than new one, less likely to buy				
-				changeThreshold( (int) newLoot.getRarity() - hist.peekLast().getRarity() );	
-				
-			}
 			
+			default:
+				//old box better than new one, less likely to buy				
+				changeThreshold( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) );	
 		}
 
 		return buyProb;
 	}
+	
+	
+	private static class ProbAdjuster{
+		
+		double slopeForMinRar; 
+		double slopeForMaxRar;
+		double pDiffMin;
+		double pDiffMax;
+		double rDiffMin;
+		double rDiffMax;
+		double zA;
+		double zC;
+
+		
+		public ProbAdjuster(double pDiffMin, double pDiffMax, double rDiffMin, double rDiffMax, double zA, double zB, double zC, double zD) {
+			
+			this.pDiffMin = pDiffMin;
+			this.pDiffMax =  pDiffMax;
+			this.rDiffMin = rDiffMin;
+			this.rDiffMax = rDiffMax;
+			this.zA = zA;
+			this.zC = zC;
+
+			//slope for lower line
+			slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
+
+			//slope for upper line
+			slopeForMaxRar = slopeOf(pDiffMin, pDiffMax, zA, zB);
+
+		}
+	
+	
+	
+		public double getAdjustment(double rarityDiff, double priceDiff) {
+			
+			//how far btwn the two lines we are
+			double rarityScaled = fractionOf(rDiffMin, rDiffMax, rarityDiff);
+			
+			//this is vertical val of raritydiff, figuring out what is the y-intercept at left side of region
+			double zAtMinPrice = zC + (zA - zC) * rarityScaled;//zvalue at left side of bounding box vertically
+			
+			//slope given the actual raritydiff
+			double slope = rarityScaled * (slopeForMaxRar - slopeForMinRar) + slopeForMinRar;
+
+			//final val based on slope and priceDiff
+			return zAtMinPrice + (priceDiff - pDiffMin) * slope;
+
+			
+		}
+	
+		
+		public double getAdjustmentwBoost(double rarityDiff, double priceDiff, double newRarity) {
+			return getAdjustment(rarityDiff, priceDiff) + (newRarity / 5d) * 0.3; 
+		}
+	
+	}
+	
+	
+	
+	
+	protected static double deltaProb(double rarityDiff, double priceDiff, double pDiffMin, double pDiffMax, double rDiffMin, double rDiffMax, double zA, double zB, double zC, double zD) {
+		
+		//how far btwn the two lines we are
+		double rarityScaled = fractionOf(rDiffMin, rDiffMax, rarityDiff);
+		double pFraction = fractionOf(pDiffMin, pDiffMax, priceDiff);
+//		System.out.println("pFraction: " + pFraction);
+
+		
+		//this is vertical val of raritydiff, figuring out what is the y-intercept at left side of region
+		double zAtMinPrice = zC + (zA - zC) * rarityScaled;//zvalue at left side of bounding box vertically
+		System.out.println("zAtMinPrice: " + zAtMinPrice);
+		
+		//slope for lower line
+		double slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
+		System.out.println("slopeForMinRar: " + slopeForMinRar);
+
+		//slope for upper line
+		double slopeForMaxRar = slopeOf(pDiffMin, pDiffMax, zA, zB);
+		System.out.println("slopeForMaxRar: " + slopeForMaxRar);
+
+		//slope given the actual raritydiff
+		double slope = rarityScaled * (slopeForMaxRar - slopeForMinRar) + slopeForMinRar;
+		System.out.println("slope: " + slope);
+
+		//final val based on slope and priceDiff
+		double dProb = zAtMinPrice + (priceDiff - pDiffMin) * slope;
+		System.out.println("dProb: " + dProb);
+
+		return dProb;
+		
+	}
+	
+	
+	protected static double deltaProbwBoost(double rarityDiff, double priceDiff, double newRarity, double pDiffMin, double pDiffMax, double rDiffMin, double rDiffMax, double zA, double zB, double zC, double zD) {
+		
+		//how far btwn the two lines we are
+		double rarityScaled = fractionOf(rDiffMin, rDiffMax, rarityDiff);
+		
+		//this is vertical val of raritydiff, figuring out what is the y-intercept at left side of region
+		double zAtMinPrice = zC + (zA - zC) * rarityScaled;//zvalue at left side of bounding box vertically
+
+		//slope for lower line
+		double slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
+		
+		//slope for upper line
+		double slopeForMaxRar = slopeOf(pDiffMin, pDiffMax, zA, zB);
+		
+		//slope given the actual raritydiff
+		double slope = rarityScaled * (slopeForMaxRar - slopeForMinRar) + slopeForMinRar;
+		
+		//final val based on slope and priceDiff
+		double dProb = zAtMinPrice + (priceDiff - pDiffMin) * slope;
+		dProb += (newRarity / 5d) * 0.3; 
+		
+		return dProb;
+		
+	}
+	
+	
+	//returns slope of line where these are two endpts of line
+	private static double slopeOf(double min, double max, double ymin, double ymax) {
+		return (ymax - ymin)/(max - min);
+	}
+	
+	//how far from beginning line/total distance possible from bottom line to top line
+	private static double fractionOf(double min, double max, double value) {
+		return (value - min)/(max - min);
+	}
+	
+	
 	
 	
 	/** decide()
@@ -439,6 +590,10 @@ public class Player {
 		double ownAvg = avgHistValue();
 		double otherAvg = otherPlayer.avgHistValue();
 		
+		
+		//TODO: calc the amt of change in advance of loop
+		
+		
 		if(otherAvg > ownAvg) {
 
 			//stronger friendship = stronger influence 
@@ -475,7 +630,8 @@ public class Player {
 	public void platformCheck() {
 		
 		if(Platform.limEd) {
-			setThreshold(getThreshold() + 1); 
+			System.out.println("About to call setThreshold from platformCheck");
+			setThreshold(getThreshold() + 0.1); 
 		}
 		
 		if(Platform.freeBox) {
