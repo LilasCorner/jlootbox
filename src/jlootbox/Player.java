@@ -64,6 +64,8 @@ public class Player {
 	private static ProbAdjuster q2;
 	private static ProbAdjuster q3;
 	private static ProbAdjuster q4;
+	private static Context <Object> context;
+	private static Network<Object> net;
 	
 	static {
 		q1 = new ProbAdjuster(-100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05);
@@ -89,15 +91,15 @@ public class Player {
 	
 	public static void main(String[] args) {
 		
-		System.out.println(deltaProbwBoost(4, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println(deltaProbwBoost(2, -50 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(3, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println(deltaProbwBoost(2, -100 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(2, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println(deltaProbwBoost(2, -150 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(1, 0, 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println(deltaProbwBoost(2, -200 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(0, 0,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+		System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 
 	}
 	
@@ -108,9 +110,11 @@ public class Player {
 	}
 	
 	//TODO: could init quadrant info here
-	public static void init(String manipulation, Boolean ties) {
+	public static void init(String manipulation, Boolean ties, Context con) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
 		breakTies = ties;
+		context = con;
+		net = (Network<Object>)context.getProjection("player network");
 	}
 	
 	public Player getPlayer() {
@@ -163,7 +167,6 @@ public class Player {
 		else {
 			buyProb = i;
 		}
-		System.out.println(this.toString() + "- New Threshold: "+ buyProb);
 	}
 	
 	public void addThreshold() {
@@ -179,17 +182,6 @@ public class Player {
 	}
 
 	public void changeThreshold(double d) {
-		if(d < 0) {
-			System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);
-		}
-		else if(d == 0) {
-			System.out.println(this.toString() + "- Got the SAME lootbox, no magnitude change");
-
-		}
-		else{
-			System.out.println(this.toString() + "- Got a +GOOD+ lootbox, increasing by magnitude: " + d);
-		}
-
 		setThreshold(getThreshold() + d);
 	}
 
@@ -282,7 +274,7 @@ public class Player {
 	}
 	
 	protected double amtToSpend() {
-		return (buyProb / 100d) * getMoney();
+		return buyProb  * getMoney();
 	}
 	
 	
@@ -304,34 +296,40 @@ public class Player {
 		double priceDiff = newLoot.getPrice() - hist.peekLast().getPrice();
 		double rarityDiff = newLoot.getRarity() - hist.peekLast().getRarity();
 		
+		double deltaProbb =0; 
 		
 		switch(decisionStrat) {
 			case PRICE:
 				
 				if (priceDiff < 0) {
 					if(rarityDiff < 0) {//fourth quadrant
-						changeThreshold( deltaProb(rarityDiff, priceDiff, -100 , 0, -4, 0, 0.1, 0.05, -0.1, -0.1));
+						deltaProbb =  deltaProb(rarityDiff, priceDiff, -100 , 0, -4, 0, 0.1, 0.05, -0.1, -0.1);
 					}
 					else {//first quadrant
-						changeThreshold( deltaProb(rarityDiff, priceDiff, -100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+						deltaProbb = ( deltaProb(rarityDiff, priceDiff, -100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 					}
 				}
 				else {
 					
 					if(rarityDiff < 0) { //third quadrant
-						changeThreshold( deltaProb(rarityDiff, priceDiff, 0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5));
+						deltaProbb = ( deltaProb(rarityDiff, priceDiff, 0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5));
 					}
 					else { //second quadrant
-						changeThreshold(deltaProb(rarityDiff, priceDiff, 0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05));
+						deltaProbb = (deltaProb(rarityDiff, priceDiff, 0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05));
 					}
 				}
 				break;
 			
 			default:
 				//old box better than new one, less likely to buy				
-				changeThreshold( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) );	
+				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) );	
 		}
+		System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
 
+		changeThreshold(deltaProbb);
+		
+		System.out.println(" to " + this.getThreshold());
+		
 		return buyProb;
 	}
 	
@@ -475,7 +473,12 @@ public class Player {
 		switch(decisionStrat) {
 			case ALWAYS_BUY: 	return true;
 			case COIN_FLIP: 	return (coinFlip.nextInt() <= buyProb);	
-			case PRICE: 		return (avgHistPrice() <= buyProb ) || (coinFlip.nextInt() <= buyProb); 
+			case PRICE: 
+			{		
+				double askingPrice = Math.random() * 100;
+				double adjustedBuyProb = buyProb * (100 - askingPrice) / 50;
+				return (coinFlip.nextInt() <= adjustedBuyProb);
+			} 
 			default: 			return false; //impossible 
 		}
 	}
@@ -491,18 +494,36 @@ public class Player {
 	            System.out.print(value.next().toString());
 	        }
 		 System.out.println("");
-		 System.out.println(this.toString() + "- BuyThreshold: " + getThreshold());
+		 System.out.println(this.toString() + "- BuyProb: " + getThreshold());
 
 		if(buy) {
+			
+			int d = newLoot.getRarity() - hist.peekLast().getRarity();
+			
 			System.out.println(this.toString() + "- *BUY*");
 			System.out.println(this.toString() + "- Old Loot Val: " + hist.peekLast().getRarity());
 			System.out.println(this.toString() + "- New Loot Val: " + newLoot.getRarity());
 			System.out.println(this.toString() + "- Price: " + newLoot.getPrice());
+		 	System.out.println(this.toString() + "- New BuyProb: " + getThreshold());
+			 
+			if(d < 0) {
+				System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);
+			}
+			else if(d == 0) {
+				System.out.println(this.toString() + "- Got the SAME lootbox, no magnitude change");
+
+			}
+			else{
+				System.out.println(this.toString() + "- Got a +GOOD+ lootbox, increasing by magnitude: " + d);
+			}
+
 
 		}
 		else {
 			System.out.println(this.toString() + "- *NO BUY*");
 			System.out.println(this.toString() + "- TimeSincePurchase: " + this.getBuyTime());
+			System.out.println(this.toString() + "- changing my BuyProb to "+ this.getThreshold() +" after comparing to another player ");
+
 		}
 
 	}
@@ -583,32 +604,32 @@ public class Player {
 	 */
 	private void compareAndUpdateRelationship(Player otherPlayer) {
 		
-		Context <Object> context = ContextUtils.getContext(this);
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
+		
 		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
 
 		double ownAvg = avgHistValue();
 		double otherAvg = otherPlayer.avgHistValue();
 		
 		
-		//TODO: calc the amt of change in advance of loop
 		
 		
 		if(otherAvg > ownAvg) {
 
-			//stronger friendship = stronger influence 
+			//TODO: calc the amt of change in advance of loop
+
 			for(double i = 0; i < friendEdge.getWeight(); i++) {
 				addThreshold();
 			}
 
-			System.out.println(this.toString() + "- increasing my threshold to "+ this.getThreshold() +" after comparing to player "+ otherPlayer.toString());
 
 			friendEdge.setWeight(friendEdge.getWeight() + changeRate); 
 			
 		}
 		else if (otherAvg < ownAvg) {
-			System.out.println(this.toString() + "- reducing my threshold to "+ this.getThreshold() +" after comparing to player "+ otherPlayer.toString());
 			//stronger friendship = stronger influence 
+			
+			//TODO: calc the amt of change in advance of loop
+
 			for(double i = 0; i < friendEdge.getWeight(); i++) {
 				subtractThreshold();
 			}
@@ -684,6 +705,7 @@ public class Player {
 			
 			if(dump) {
 				infoDump(false);
+				
 			}
 			
 			

@@ -159,7 +159,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		}
 
 		
-		Player.init(manip, breakTies);
+		Player.init(manip, breakTies, context);
 		Platform.init(manip, context, networkPresent);
 		RunEnvironment.getInstance().endAt(stopTime);
 		
