@@ -322,7 +322,7 @@ public class Player {
 			
 			default:
 				//old box better than new one, less likely to buy				
-				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) );	
+				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) / 100d );	
 		}
 		System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
 
@@ -604,37 +604,23 @@ public class Player {
 	 */
 	private void compareAndUpdateRelationship(Player otherPlayer) {
 		
-		
 		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
-
 		double ownAvg = avgHistValue();
 		double otherAvg = otherPlayer.avgHistValue();
 		
 		
-		
-		
 		if(otherAvg > ownAvg) {
 
-			//TODO: calc the amt of change in advance of loop
+			changeThreshold(friendEdge.getWeight() * .1);
 
-			for(double i = 0; i < friendEdge.getWeight(); i++) {
-				addThreshold();
-			}
-
-
-			friendEdge.setWeight(friendEdge.getWeight() + changeRate); 
+			friendEdge.setWeight(friendEdge.getWeight() + 1); 
 			
 		}
-		else if (otherAvg < ownAvg) {
+		else{
 			//stronger friendship = stronger influence 
+			changeThreshold(-1 * (friendEdge.getWeight() * .1));
 			
-			//TODO: calc the amt of change in advance of loop
-
-			for(double i = 0; i < friendEdge.getWeight(); i++) {
-				subtractThreshold();
-			}
-			
-			friendEdge.setWeight(friendEdge.getWeight() - changeRate); 
+			friendEdge.setWeight(friendEdge.getWeight() - 1); 
 
 			if (friendEdge.getWeight() < 0 && breakTies) {
 				net.removeEdge(friendEdge);
