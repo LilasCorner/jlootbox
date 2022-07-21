@@ -212,9 +212,7 @@ public class Player {
             ownAvg += itr.next().getRarity();
         }
 		
-		ownAvg /= hist.size();
-		
-		return ownAvg;
+		return ownAvg /= hist.size();
 	}
 	
 	public double avgHistPrice() {
@@ -253,7 +251,7 @@ public class Player {
 	}
 	
 	protected double amtToSpend() {
-		return buyProb  * getMoney();
+		return buyProb * getMoney();
 	}
 	
 	
@@ -468,6 +466,7 @@ public class Player {
 		 Iterator value = hist.iterator();
 		 System.out.println("-------------------");
 		 System.out.print(this.toString() + "- Current Hist:");
+		 
 		 while (value.hasNext()) {
 	            System.out.print(value.next().toString());
 	        }
@@ -539,7 +538,6 @@ public class Player {
 	public List<Object> soloPlayer() {
 		
 		List<Object> player = new ArrayList<Object>();
-		//choose random player from that array
 		int index = RandomHelper.nextIntFromTo(0, allPlayers.size() - 1);
 		Player otherPlayer = (Player) allPlayers.get(index);
 		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
@@ -567,16 +565,14 @@ public class Player {
 		
 		
 		if(otherAvg > ownAvg) {
-
+			
 			changeThreshold(friendEdge.getWeight() * .001);
-
 			friendEdge.setWeight(friendEdge.getWeight() + .1); 
 			
 		}
 		else{
-			//stronger friendship = stronger influence 
-			changeThreshold(-1 * (friendEdge.getWeight() * .001));
 			
+			changeThreshold(-1 * (friendEdge.getWeight() * .001));
 			friendEdge.setWeight(friendEdge.getWeight() - .1); 
 
 			if (friendEdge.getWeight() < 0 && breakTies) {
@@ -649,7 +645,6 @@ public class Player {
 				infoDump(false);
 				
 			}
-			
 			
 
 		}
