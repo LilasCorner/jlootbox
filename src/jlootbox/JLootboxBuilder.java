@@ -125,7 +125,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		int money = INIT_MONEY;
 		double buy = INIT_PROB;
 		Player tempPlayer;
-		ArrayList<Player> tempList = new ArrayList<Player>();
+		ArrayList<Object> tempList = new ArrayList<Object>();
 		
 		for (int i =0; i < playerCount; i++) {
 			tempPlayer = new Player (money, buy, strat);
@@ -139,14 +139,14 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		if(playerCount > 1 && !networkPresent) {
 			
 			Network<Object> net = (Network<Object>)context.getProjection("player network");
-			ListIterator<Player> it = tempList.listIterator();
+			ListIterator<Object> it = tempList.listIterator();
 			
-			Player p1 = it.next();
+			Player p1 = (Player) it.next();
 			Player p2;
 			
 			while (it.hasNext())
 			{
-			    p2 = it.next();
+			    p2 = (Player) it.next();
 			    
 			    // Process p1 and p2
 			    net.addEdge(p1, p2);
@@ -159,7 +159,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		}
 
 		
-		Player.init(manip, breakTies, context);
+		Player.init(manip, breakTies, context, tempList);
 		Platform.init(manip, context, networkPresent);
 		RunEnvironment.getInstance().endAt(stopTime);
 		

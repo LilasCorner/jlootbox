@@ -5,6 +5,7 @@ package jlootbox;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +67,7 @@ public class Player {
 	private static ProbAdjuster q4;
 	private static Context <Object> context;
 	private static Network<Object> net;
+	private static List<Object> allPlayers = new ArrayList<Object>();
 	
 	static {
 		q1 = new ProbAdjuster(-100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05);
@@ -110,11 +112,13 @@ public class Player {
 	}
 	
 	//TODO: could init quadrant info here
-	public static void init(String manipulation, Boolean ties, Context con) {
+	public static void init(String manipulation, Boolean ties, Context con, ArrayList<Object> tempList) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
 		breakTies = ties;
 		context = con;
 		net = (Network<Object>)context.getProjection("player network");
+		allPlayers = tempList;
+
 	}
 	
 	public Player getPlayer() {
@@ -199,31 +203,6 @@ public class Player {
 		
 		return 0;
 	}
-
-	
-	/**priceHistValue()
-	 * if we get a good return on our cash investment
-	 * overall ($ spent is < cash we have available), 
-	 * we decide to buy again. otherwise no sale
-	 * @return true if cash spent < availableMoney, false for reverse
-	 */
-//	public boolean priceDecision() {
-		
-		//buy again if we've been getting good return on investment
-
-		
-//		if(avgHistValue() >= avgHistPrice()) {
-//			return true;
-//		}
-//		else {//else it's up to (small)chance
-//
-//			if(coinFlip.nextInt() <= buyThreshold) {
-//				return true;
-//			}
-//			return false;
-//		}
-		
-//	}
 	
 	
 	public double avgHistValue() {
@@ -396,7 +375,6 @@ public class Player {
 		
 		//how far btwn the two lines we are
 		double rarityScaled = fractionOf(rDiffMin, rDiffMax, rarityDiff);
-		double pFraction = fractionOf(pDiffMin, pDiffMax, priceDiff);
 //		System.out.println("pFraction: " + pFraction);
 
 		
@@ -541,26 +519,14 @@ public class Player {
 	protected void askOtherPlayer() {
 		
 		List<Object> players = new ArrayList<Object>();
-		Context <Object> context = ContextUtils.getContext(this);
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		
-		
-		//grab all players this player looks up to
-		for (Object obj : net.getSuccessors(this)) {
-			players.add(obj);
-		}
+
+		players.addAll((Collection<? extends Object>) net.getSuccessors(this));
 		
 		//no friends ;-; choose anyone
-		if(players.size() < 1) {
-			players = soloPlayer();
-		}
+		if(players.size() < 1) players = soloPlayer();
 
-		//choose random player from that array
-		int index = RandomHelper.nextIntFromTo(0, players.size() - 1);
-		
-		Player otherPlayer = (Player) players.get(index);
-		
-		compareAndUpdateRelationship(otherPlayer);		
+		if(players.size() == 1) compareAndUpdateRelationship( (Player) players.get(0));
+		else                    compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));	
 				
 	}
 	
@@ -571,22 +537,13 @@ public class Player {
 	 * @return List<Object> player - the list of player edges the current agent has
 	 */
 	public List<Object> soloPlayer() {
-		List<Object> allPlayers = new ArrayList<Object>();
+		
 		List<Object> player = new ArrayList<Object>();
-		Context <Object> context = ContextUtils.getContext(this);
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		
-		
-		for (Object obj : net.getNodes()) {
-			if((Player)obj != this) {
-				allPlayers.add(obj);
-			}
-		}
-		
 		//choose random player from that array
 		int index = RandomHelper.nextIntFromTo(0, allPlayers.size() - 1);
 		Player otherPlayer = (Player) allPlayers.get(index);
 		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
+		
 		player.add(otherPlayer);
 		friendEdge = net.addEdge(this, otherPlayer, 0.0);
 		
@@ -611,16 +568,16 @@ public class Player {
 		
 		if(otherAvg > ownAvg) {
 
-			changeThreshold(friendEdge.getWeight() * .1);
+			changeThreshold(friendEdge.getWeight() * .001);
 
-			friendEdge.setWeight(friendEdge.getWeight() + 1); 
+			friendEdge.setWeight(friendEdge.getWeight() + .1); 
 			
 		}
 		else{
 			//stronger friendship = stronger influence 
-			changeThreshold(-1 * (friendEdge.getWeight() * .1));
+			changeThreshold(-1 * (friendEdge.getWeight() * .001));
 			
-			friendEdge.setWeight(friendEdge.getWeight() - 1); 
+			friendEdge.setWeight(friendEdge.getWeight() - .1); 
 
 			if (friendEdge.getWeight() < 0 && breakTies) {
 				net.removeEdge(friendEdge);
