@@ -620,7 +620,6 @@ public class Player {
 		 
 		if(decide()) {	
 			
-			double amtToSpend = amtToSpend();
 			
 			newLoot = buyNewLootbox(this);
 			

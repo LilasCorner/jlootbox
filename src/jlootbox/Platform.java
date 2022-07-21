@@ -6,8 +6,6 @@ package jlootbox;
 import java.util.ArrayList;
 import java.util.List;
 
-import jlootbox.Player.DecisionStrategy;
-import jlootbox.Player.Manipulate;
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.graph.Network;
@@ -169,7 +167,6 @@ public class Platform {
 	public static Lootbox biasedBox(Player buyer) {
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		double diff = (net.getInDegree(favorite) - net.getInDegree(buyer))/100d;				
-		double price = ((buyer.getThreshold() / 100d) * buyer.getMoney());
 		
 		return new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice());
 		
