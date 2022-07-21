@@ -3,6 +3,9 @@
  */
 package jlootbox;
 
+import java.util.ArrayList;
+
+import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
 import repast.simphony.random.RandomHelper;
 
@@ -12,16 +15,14 @@ import repast.simphony.random.RandomHelper;
  */
 public class Lootbox {
 
-	public static int MIN_PRICE = 1;
-	public static int MAX_PRICE = 10;
+	public static double MIN_PRICE = .99;
+	public static double MAX_PRICE = 100;
 	
-	
+	public static double[] dropPrices = {99.99, 44.99, 9.99, 4.99, 0.99}; //referenced directly from DiabloImmortal starting prices
 	public static double[] dropRates = {.5,.3,.1,.08}; 
-//	public static double[] dropRates = {.98 ,.01 , 0, 0}; //TODO: evil experiment case 
-//	public static double[] dropRates = {.99,.94,.18,.075}; //overwatch #'s
-//	public static double[] dropRates = {.06, .76, .105}; //overwatch #'s converted
-
+	
 	public static Uniform unigen = RandomHelper.createUniform(0,1);
+	public static Normal normgen = RandomHelper.createNormal(MIN_PRICE, MAX_PRICE);
 
 	private int rarity;
 	private double price; // current value as calculated 
@@ -29,20 +30,20 @@ public class Lootbox {
 
 	
 	public Lootbox(){
-		this(0, 0, false); 
+		this(0, false, 0, 0); 
 	}
 
-	public Lootbox(double money){
-		this(money, 0, false);
+	public Lootbox(double buyProb, double avgHistPrice){
+		this(0, false, buyProb, avgHistPrice);
 	}
-
-	public Lootbox(double money, double weight){
-		this(money, weight, true);
+	
+	public Lootbox(double weight, double buyProb, double avgHistPrice){
+		this(weight, false, buyProb, avgHistPrice);
 	}
 
 	//
-	public Lootbox(double money, double weight, Boolean fav){
-		this.price = money;
+	public Lootbox(double weight, Boolean fav, double buyProb, double avgHistPrice){
+		this.price = generatePrice(buyProb, avgHistPrice) ;
 		
 		if(fav){
 			this.rarity = generateFav();
@@ -66,6 +67,32 @@ public class Lootbox {
 		return rarity;
 	}
 	
+	
+	private static double generatePrice(double buyProb, double avgHistPrice) {
+		
+		ArrayList<Double> playerProb = new ArrayList<Double>();
+		Double rand = normgen.nextDouble();
+		
+		//determining probability to purchase every box
+		for(double it: dropPrices){
+			playerProb.add((avgHistPrice / it) * buyProb);
+		}
+
+		for(int i = 0; i < dropPrices.length; i++){
+
+			if(rand <= playerProb.get(i)){
+				return dropPrices[i];
+			}
+
+		}
+
+		//player wasn't convinced by any prices but still wants purchase,
+		//giving them cheapest option
+		return dropPrices[4];
+	}
+	
+	
+	
 	private static int generateRarity(double weight) {
 		int rarity = 1;
 		double threshold = 0.0;
@@ -79,16 +106,6 @@ public class Lootbox {
 			
 			rarity++;
 		}
-//		rarity = 4;
-//		
-//		
-//		for(double d: dropRates) {
-//			if(rand < (d + weight)) {
-//				return rarity;
-//			}
-//			
-//			rarity--;
-//		}
 		
 		return rarity;
 	}

@@ -40,19 +40,21 @@ public class Platform {
 	}
 	
 	
-	public static Lootbox offerLootbox(double money, Player buyer) {
+	public static Lootbox offerLootbox(Player buyer) {
 
 		//check manipulations
 		if(networkPresent) {
 			switch(manip) {
 				case BIAS_BOX:
-					return biasedBox(money, buyer);
+					return biasedBox(buyer);
 				
 				case FAV_PLAYER:
 					if (favorite == buyer) {
-						return favPlayer(money, buyer);
+						return favPlayer(buyer);
 					}
-					break;
+					
+				case FREE_BOX:
+					return new Lootbox(buyer.getThreshold(), 0);
 					
 				default:
 					break;
@@ -62,7 +64,7 @@ public class Platform {
 			
 		
 		//creating lootbox
-		return new Lootbox(money);
+		return new Lootbox(buyer.getThreshold(), buyer.avgHistPrice());
 	}
 	
 	@ScheduledMethod(start=50, interval=50)
@@ -157,20 +159,19 @@ public class Platform {
 	
 	//node with most in-degrees(most popular) gets consistently better
 	//luck than regular players
-	public static Lootbox favPlayer(double money, Player buyer) {
-		double price =  ((buyer.getThreshold() / 100d) * buyer.getMoney());
-		return new Lootbox(price, 0, true);
+	public static Lootbox favPlayer(Player buyer) {
+		return new Lootbox(0, true, buyer.getThreshold(), buyer.avgHistPrice());
 	}
 
 	//better connected a node is, more likely it is
 	//to pull rare loot
 	//# connections = weighted draw
-	public static Lootbox biasedBox(double money, Player buyer) {
+	public static Lootbox biasedBox(Player buyer) {
 		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		double diff = (net.getInDegree(favorite) - net.getInDegree(buyer))/100d;				
 		double price = ((buyer.getThreshold() / 100d) * buyer.getMoney());
 		
-		return new Lootbox(price, diff, false);
+		return new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice());
 		
 	}
 

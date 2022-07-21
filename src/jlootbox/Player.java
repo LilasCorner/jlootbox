@@ -248,8 +248,8 @@ public class Player {
 	 * 
 	 * @return newly generated lootbox newLoot
 	 */
-	protected Lootbox buyNewLootbox(double amtSpent) {
-		return Platform.offerLootbox(amtSpent, this);
+	protected Lootbox buyNewLootbox(Player buyer) {
+		return Platform.offerLootbox(buyer);
 	}
 	
 	protected double amtToSpend() {
@@ -257,8 +257,8 @@ public class Player {
 	}
 	
 	
-	protected Lootbox getFreeBox() {
-		return Platform.offerLootbox(0, this);
+	protected Lootbox getFreeBox(Player buyer) {
+		return Platform.offerLootbox(buyer);
 	}
 	
 	
@@ -599,7 +599,7 @@ public class Player {
 		}
 		
 		if(Platform.freeBox) {
-			getFreeBox();
+			getFreeBox(this);
 			updateThreshold();
 		}
 		
@@ -622,7 +622,7 @@ public class Player {
 			
 			double amtToSpend = amtToSpend();
 			
-			newLoot = buyNewLootbox(amtToSpend);
+			newLoot = buyNewLootbox(this);
 			
 			if(dump) {
 				infoDump(true);
