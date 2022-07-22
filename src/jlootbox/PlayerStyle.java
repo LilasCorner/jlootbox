@@ -5,6 +5,7 @@ package jlootbox;
 
 import repast.simphony.visualizationOGL2D.DefaultStyleOGL2D;
 import java.awt.Color;
+import java.awt.Font;
 
 import jlootbox.Player.Manipulate;
 import repast.simphony.gis.styleEditor.SimpleMarkFactory;
@@ -64,7 +65,26 @@ public class PlayerStyle extends DefaultStyleOGL2D {
     public float getScale(Object agent) {
         return 1;
     }
-	
-	
+    
+    @Override
+    public Color getLabelColor(Object agent) {
+    	return Color.BLACK;
+    }
+    
+    @Override
+    public Font getLabelFont(Object agent) {
+    	return new Font ("Calibri", Font.BOLD , 15);
+    }
+    
+    @Override
+    public float getLabelYOffset(Object agent) { 
+    	return 10;
+    }
+    
+	@Override
+	public String getLabel(Object agent) {
+    	Player player = (Player)agent;
+		return player.toString();
+	}
 	
 }
