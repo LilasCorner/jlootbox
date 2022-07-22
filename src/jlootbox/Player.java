@@ -69,7 +69,7 @@ public class Player {
 	private static Network<Object> net;
 	private static List<Object> allPlayers = new ArrayList<Object>();
 	
-	static {
+	static{
 		q1 = new ProbAdjuster(-100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05);
 		q2 = new ProbAdjuster(0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05);
 		q3 = new ProbAdjuster( 0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5);
@@ -103,6 +103,7 @@ public class Player {
 		System.out.println("--------------------------");
 		System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 
+		
 	}
 	
 	
@@ -111,7 +112,6 @@ public class Player {
 		return ""+id; 
 	}
 	
-	//TODO: could init quadrant info here
 	public static void init(String manipulation, Boolean ties, Context con, ArrayList<Object> tempList) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
 		breakTies = ties;
@@ -278,23 +278,16 @@ public class Player {
 		switch(decisionStrat) {
 			case PRICE:
 				
-				if (priceDiff < 0) {
-					if(rarityDiff < 0) {//fourth quadrant
-						deltaProbb =  deltaProb(rarityDiff, priceDiff, -100 , 0, -4, 0, 0.1, 0.05, -0.1, -0.1);
-					}
-					else {//first quadrant
-						deltaProbb = ( deltaProb(rarityDiff, priceDiff, -100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-					}
-				}
-				else {
-					
-					if(rarityDiff < 0) { //third quadrant
-						deltaProbb = ( deltaProb(rarityDiff, priceDiff, 0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5));
-					}
-					else { //second quadrant
-						deltaProbb = (deltaProb(rarityDiff, priceDiff, 0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05));
-					}
-				}
+				ProbAdjuster prob;
+				
+				if (priceDiff < 0) 
+					if(rarityDiff < 0)	prob = new ProbAdjuster(-100 , 0, -4, 0, 0.1, 0.05, -0.1, -0.1); //fourth quadrant
+					else 				prob = new ProbAdjuster(-100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ); //first quadrant
+				else 
+					if(rarityDiff < 0) 	prob = new ProbAdjuster(0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5); //third quadrant
+					else 				prob = new ProbAdjuster(0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05); //second quadrant
+						
+				deltaProbb =  prob.getAdjustmentwBoost(rarityDiff, priceDiff, (double)newLoot.getRarity());
 				break;
 			
 			default:
@@ -311,7 +304,7 @@ public class Player {
 	}
 	
 	
-	private static class ProbAdjuster{
+	public static class ProbAdjuster{
 		
 		double slopeForMinRar; 
 		double slopeForMaxRar;
