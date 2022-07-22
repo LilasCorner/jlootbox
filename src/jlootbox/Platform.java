@@ -138,8 +138,7 @@ public class Platform {
 				Player favorite = (Player) fav;
 
 				if( player.avgHistValue() > favorite.avgHistValue()) {
-//					System.out.println("Opponent Up!");
-//					System.out.println("Opp-"+ player + ": " + player.avgHistValue() + "\nFav-" + fav + ": " + favorite.avgHistValue());
+//					
 					fav = obj;
 				}
 			}

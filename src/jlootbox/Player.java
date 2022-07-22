@@ -156,10 +156,6 @@ public class Player {
 	public void setHist(Deque<Lootbox> newHist){
 		hist = newHist;
 	}
-		
-//	public void setMoney(double money) {
-//		availableMoney = money;
-//	}
 	
 	public void setThreshold(double i) {
 		if(i > 1) {
@@ -204,7 +200,12 @@ public class Player {
 		return 0;
 	}
 	
-	
+	/** avgHistRarity()
+	 * 
+	 * Average the rarity of all
+	 * items in hist
+	 *  @return average of all lootbox rarities
+	 */
 	public double avgHistValue() {
 		double ownAvg = 0;
 		
@@ -215,6 +216,12 @@ public class Player {
 		return ownAvg /= hist.size();
 	}
 	
+	/** avgHistPrice()
+	 * 
+	 * Average the price of all
+	 * items in hist
+	 *  @return double 
+	 */
 	public double avgHistPrice() {
 		double ownAvg = 0;
 		
@@ -270,7 +277,7 @@ public class Player {
 	 * @return int new buyThreshold
 	 */
 	protected double updateThreshold() {
-		double priceDiff = newLoot.getPrice() - hist.peekLast().getPrice();
+		double priceDiff = 	newLoot.getPrice() - hist.peekLast().getPrice();
 		double rarityDiff = newLoot.getRarity() - hist.peekLast().getRarity();
 		
 		double deltaProbb =0; 
@@ -348,7 +355,6 @@ public class Player {
 
 			//final val based on slope and priceDiff
 			return zAtMinPrice + (priceDiff - pDiffMin) * slope;
-
 			
 		}
 	
@@ -476,18 +482,11 @@ public class Player {
 			System.out.println(this.toString() + "- Price: " + newLoot.getPrice());
 		 	System.out.println(this.toString() + "- New BuyProb: " + getThreshold());
 			 
-			if(d < 0) {
-				System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);
-			}
-			else if(d == 0) {
-				System.out.println(this.toString() + "- Got the SAME lootbox, no magnitude change");
-
-			}
-			else{
-				System.out.println(this.toString() + "- Got a +GOOD+ lootbox, increasing by magnitude: " + d);
-			}
-
-
+			if(d < 0)		{System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);}
+			
+			else if(d == 0) {System.out.println(this.toString() + "- Got the SAME lootbox, no magnitude change");}
+			
+			else 			{System.out.println(this.toString() + "- Got a +GOOD+ lootbox, increasing by magnitude: " + d);}
 		}
 		else {
 			System.out.println(this.toString() + "- *NO BUY*");
@@ -516,7 +515,6 @@ public class Player {
 		
 		//no friends ;-; choose anyone
 		if(players.size() < 1) players = soloPlayer();
-
 		if(players.size() == 1) compareAndUpdateRelationship( (Player) players.get(0));
 		else                    compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));	
 				
@@ -559,13 +557,13 @@ public class Player {
 		
 		if(otherAvg > ownAvg) {
 			
-			changeThreshold(friendEdge.getWeight() * .001);
+			changeThreshold(friendEdge.getWeight() * .01);
 			friendEdge.setWeight(friendEdge.getWeight() + .1); 
 			
 		}
 		else{
 			
-			changeThreshold(-1 * (friendEdge.getWeight() * .001));
+			changeThreshold(-1 * (friendEdge.getWeight() * .01));
 			friendEdge.setWeight(friendEdge.getWeight() - .1); 
 
 			if (friendEdge.getWeight() < 0 && breakTies) {
@@ -636,17 +634,10 @@ public class Player {
 			
 			if(dump) {
 				infoDump(false);
-				
 			}
 			
-
 		}
-		
-		
 		
 	}
 
-
-
-	
 }
