@@ -288,11 +288,11 @@ public class Player {
 				ProbAdjuster prob;
 				
 				if (priceDiff < 0) 
-					if(rarityDiff < 0)	prob = new ProbAdjuster(-100 , 0, -4, 0, 0.1, 0.05, -0.1, -0.1); //fourth quadrant
-					else 				prob = new ProbAdjuster(-100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ); //first quadrant
+					if(rarityDiff < 0)	prob = new ProbAdjuster(q4); //fourth quadrant
+					else 				prob = new ProbAdjuster(q1); //first quadrant
 				else 
-					if(rarityDiff < 0) 	prob = new ProbAdjuster(0, 100, -4, 0, 0.05, 0.05, -0.1, -0.5); //third quadrant
-					else 				prob = new ProbAdjuster(0, 100, 0, 4, 0.5, 0.5, 0.05, 0.05); //second quadrant
+					if(rarityDiff < 0) 	prob = new ProbAdjuster(q3); //third quadrant
+					else 				prob = new ProbAdjuster(q2); //second quadrant
 						
 				deltaProbb =  prob.getAdjustmentwBoost(rarityDiff, priceDiff, (double)newLoot.getRarity());
 				break;
@@ -320,7 +320,9 @@ public class Player {
 		double rDiffMin;
 		double rDiffMax;
 		double zA;
+		double zB;
 		double zC;
+		double zD;
 
 		
 		public ProbAdjuster(double pDiffMin, double pDiffMax, double rDiffMin, double rDiffMax, double zA, double zB, double zC, double zD) {
@@ -330,7 +332,9 @@ public class Player {
 			this.rDiffMin = rDiffMin;
 			this.rDiffMax = rDiffMax;
 			this.zA = zA;
+			this.zB = zB;
 			this.zC = zC;
+			this.zD = zD;
 
 			//slope for lower line
 			slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
@@ -342,6 +346,29 @@ public class Player {
 	
 	
 	
+		/**
+		 * @param q4
+		 */
+		public ProbAdjuster(ProbAdjuster q) {
+			this.pDiffMin = q.pDiffMin;
+			this.pDiffMax =  q.pDiffMax;
+			this.rDiffMin = q.rDiffMin;
+			this.rDiffMax = q.rDiffMax;
+			this.zA = q.zA;
+			this.zB = q.zB;
+			this.zC = q.zC;
+			this.zD = q.zD;
+			
+			
+			//slope for lower line
+			slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
+
+			//slope for upper line
+			slopeForMaxRar = slopeOf(pDiffMin, pDiffMax, zA, zB);
+		}
+
+
+
 		public double getAdjustment(double rarityDiff, double priceDiff) {
 			
 			//how far btwn the two lines we are
