@@ -50,7 +50,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = true; //DEBUGGING MODE
+	private static Boolean dump = false; //DEBUGGING MODE
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -93,15 +93,15 @@ public class Player {
 	
 	public static void main(String[] args) {
 		
-		System.out.println(deltaProbwBoost(2, -50 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(2, -100 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(2, -150 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(2, -200 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-		System.out.println("--------------------------");
-		System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		System.out.println(deltaProbwBoost(2, -50 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		System.out.println("--------------------------");
+//		System.out.println(deltaProbwBoost(2, -100 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		System.out.println("--------------------------");
+//		System.out.println(deltaProbwBoost(2, -150 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		System.out.println("--------------------------");
+//		System.out.println(deltaProbwBoost(2, -200 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		System.out.println("--------------------------");
+//		System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 
 		
 	}

@@ -53,6 +53,8 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 	@Override
 	public Context build(Context<Object> context) {
 
+		System.out.println("Building a new context YEEHAW :)");
+		
 		Parameters params = RunEnvironment.getInstance().getParameters();
 
 		String manip = params.getString("manip");
