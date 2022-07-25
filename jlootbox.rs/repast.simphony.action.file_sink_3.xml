@@ -1,13 +1,12 @@
 <repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.9.0">
-  <name>IndividualThresholdSink</name>
-  <dataSet>pivotAttempt</dataSet>
+  <name>MoneySpentSink</name>
+  <dataSet>MoneySpentSet</dataSet>
   <delimiter>,</delimiter>
   <format>TABULAR</format>
   <sourceIds class="linked-hash-set">
     <string>tick</string>
-    <string>toString</string>
-    <string>Threshold</string>
+    <string>moneySpent</string>
   </sourceIds>
-  <fileName>IndividualThresholdOutput.txt</fileName>
+  <fileName>moneySpentOutput.txt</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>

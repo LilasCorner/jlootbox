@@ -170,13 +170,13 @@ public class Player {
 	}
 	
 	public void addThreshold() {
-		System.out.println("About to call setThreshold from addThreshold");	
+//		System.out.println("About to call setThreshold from addThreshold");	
 		setThreshold(getThreshold() + changeRate);
 			
 	}
 	
 	public void subtractThreshold() {
-		System.out.println("About to call setThreshold from subtractThreshold");	
+//		System.out.println("About to call setThreshold from subtractThreshold");	
 		setThreshold(getThreshold() - changeRate);
 		
 	}
@@ -301,11 +301,11 @@ public class Player {
 				//old box better than new one, less likely to buy				
 				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) / 100d );	
 		}
-		System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
+//		System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
 
 		changeThreshold(deltaProbb);
 		
-		System.out.println(" to " + this.getThreshold());
+//		System.out.println(" to " + this.getThreshold());
 		
 		return buyProb;
 	}
@@ -404,23 +404,23 @@ public class Player {
 		
 		//this is vertical val of raritydiff, figuring out what is the y-intercept at left side of region
 		double zAtMinPrice = zC + (zA - zC) * rarityScaled;//zvalue at left side of bounding box vertically
-		System.out.println("zAtMinPrice: " + zAtMinPrice);
+//		System.out.println("zAtMinPrice: " + zAtMinPrice);
 		
 		//slope for lower line
 		double slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
-		System.out.println("slopeForMinRar: " + slopeForMinRar);
+//		System.out.println("slopeForMinRar: " + slopeForMinRar);
 
 		//slope for upper line
 		double slopeForMaxRar = slopeOf(pDiffMin, pDiffMax, zA, zB);
-		System.out.println("slopeForMaxRar: " + slopeForMaxRar);
+//		System.out.println("slopeForMaxRar: " + slopeForMaxRar);
 
 		//slope given the actual raritydiff
 		double slope = rarityScaled * (slopeForMaxRar - slopeForMinRar) + slopeForMinRar;
-		System.out.println("slope: " + slope);
+//		System.out.println("slope: " + slope);
 
 		//final val based on slope and priceDiff
 		double dProb = zAtMinPrice + (priceDiff - pDiffMin) * slope;
-		System.out.println("dProb: " + dProb);
+//		System.out.println("dProb: " + dProb);
 
 		return dProb;
 		
@@ -608,7 +608,7 @@ public class Player {
 	public void platformCheck() {
 		
 		if(Platform.limEd) {
-			System.out.println("About to call setThreshold from platformCheck");
+//			System.out.println("About to call setThreshold from platformCheck");
 			setThreshold(getThreshold() + 0.1); 
 		}
 		
