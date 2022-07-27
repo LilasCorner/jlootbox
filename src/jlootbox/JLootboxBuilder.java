@@ -28,26 +28,35 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 	public static int INIT_MONEY = 100;
 	
 
-	public void validate(double value, double lowerBound, double upperBound, String msg) {
-		
-		//Lattice
-		if(lowerBound == -1 && upperBound == -1) {
-			int sqrt = (int) Math.sqrt(value);
-		
-			if((sqrt * sqrt) != value) {
-				throw new IllegalArgumentException(msg);
-			}
-		} //NWDegree
-		else if(lowerBound == 0 && upperBound == 0) {
-			
-			if(value % 2 != 0) {
-			
-				throw new IllegalArgumentException(msg);
-			}
-		} //Everything else
-		else if(value < lowerBound || value > upperBound) {
+	public static void validate(double value, double lowerBound, double upperBound, String msg) {
+		if(value < lowerBound || value > upperBound) {
 			throw new IllegalArgumentException(msg);
 		}
+	}
+	
+	public static void validateSqrt(double value, String msg) {
+		
+		int sqrt = (int) Math.sqrt(value);
+		
+		//for Lattice
+		if((sqrt * sqrt) != value) {
+			throw new IllegalArgumentException(msg);
+		}
+	}
+	
+	public static void validateEvenOdd(double value, boolean even, String msg) {
+		//NWDegree
+		if(even) {
+			if(value % 2 != 0) {
+				throw new IllegalArgumentException(msg);
+			}
+		}
+		else {
+			if(value % 2 == 0) {
+				throw new IllegalArgumentException(msg);
+			}
+		}
+		
 	}
 	
 	@Override
@@ -83,11 +92,11 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 			
 			//networks present, validate params
 			validate(nwbeta, 0, 1, "NWBeta must be between 0 and 1. Please re-initialize");
-			validate(nwdegree, 0, 0, "NWDegree must be an even number. Please re-initialize");
+			validateEvenOdd(nwdegree, true, "NWDegree must be an even number. Please re-initialize");
 			validate(nrdensity, 0, 1,"NRDensity must be between 0 and 1. Please re-initialize");
 			validate(playerCount, 9, 99999, "Please re-initialize the model with > 9 players to create the network." );
 			if(network.equals("LATTICE")) {
-				validate (playerCount, -1, -1, "For Lattice networks, player # must be a perfect square. Please re-initialize");
+				validateSqrt (playerCount, "For Lattice networks, player # must be a perfect square. Please re-initialize");
 			}
 			
 			//create corresponding network
