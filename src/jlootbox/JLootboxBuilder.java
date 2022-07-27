@@ -69,7 +69,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		String manip = params.getString("manip");
 		String network = params.getString("network");
 		String strat = params.getString("strat");
-		Boolean networkPresent = params.getBoolean("networkPresent");
+		boolean networkPresent = params.getBoolean("networkPresent");
 		int stopTime = params.getInteger("stopTime");
 		int playerCount = params.getInteger("numPlayers");
 		int memorySize = params.getInteger("memorySize");
@@ -78,11 +78,11 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		//network params
 		double nwbeta = params.getDouble("NWBeta"); //Watts beta: probability of edge being rewired. Must be btwn 0-1
 		int nwdegree = params.getInteger("NWDegree"); // Watts degree: # edges connected to each vertex in neighborhood. Must be even #
-		Boolean nwsymm = params.getBoolean("NWSym"); // Watts symmetry: generated edges symmetrical t/f
+		boolean nwsymm = params.getBoolean("NWSym"); // Watts symmetry: generated edges symmetrical t/f
 		double nrdensity = params.getDouble("NRDensity"); // Random density: the approximate density of the network. Must be btwn 0-1
-		Boolean nrloop = params.getBoolean("NRLoop"); // Random self loops: are self loops allowed t/f
-		Boolean nrsymm = params.getBoolean("NRSym"); //Random symmetry: generated edges symmetrical/bidirectional t/f
-		Boolean nltoroid = params.getBoolean("NLToroidal"); //Lattice Toroidal: whether lattice is toroidal t/f
+		boolean nrloop = params.getBoolean("NRLoop"); // Random self loops: are self loops allowed t/f
+		boolean nrsymm = params.getBoolean("NRSym"); //Random symmetry: generated edges symmetrical/bidirectional t/f
+		boolean nltoroid = params.getBoolean("NLToroidal"); //Lattice Toroidal: whether lattice is toroidal t/f
 		
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("player network", context, true);
 		

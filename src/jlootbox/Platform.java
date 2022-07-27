@@ -26,13 +26,13 @@ public class Platform {
 	
 	public static Manipulate manip;
 	public static Player favorite = null;
-	public static Boolean limEd = false;
-	public static Boolean freeBox = false;
-	public static Boolean networkPresent = false; 
+	public static boolean limEd = false;
+	public static boolean freeBox = false;
+	public static boolean networkPresent = false; 
 	private static Context <Object> context;
 	private Lootbox newLoot;
 	
-	public static void init(String manipulation, Context <Object> newContext, Boolean noNet) {
+	public static void init(String manipulation, Context <Object> newContext, boolean noNet) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 
 		context = newContext;
 		networkPresent = noNet;

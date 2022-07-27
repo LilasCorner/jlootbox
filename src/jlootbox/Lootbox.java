@@ -42,7 +42,7 @@ public class Lootbox {
 	}
 
 	//
-	public Lootbox(double weight, Boolean fav, double buyProb, double avgHistPrice){
+	public Lootbox(double weight, boolean fav, double buyProb, double avgHistPrice){
 		this.price = generatePrice(buyProb, avgHistPrice) ;
 		
 		if(fav){

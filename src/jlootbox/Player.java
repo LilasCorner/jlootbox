@@ -49,7 +49,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static Boolean dump = false; //DEBUGGING MODE
+	private static boolean dump = false; //DEBUGGING MODE
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -469,7 +469,7 @@ public class Player {
 	 * Player buying decision structure
 	 * @return
 	 */
-	protected Boolean decide() {
+	protected boolean decide() {
 		
 		switch(decisionStrat) {
 			case ALWAYS_BUY: 	return true;
@@ -486,7 +486,7 @@ public class Player {
 	
 	
 
-	protected void infoDump(Boolean buy) {
+	protected void infoDump(boolean buy) {
 		
 		 Iterator value = hist.iterator();
 		 System.out.println("-------------------");
