@@ -65,7 +65,7 @@ public class Player {
 	private static ProbAdjuster q3;
 	private static ProbAdjuster q4;
 	private static Context <Object> context;
-	private static Network<Object> net;
+	public static Network<Object> net;
 	private static List<Object> allPlayers = new ArrayList<Object>();
 	
 	static{
@@ -245,24 +245,8 @@ public class Player {
 		}
 	}
 	
-	
-	/** buyNewLootbox()
-	 * 
-	 * create new lootbox object
-	 * 
-	 * @return newly generated lootbox newLoot
-	 */
-	protected Lootbox buyNewLootbox(Player buyer) {
-		return Platform.offerLootbox(buyer);
-	}
-	
 	protected double amtToSpend() {
 		return buyProb * getMoney();
-	}
-	
-	
-	protected Lootbox getFreeBox(Player buyer) {
-		return Platform.offerLootbox(buyer);
 	}
 	
 	
@@ -476,8 +460,7 @@ public class Player {
 			case COIN_FLIP: 	return (coinFlip.nextDouble() <= buyProb);	
 			case PRICE: 
 			{		
-				double askingPrice = Math.random() * 100;
-				double adjustedBuyProb = buyProb * (100 - askingPrice) / 50;
+				double adjustedBuyProb = buyProb * (100 - Platform.getAskingPrice()) / 50;
 				return (coinFlip.nextDouble() <= adjustedBuyProb);
 			} 
 			default: 			return false; //impossible 
@@ -605,19 +588,25 @@ public class Player {
 	 * going on
 	 */
 	public void platformCheck() {
-		
+				
 		if(Platform.limEd) {
-//			System.out.println("About to call setThreshold from platformCheck");
 			setThreshold(getThreshold() + 0.1); 
 		}
-		
-		if(Platform.freeBox) {
-			getFreeBox(this);
-			updateThreshold();
+		else if(Platform.freeBox) {
+			Platform.offerFreeLootbox(this);
+		}
+		else if(Platform.favPlayer) {
+			Platform.favPlayer(this);
+		}
+		else if(Platform.biasBox) {
+			Platform.biasedBox(this);
+		}
+		else { //platform generates regular lootbox
+			Platform.offerLootbox(this);
 		}
 		
-		//TODO
-		//update threshold here if both manips possible
+
+		updateThreshold();
 	}
 	
 	
@@ -636,7 +625,7 @@ public class Player {
 		if(decide()) {	
 			
 			
-			newLoot = buyNewLootbox(this);
+			newLoot = Platform.purchaseLootbox();
 			
 			if(dump) {
 				infoDump(true);

@@ -28,43 +28,36 @@ public class Platform {
 	public static Player favorite = null;
 	public static boolean limEd = false;
 	public static boolean freeBox = false;
+	public static boolean favPlayer = false;
+	public static boolean biasBox = false; 
 	public static boolean networkPresent = false; 
 	private static Context <Object> context;
-	private Lootbox newLoot;
+	private static Lootbox newLoot;
+	private static Iterable<Object> playerNetwork = Player.net.getNodes();
 	
 	public static void init(String manipulation, Context <Object> newContext, boolean noNet) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 
+		favPlayer = ((manip == Manipulate.FAV_PLAYER) ? true : false);
+		biasBox = ((manip == Manipulate.BIAS_BOX) ? true : false);
 		context = newContext;
 		networkPresent = noNet;
 	}
 	
-	
-	public static Lootbox offerLootbox(Player buyer) {
-
-		//check manipulations
-		if(networkPresent) {
-			switch(manip) {
-				case BIAS_BOX:
-					return biasedBox(buyer);
-				
-				case FAV_PLAYER:
-					if (favorite == buyer) {
-						return favPlayer(buyer);
-					}
-					
-				case FREE_BOX:
-					return new Lootbox(buyer.getThreshold(), 0);
-					
-				default:
-					break;
-			}
-		}
-
-			
-		
-		//creating lootbox
-		return new Lootbox(buyer.getThreshold(), buyer.avgHistPrice());
+	public static double getAskingPrice() {
+		return newLoot.getPrice();
 	}
+	
+	public static void offerLootbox(Player buyer) {
+		newLoot = new Lootbox(0, false, buyer.getThreshold(), buyer.avgHistPrice());
+	}
+	
+	public static Lootbox purchaseLootbox() {
+		return newLoot;
+	}
+
+	public static Lootbox offerFreeLootbox(Player buyer) {
+		return new Lootbox(0, false, buyer.getThreshold(), 0);
+	}	
 	
 	@ScheduledMethod(start=50, interval=50)
 	public static void limEdOn() {
@@ -103,72 +96,52 @@ public class Platform {
 	 * the player with the most in-degrees
 	 */
 	@ScheduledMethod(start=0.95, interval=1)
-	public static void findFavorite() {
+	public void findFavorite() {
 		
 		if(!networkPresent) {
 			return;
 		}
 		
 		List<Object> favorites = new ArrayList<Object>();
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
 		
 		Object fav = null;
 		int favNodes =0;
 		
 		//find most popular player
-		for (Object obj : net.getNodes()) {
-			if(net.getInDegree(obj) > favNodes) {
+		for (Object obj : playerNetwork) {
+			if(Player.net.getInDegree(obj) > favNodes) {
 				favorites.clear();
 				fav =  obj;
-				favNodes = net.getInDegree(fav);
-//				System.out.println("NodeCount:" + favNodes);
+				favNodes = Player.net.getInDegree(fav);
 
 			}
 			
-			if (net.getInDegree(obj) == favNodes && obj != fav){
-				favorites.add(obj);
-			}
-		}
-		
-//		System.out.println("Current Fav:" + fav);
-//		System.out.println("Opponent array: " + favorites);
-//		
-		if(favorites.size() > 0) {
-			for (Object obj : favorites) {
-				Player player = (Player) obj;
-				Player favorite = (Player) fav;
-
-				if( player.avgHistValue() > favorite.avgHistValue()) {
-//					
+			if (Player.net.getInDegree(obj) == favNodes && obj != fav){
+				if( (((Player) obj).avgHistValue()) > favorite.avgHistValue()) {
 					fav = obj;
 				}
 			}
-			
-//			System.out.println("New Fav:" + fav);
 		}
 		
-		
 		favorite = (Player)fav;
-		
-//		System.out.println(favorite.toString());
-		
+//		System.out.println("Current Fav: " + favorite.toString());
+			
 	}
 	
 	
 	//node with most in-degrees(most popular) gets consistently better
 	//luck than regular players
-	public static Lootbox favPlayer(Player buyer) {
-		return new Lootbox(0, true, buyer.getThreshold(), buyer.avgHistPrice());
+	public static void favPlayer(Player buyer) {
+		newLoot = new Lootbox(0, true, buyer.getThreshold(), buyer.avgHistPrice());
 	}
 
 	//better connected a node is, more likely it is
 	//to pull rare loot
 	//# connections = weighted draw
-	public static Lootbox biasedBox(Player buyer) {
-		Network<Object> net = (Network<Object>)context.getProjection("player network");
-		double diff = (net.getInDegree(favorite) - net.getInDegree(buyer))/100d;				
+	public static void biasedBox(Player buyer) {
 		
-		return new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice());
+		double diff = (Player.net.getInDegree(favorite) - Player.net.getInDegree(buyer))/100d;				
+		newLoot = new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice());
 		
 	}
 
