@@ -30,6 +30,7 @@ public class Platform {
 	public static Boolean freeBox = false;
 	public static Boolean networkPresent = false; 
 	private static Context <Object> context;
+	private Lootbox newLoot;
 	
 	public static void init(String manipulation, Context <Object> newContext, Boolean noNet) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 

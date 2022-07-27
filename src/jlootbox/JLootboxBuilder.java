@@ -60,7 +60,6 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		String manip = params.getString("manip");
 		String network = params.getString("network");
 		String strat = params.getString("strat");
-		Boolean breakTies = params.getBoolean("breakTies");
 		Boolean networkPresent = params.getBoolean("networkPresent");
 		int stopTime = params.getInteger("stopTime");
 		int playerCount = params.getInteger("numPlayers");
@@ -161,7 +160,7 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		}
 
 		
-		Player.init(manip, breakTies, context, tempList);
+		Player.init(manip, context, tempList);
 		Platform.init(manip, context, networkPresent);
 		RunEnvironment.getInstance().endAt(stopTime);
 		

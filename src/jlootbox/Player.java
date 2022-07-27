@@ -46,7 +46,6 @@ public class Player {
 	private static int MIN_RANGE = 1;
 	private static int MAX_RANGE = 10;
 	private static int memorySize = 5;
-	private static Boolean breakTies = false;
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
@@ -112,9 +111,9 @@ public class Player {
 		return ""+id; 
 	}
 	
-	public static void init(String manipulation, Boolean ties, Context con, ArrayList<Object> tempList) {
+	public static void init(String manipulation,  Context con, ArrayList<Object> tempList) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
-		breakTies = ties;
+
 		context = con;
 		net = (Network<Object>)context.getProjection("player network");
 		allPlayers = tempList;
@@ -474,12 +473,12 @@ public class Player {
 		
 		switch(decisionStrat) {
 			case ALWAYS_BUY: 	return true;
-			case COIN_FLIP: 	return (coinFlip.nextInt() <= buyProb);	
+			case COIN_FLIP: 	return (coinFlip.nextDouble() <= buyProb);	
 			case PRICE: 
 			{		
 				double askingPrice = Math.random() * 100;
 				double adjustedBuyProb = buyProb * (100 - askingPrice) / 50;
-				return (coinFlip.nextInt() <= adjustedBuyProb);
+				return (coinFlip.nextDouble() <= adjustedBuyProb);
 			} 
 			default: 			return false; //impossible 
 		}
@@ -541,10 +540,11 @@ public class Player {
 		players.addAll((Collection<? extends Object>) net.getSuccessors(this));
 		
 		//no friends ;-; choose anyone
-		if(players.size() < 1) players = soloPlayer();
-		if(players.size() == 1) compareAndUpdateRelationship( (Player) players.get(0));
-		else                    compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));	
-				
+//		if(players.size() < 1) players = soloPlayer();
+//		if(players.size() == 1) compareAndUpdateRelationship( (Player) players.get(0));
+//		else                    	
+		
+		compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));
 	}
 	
 	/**soloPlayer()
@@ -591,11 +591,10 @@ public class Player {
 		else{
 			
 			changeThreshold(-1 * (friendEdge.getWeight() * .01));
-			friendEdge.setWeight(friendEdge.getWeight() - .1); 
-
-			if (friendEdge.getWeight() < 0 && breakTies) {
-				net.removeEdge(friendEdge);
+			if(friendEdge.getWeight() - .1 != 0 ) {
+				friendEdge.setWeight(friendEdge.getWeight() - .1); 
 			}
+			
 		}
 			
 	}
@@ -617,6 +616,8 @@ public class Player {
 			updateThreshold();
 		}
 		
+		//TODO
+		//update threshold here if both manips possible
 	}
 	
 	

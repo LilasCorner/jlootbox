@@ -67,12 +67,18 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="networkPresent" displayName="Network Present" type="boolean" 
+						defaultValue="true" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
+												values="true false "
+												displayOrder="7.0"
+					/>
 				<parameter name="stopTime" displayName="Stop Time" type="int" 
 						defaultValue="500" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-												displayOrder="7.0"
-					/>
+											/>
 				<parameter name="NWBeta" displayName="NWBeta" type="double" 
 						defaultValue="0.3" 
 						isReadOnly="false" 
@@ -83,13 +89,6 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 											/>
-				<parameter name="breakTies" displayName="Break Network Ties" type="boolean" 
-						defaultValue="true" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter"
-												values="true false "
-												displayOrder="6.0"
-					/>
 		</parameters>
 
 
