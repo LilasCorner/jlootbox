@@ -471,27 +471,6 @@ public class Player {
 		compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));
 	}
 	
-	/**soloPlayer()
-	 * If a player has no edges, choose a node
-	 * in the network at random and create an edge
-	 * 
-	 * @return List<Object> player - the list of player edges the current agent has
-	 */
-	public List<Object> soloPlayer() {
-		
-		List<Object> player = new ArrayList<Object>();
-		int index = RandomHelper.nextIntFromTo(0, allPlayers.size() - 1);
-		Player otherPlayer = (Player) allPlayers.get(index);
-		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
-		
-		player.add(otherPlayer);
-		friendEdge = net.addEdge(this, otherPlayer, 0.0);
-		
-		return player;
-		
-	}
-	
-	
 	/**compare(Deque<Lootbox> otherLoot) 
 	 * 
 	 * if other player has better history, add changeRate to buyThreshold
@@ -529,24 +508,9 @@ public class Player {
 	 * going on
 	 */
 	public void platformCheck() {
-				
-		if(Platform.limEd) {
-			setThreshold(getThreshold() + 0.1); 
-		}
-		else if(Platform.freeBox) {
-			Platform.offerFreeLootbox(this);
-		}
-		else if(Platform.favPlayer) {
-			Platform.favPlayer(this);
-		}
-		else if(Platform.biasBox) {
-			Platform.biasedBox(this);
-		}
-		else { //platform generates regular lootbox
-			Platform.offerLootbox(this);
-		}
-		
-
+	
+		Platform.platformResponse(this);
+	
 		updateThreshold();
 	}
 	

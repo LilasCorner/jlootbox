@@ -34,6 +34,8 @@ public class Platform {
 	private static Context <Object> context;
 	private static Lootbox newLoot;
 	private static Iterable<Object> playerNetwork = Player.net.getNodes();
+	public static  ArrayList<Lootbox> offers = new ArrayList<Lootbox>();
+
 	
 	public static void init(String manipulation, Context <Object> newContext, boolean noNet) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 
@@ -47,8 +49,8 @@ public class Platform {
 		return newLoot.getPrice();
 	}
 	
-	public static void offerLootbox(Player buyer) {
-		newLoot = new Lootbox(0, false, buyer.getThreshold(), buyer.avgHistPrice());
+	public static Lootbox offerLootbox(Player buyer) {
+		return newLoot = new Lootbox(0, false, buyer.getThreshold(), buyer.avgHistPrice(), false);
 	}
 	
 	public static Lootbox purchaseLootbox() {
@@ -56,8 +58,12 @@ public class Platform {
 	}
 
 	public static Lootbox offerFreeLootbox(Player buyer) {
-		return new Lootbox(0, false, buyer.getThreshold(), 0);
+		return newLoot = new Lootbox(0, false, buyer.getThreshold(), 0, false);
 	}	
+	
+	public static Lootbox offerLimLootbox(Player buyer){
+		return newLoot = new Lootbox(0, true, buyer.getThreshold(), buyer.avgHistPrice(), true);
+	}
 	
 	@ScheduledMethod(start=50, interval=50)
 	public static void limEdOn() {
@@ -90,6 +96,32 @@ public class Platform {
 			freeBox = false;
 		}
 	}
+	
+	
+	public static ArrayList<Lootbox> platformResponse(Player buyer) {
+		
+		offers.clear();
+		
+		if(Platform.limEd) {
+			offers.add(Platform.offerLimLootbox(buyer));
+		}
+		else if(Platform.freeBox) {
+			offers.add(Platform.offerFreeLootbox(buyer));
+		}
+		else if(Platform.favPlayer) {
+			offers.add(Platform.favPlayer(buyer));
+		}
+		else if(Platform.biasBox) {
+			offers.add(Platform.biasedBox(buyer));
+		}
+		else { //platform generates regular lootbox
+			offers.add(Platform.offerLootbox(buyer));
+		}
+		
+		return offers;
+	}
+	
+	
 	
 	/**findFavorite()
 	 * loops through all players in the network to find
@@ -131,17 +163,17 @@ public class Platform {
 	
 	//node with most in-degrees(most popular) gets consistently better
 	//luck than regular players
-	public static void favPlayer(Player buyer) {
-		newLoot = new Lootbox(0, true, buyer.getThreshold(), buyer.avgHistPrice());
+	public static Lootbox favPlayer(Player buyer) {
+		return newLoot = new Lootbox(0, true, buyer.getThreshold(), buyer.avgHistPrice(), false);
 	}
 
 	//better connected a node is, more likely it is
 	//to pull rare loot
 	//# connections = weighted draw
-	public static void biasedBox(Player buyer) {
+	public static Lootbox biasedBox(Player buyer) {
 		
 		double diff = (Player.net.getInDegree(favorite) - Player.net.getInDegree(buyer))/100d;				
-		newLoot = new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice());
+		return newLoot = new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice(), false);
 		
 	}
 

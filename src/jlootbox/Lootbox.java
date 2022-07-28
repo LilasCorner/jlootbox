@@ -26,24 +26,25 @@ public class Lootbox {
 
 	private int rarity;
 	private double price; // current value as calculated 
-	
+	private boolean limEd;
 
 	
 	public Lootbox(){
-		this(0, false, 0, 0); 
+		this(0, false, 0, 0, false); 
 	}
 
 	public Lootbox(double buyProb, double avgHistPrice){
-		this(0, false, buyProb, avgHistPrice);
+		this(0, false, buyProb, avgHistPrice, false);
 	}
 	
 	public Lootbox(double weight, double buyProb, double avgHistPrice){
-		this(weight, false, buyProb, avgHistPrice);
+		this(weight, false, buyProb, avgHistPrice, false);
 	}
 
 	//
-	public Lootbox(double weight, boolean fav, double buyProb, double avgHistPrice){
+	public Lootbox(double weight, boolean fav, double buyProb, double avgHistPrice, boolean limEdition){
 		this.price = generatePrice(buyProb, avgHistPrice) ;
+		this.limEd = limEdition;
 		
 		if(fav){
 			this.rarity = generateFav();
@@ -66,8 +67,12 @@ public class Lootbox {
 	public int getRarity() {
 		return rarity;
 	}
+
+	public boolean getLimEdStatus() {
+		return limEd;
+	}
 	
-	
+
 	private static double generatePrice(double buyProb, double avgHistPrice) {
 		
 		ArrayList<Double> playerProb = new ArrayList<Double>();
