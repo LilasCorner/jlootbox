@@ -271,11 +271,11 @@ public class Player {
 				ProbAdjuster prob;
 				
 				if (priceDiff < 0) 
-					if(rarityDiff < 0)	prob = new ProbAdjuster(q4); //fourth quadrant
-					else 				prob = new ProbAdjuster(q1); //first quadrant
+					if(rarityDiff < 0)	prob = q4; //fourth quadrant
+					else 				prob = q1; //first quadrant
 				else 
-					if(rarityDiff < 0) 	prob = new ProbAdjuster(q3); //third quadrant
-					else 				prob = new ProbAdjuster(q2); //second quadrant
+					if(rarityDiff < 0) 	prob = q3; //third quadrant
+					else 				prob = q2; //second quadrant
 						
 				deltaProbb =  prob.getAdjustmentwBoost(rarityDiff, priceDiff, (double)newLoot.getRarity());
 				break;
@@ -375,65 +375,6 @@ public class Player {
 	
 	}
 	
-	
-	
-	
-	protected static double deltaProb(double rarityDiff, double priceDiff, double pDiffMin, double pDiffMax, double rDiffMin, double rDiffMax, double zA, double zB, double zC, double zD) {
-		
-		//how far btwn the two lines we are
-		double rarityScaled = fractionOf(rDiffMin, rDiffMax, rarityDiff);
-//		System.out.println("pFraction: " + pFraction);
-
-		
-		//this is vertical val of raritydiff, figuring out what is the y-intercept at left side of region
-		double zAtMinPrice = zC + (zA - zC) * rarityScaled;//zvalue at left side of bounding box vertically
-//		System.out.println("zAtMinPrice: " + zAtMinPrice);
-		
-		//slope for lower line
-		double slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
-//		System.out.println("slopeForMinRar: " + slopeForMinRar);
-
-		//slope for upper line
-		double slopeForMaxRar = slopeOf(pDiffMin, pDiffMax, zA, zB);
-//		System.out.println("slopeForMaxRar: " + slopeForMaxRar);
-
-		//slope given the actual raritydiff
-		double slope = rarityScaled * (slopeForMaxRar - slopeForMinRar) + slopeForMinRar;
-//		System.out.println("slope: " + slope);
-
-		//final val based on slope and priceDiff
-		double dProb = zAtMinPrice + (priceDiff - pDiffMin) * slope;
-//		System.out.println("dProb: " + dProb);
-
-		return dProb;
-		
-	}
-	
-	
-	protected static double deltaProbwBoost(double rarityDiff, double priceDiff, double newRarity, double pDiffMin, double pDiffMax, double rDiffMin, double rDiffMax, double zA, double zB, double zC, double zD) {
-		
-		//how far btwn the two lines we are
-		double rarityScaled = fractionOf(rDiffMin, rDiffMax, rarityDiff);
-		
-		//this is vertical val of raritydiff, figuring out what is the y-intercept at left side of region
-		double zAtMinPrice = zC + (zA - zC) * rarityScaled;//zvalue at left side of bounding box vertically
-
-		//slope for lower line
-		double slopeForMinRar = slopeOf(pDiffMin, pDiffMax, zC, zD);
-		
-		//slope for upper line
-		double slopeForMaxRar = slopeOf(pDiffMin, pDiffMax, zA, zB);
-		
-		//slope given the actual raritydiff
-		double slope = rarityScaled * (slopeForMaxRar - slopeForMinRar) + slopeForMinRar;
-		
-		//final val based on slope and priceDiff
-		double dProb = zAtMinPrice + (priceDiff - pDiffMin) * slope;
-		dProb += (newRarity / 5d) * 0.3; 
-		
-		return dProb;
-		
-	}
 	
 	
 	//returns slope of line where these are two endpts of line
