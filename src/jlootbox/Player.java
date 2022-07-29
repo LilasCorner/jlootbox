@@ -392,20 +392,30 @@ public class Player {
 	
 	/** decide()
 	 * Player buying decision structure
-	 * @return
+	 * @return Lootbox if one was purchased from the offers, null if nothing purchased
 	 */
-	protected boolean decide() {
+	protected int decide(ArrayList<Lootbox> offers) {
 		
-		switch(decisionStrat) {
-			case ALWAYS_BUY: 	return true;
-			case COIN_FLIP: 	return (coinFlip.nextDouble() <= buyProb);	
-			case PRICE: 
-			{		
-				double adjustedBuyProb = buyProb * (100 - Platform.getAskingPrice()) / 50;
-				return (coinFlip.nextDouble() <= adjustedBuyProb);
-			} 
-			default: 			return false; //impossible 
+		ArrayList<Boolean> decisions = new ArrayList<Boolean>();
+		
+		
+		//note: this will currently purchase the first box the player finds acceptable rather than allowing
+		//		them to weigh their options
+		for(int i = 0; i < offers.size(); i++) {
+			switch(decisionStrat) {
+				case ALWAYS_BUY: 	return i;
+				case COIN_FLIP: 	if (coinFlip.nextDouble() <= buyProb) {return i;}	
+				case PRICE: 
+				{		
+					double adjustedBuyProb = buyProb * (100 - offers.get(i).getPrice()) / 50;
+					if (coinFlip.nextDouble() <= adjustedBuyProb) {return i;}
+				} 
+				default: 			return -1;//impossible 
+			}
 		}
+		
+		return -1;
+
 	}
 	
 	
@@ -501,19 +511,20 @@ public class Player {
 		}
 			
 	}
-	
-	
-	/**platformCheck()
-	 * check if platform has events/manipulations 
-	 * going on
-	 */
-	public void platformCheck() {
-	
-		Platform.platformResponse(this);
-	
-		updateThreshold();
+
+	//check if freebox was offered and remove from arraylist
+	public boolean reviewOffers(ArrayList<Lootbox> offers) {
+		if(offers.get(0).getPrice() == 0) {
+			newLoot = Platform.purchaseLootbox(offers.get(0));
+			updateThreshold(); //Note: player could potentially update threshold depending on
+							   //  	   how good the other offers in the array are
+			offers.get(0).setPurchased(true);
+			return true;
+		}
+		return false;
 	}
 	
+
 	
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
@@ -524,13 +535,17 @@ public class Player {
 
 //		Below is how to keep model updated with params from context mid-run
 //		Parameters params = RunEnvironment.getInstance().getParameters();
+		int index = 0;
+		ArrayList<Lootbox> offers = Platform.platformResponse(this);
 		
-		platformCheck();
-		 
-		if(decide()) {	
+		reviewOffers(offers);
+		
+		offers = Platform.removeOffers(offers);
+		
+		if((index = decide(offers)) >= 0) {
 			
-			
-			newLoot = Platform.purchaseLootbox();
+			offers.get(index).setPurchased(true);
+			newLoot = Platform.purchaseLootbox(offers.get(index));
 			
 			if(dump) {
 				infoDump(true);

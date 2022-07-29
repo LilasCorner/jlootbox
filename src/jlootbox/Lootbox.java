@@ -27,6 +27,7 @@ public class Lootbox {
 	private int rarity;
 	private double price; // current value as calculated 
 	private boolean limEd;
+	private boolean purchased = false;
 
 	
 	public Lootbox(){
@@ -131,6 +132,20 @@ public class Lootbox {
 		}
 		
 		return rarity;
+	}
+
+	/**
+	 * @return the purchased
+	 */
+	public boolean getPurchased() {
+		return purchased;
+	}
+
+	/**
+	 * @param purchased the purchased to set
+	 */
+	public void setPurchased(boolean purchased) {
+		this.purchased = purchased;
 	}
 	
 
