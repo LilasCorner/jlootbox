@@ -70,6 +70,8 @@ public class Platform {
 	
 	@ScheduledMethod(start=50, interval=50)
 	public static void limEdOn() {
+		System.out.println("limEdOn WAS CALLED!");
+
 		if(manip == Manipulate.LIM_ED) {
 			limEd = true;
 		}
@@ -77,6 +79,8 @@ public class Platform {
 	
 	@ScheduledMethod(start=60, interval=50)
 	public static void limEdOff() {
+		System.out.println("limEdOff WAS CALLED!");
+
 		if(manip == Manipulate.LIM_ED) {
 			limEd = false;
 		}
@@ -86,6 +90,8 @@ public class Platform {
 	// out of pure generosity :-)
 	@ScheduledMethod(start=15, interval=20)
 	public static void freeBoxOn() {
+		System.out.println("freeboxON WAS CALLED!");
+
 		if(manip == Manipulate.FREE_BOX) {
 			freeBox = true;
 		}
@@ -95,9 +101,52 @@ public class Platform {
 	// out of pure generosity :-)
 	@ScheduledMethod(start=16, interval=20)
 	public static void freeBoxOff() {
+		System.out.println("freeboxOff WAS CALLED!");
+
 		if(manip == Manipulate.FREE_BOX) {
 			freeBox = false;
 		}
+	}
+	
+	/**findFavorite()
+	 * loops through all players in the network to find
+	 * the player with the most in-degrees
+	 */
+	@ScheduledMethod(start=1.2, interval=1)
+	public void findFavorite() {
+		System.out.println("FIND FAV WAS CALLED!");
+		
+		
+		if(!networkPresent) {
+			return;
+		}
+		
+		List<Object> favorites = new ArrayList<Object>();
+		
+		Object fav = null;
+		int favNodes =0;
+		
+		System.out.println("Current Fav: " + favorite.toString());
+		
+		//find most popular player
+		for (Object obj : playerNetwork) {
+			if(Player.net.getInDegree(obj) > favNodes) {
+				favorites.clear();
+				fav =  obj;
+				favNodes = Player.net.getInDegree(fav);
+
+			}
+			
+			if (Player.net.getInDegree(obj) == favNodes && obj != fav){
+				if( (((Player) obj).avgHistValue()) > favorite.avgHistValue()) {
+					fav = obj;
+					System.out.println("New Fav: " + favorite.toString());
+				}
+			}
+		}
+		
+		favorite = (Player)fav;
+			
 	}
 	
 	//node with most in-degrees(most popular) gets consistently better
@@ -154,54 +203,6 @@ public class Platform {
 		return offers;
 	}
 	
-	/**findFavorite()
-	 * loops through all players in the network to find
-	 * the player with the most in-degrees
-	 */
-	@ScheduledMethod(start=0.95, interval=1)
-	public void findFavorite() {
-		
-		if(!networkPresent) {
-			return;
-		}
-		
-		List<Object> favorites = new ArrayList<Object>();
-		
-		Object fav = null;
-		int favNodes =0;
-		
-		//find most popular player
-		for (Object obj : playerNetwork) {
-			if(Player.net.getInDegree(obj) > favNodes) {
-				favorites.clear();
-				fav =  obj;
-				favNodes = Player.net.getInDegree(fav);
-
-			}
-			
-			if (Player.net.getInDegree(obj) == favNodes && obj != fav){
-				if( (((Player) obj).avgHistValue()) > favorite.avgHistValue()) {
-					fav = obj;
-				}
-			}
-		}
-		
-		favorite = (Player)fav;
-//		System.out.println("Current Fav: " + favorite.toString());
-			
-	}
-
-
-	/**
-	 * @param offers2
-	 */
-	public static void clearPurchasedOffers(ArrayList<Lootbox> offers) {
-		
-		
-	}
 	
-	
-
-
 
 }
