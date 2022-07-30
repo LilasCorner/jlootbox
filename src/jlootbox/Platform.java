@@ -9,6 +9,7 @@ import java.util.List;
 
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.random.RandomHelper;
 import repast.simphony.space.graph.Network;
 
 /**
@@ -34,7 +35,7 @@ public class Platform {
 	public static boolean networkPresent = false; 
 	private static Context <Object> context;
 	private static Lootbox newLoot;
-	private static Iterable<Object> playerNetwork = Player.net.getNodes();
+	private static Iterable<Object> playerNetwork;
 	public static  ArrayList<Lootbox> offers = new ArrayList<Lootbox>();
 
 	
@@ -44,6 +45,7 @@ public class Platform {
 		biasBox = ((manip == Manipulate.BIAS_BOX) ? true : false);
 		context = newContext;
 		networkPresent = noNet;
+		playerNetwork = Player.net.getNodes();
 	}
 	
 	
@@ -70,7 +72,6 @@ public class Platform {
 	
 	@ScheduledMethod(start=50, interval=50)
 	public static void limEdOn() {
-		System.out.println("limEdOn WAS CALLED!");
 
 		if(manip == Manipulate.LIM_ED) {
 			limEd = true;
@@ -79,7 +80,6 @@ public class Platform {
 	
 	@ScheduledMethod(start=60, interval=50)
 	public static void limEdOff() {
-		System.out.println("limEdOff WAS CALLED!");
 
 		if(manip == Manipulate.LIM_ED) {
 			limEd = false;
@@ -90,7 +90,6 @@ public class Platform {
 	// out of pure generosity :-)
 	@ScheduledMethod(start=15, interval=20)
 	public static void freeBoxOn() {
-		System.out.println("freeboxON WAS CALLED!");
 
 		if(manip == Manipulate.FREE_BOX) {
 			freeBox = true;
@@ -101,7 +100,6 @@ public class Platform {
 	// out of pure generosity :-)
 	@ScheduledMethod(start=16, interval=20)
 	public static void freeBoxOff() {
-		System.out.println("freeboxOff WAS CALLED!");
 
 		if(manip == Manipulate.FREE_BOX) {
 			freeBox = false;
@@ -113,35 +111,30 @@ public class Platform {
 	 * the player with the most in-degrees
 	 */
 	@ScheduledMethod(start=1.2, interval=1)
-	public void findFavorite() {
-		System.out.println("FIND FAV WAS CALLED!");
+	public static void findFavorite() {		
 		
-		
-		if(!networkPresent) {
+		if(!networkPresent || manip != Manipulate.FAV_PLAYER) {
 			return;
 		}
 		
 		List<Object> favorites = new ArrayList<Object>();
-		
-		Object fav = null;
-		int favNodes =0;
-		
-		System.out.println("Current Fav: " + favorite.toString());
+		Player player;
+		Player favorite;
+		int index = RandomHelper.nextIntFromTo(0, Player.allPlayers.size() - 1);
+		Object fav = Player.allPlayers.get(index);
+		int favNodes = Player.net.getInDegree(fav);
+
 		
 		//find most popular player
 		for (Object obj : playerNetwork) {
-			if(Player.net.getInDegree(obj) > favNodes) {
-				favorites.clear();
-				fav =  obj;
-				favNodes = Player.net.getInDegree(fav);
-
-			}
+			player = (Player) obj;
+			favorite = (Player) fav;
 			
-			if (Player.net.getInDegree(obj) == favNodes && obj != fav){
-				if( (((Player) obj).avgHistValue()) > favorite.avgHistValue()) {
-					fav = obj;
-					System.out.println("New Fav: " + favorite.toString());
-				}
+			if(Player.net.getInDegree(obj) > favNodes && player.avgHistValue() > favorite.avgHistValue()) {
+				favorites.clear();
+				fav = obj;
+				favNodes = Player.net.getInDegree(fav);
+				
 			}
 		}
 		

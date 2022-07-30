@@ -66,7 +66,7 @@ public class Player {
 	private static ProbAdjuster q4;
 	private static Context <Object> context;
 	public static Network<Object> net;
-	private static List<Object> allPlayers = new ArrayList<Object>();
+	public static List<Object> allPlayers = new ArrayList<Object>();
 	
 	static{
 		q1 = new ProbAdjuster(-100 , 0, 0, 4, 0.5, 0.5, 0.1 , 0.05);
