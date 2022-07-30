@@ -49,7 +49,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static boolean dump = true; //DEBUGGING MODE
+	private static boolean dump = false; //DEBUGGING MODE
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -92,15 +92,15 @@ public class Player {
 	
 //	public static void main(String[] args) {
 		
-//		System.out.println(deltaProbwBoost(2, -50 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		System.out.println("--------------------------");
-//		System.out.println(deltaProbwBoost(2, -100 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		System.out.println("--------------------------");
-//		System.out.println(deltaProbwBoost(2, -150 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		System.out.println("--------------------------");
-//		System.out.println(deltaProbwBoost(2, -200 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		System.out.println("--------------------------");
-//		System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		//System.out.println(deltaProbwBoost(2, -50 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		//System.out.println("--------------------------");
+//		//System.out.println(deltaProbwBoost(2, -100 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		//System.out.println("--------------------------");
+//		//System.out.println(deltaProbwBoost(2, -150 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		//System.out.println("--------------------------");
+//		//System.out.println(deltaProbwBoost(2, -200 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
+//		//System.out.println("--------------------------");
+//		//System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 
 		
 //	}
@@ -169,13 +169,13 @@ public class Player {
 	}
 	
 	public void addThreshold() {
-//		System.out.println("About to call setThreshold from addThreshold");	
+//		//System.out.println("About to call setThreshold from addThreshold");	
 		setThreshold(getThreshold() + changeRate);
 			
 	}
 	
 	public void subtractThreshold() {
-//		System.out.println("About to call setThreshold from subtractThreshold");	
+//		//System.out.println("About to call setThreshold from subtractThreshold");	
 		setThreshold(getThreshold() - changeRate);
 		
 	}
@@ -284,11 +284,11 @@ public class Player {
 				//old box better than new one, less likely to buy				
 				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) / 10d );	
 		}
-//		System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
+//		//System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
 
 		changeThreshold(deltaProbb);
 		
-//		System.out.println(" to " + this.getThreshold());
+//		//System.out.println(" to " + this.getThreshold());
 		
 		return buyProb;
 	}
@@ -399,12 +399,12 @@ public class Player {
 		//note: this will currently purchase the first box the player finds acceptable rather than allowing
 		//		them to weigh their options
 		for(int i = 0; i < offers.size(); i++) {
-			System.out.println(this.toString() + " THIS GUY IS:" + this.getThreshold());
+			//System.out.println(this.toString() + " THIS GUY IS:" + this.getThreshold());
 			switch(decisionStrat) {
 				case ALWAYS_BUY: 	return i;
 				case COIN_FLIP: 
 					double j = coinFlip.nextDouble();
-					System.out.println("THE RAND IS " + j);
+					//System.out.println("THE RAND IS " + j);
 					if (j <= buyProb) {
 						return i;
 						}	
@@ -412,8 +412,8 @@ public class Player {
 				{		
 					double adjustedBuyProb = buyProb * (100 - offers.get(i).getPrice()) / 50;
 					double k = coinFlip.nextDouble();
-					System.out.println(this.toString() + "THE RAND IS " + k);
-					System.out.println(this.toString() + " THE ADJUST IS:" + adjustedBuyProb);
+					//System.out.println(this.toString() + "THE RAND IS " + k);
+					//System.out.println(this.toString() + " THE ADJUST IS:" + adjustedBuyProb);
 
 					if (k <= adjustedBuyProb) {
 						return i;
@@ -451,11 +451,11 @@ public class Player {
 			System.out.println(this.toString() + "- Price: " + newLoot.getPrice());
 		 	System.out.println(this.toString() + "- New BuyProb: " + getThreshold());
 			 
-			if(d < 0)		{System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);}
+			if(d < 0)		{ System.out.println(this.toString() + "- Got a -BAD- lootbox, reducing by magnitude: " + d);}
 			
-			else if(d == 0) {System.out.println(this.toString() + "- Got the SAME lootbox, no magnitude change");}
+			else if(d == 0) { System.out.println(this.toString() + "- Got the SAME lootbox, no magnitude change");}
 			
-			else 			{System.out.println(this.toString() + "- Got a +GOOD+ lootbox, increasing by magnitude: " + d);}
+			else 			{ System.out.println(this.toString() + "- Got a +GOOD+ lootbox, increasing by magnitude: " + d);}
 		}
 		else {
 			System.out.println(this.toString() + "- *NO BUY*");
@@ -527,11 +527,11 @@ public class Player {
 	@ScheduledMethod(start=1.1, interval=1)
 	public void compareWithOthers(){
 	   if(Platform.networkPresent){
-		System.out.println(this.toString() + "- before comparing to friends buyProb: " + this.getThreshold());
+		//System.out.println(this.toString() + "- before comparing to friends buyProb: " + this.getThreshold());
  
 		askOtherPlayer();
 	     
-		System.out.println(this.toString() + "- after comparing to friends buyProb: " + this.getThreshold());
+		//System.out.println(this.toString() + "- after comparing to friends buyProb: " + this.getThreshold());
 
 	   }
 	  
@@ -553,13 +553,13 @@ public class Player {
 		ArrayList<Lootbox> offers = Platform.platformResponse(this);
 		
 		reviewOffers(offers);
-		System.out.println(this.toString() + "- offered " + offers.size() + " lootbox(s)");
+		//System.out.println(this.toString() + "- offered " + offers.size() + " lootbox(s)");
 		
 		
 		offers = Platform.removeOffers(offers);
 		
 		if((index = decide(offers)) >= 0) {
-			System.out.println(this.toString() + "- Bought a box!");
+			//System.out.println(this.toString() + "- Bought a box!");
 			
 			offers.get(index).setPurchased(true);
 			newLoot = Platform.purchaseLootbox(offers.get(index));
@@ -569,9 +569,9 @@ public class Player {
 			if(dump) {
 				infoDump(true);
 			}
-			System.out.println(this.toString() + "- Current buyProb: " + this.getThreshold());
+			//System.out.println(this.toString() + "- Current buyProb: " + this.getThreshold());
 			updateThreshold();
-			System.out.println(this.toString() + "- New buyProb: " + this.getThreshold());
+			//System.out.println(this.toString() + "- New buyProb: " + this.getThreshold());
 
 			recordNewLootboxInHistory();
 
@@ -580,7 +580,7 @@ public class Player {
 			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
 		}	
 		else {
-			System.out.println(this.toString() + "- No buy");
+			//System.out.println(this.toString() + "- No buy");
 		}
 	}
 
