@@ -89,23 +89,7 @@ public class Player {
 		newLoot = new Lootbox();
 		hist.addLast(newLoot); 
 	}
-	
-//	public static void main(String[] args) {
-		
-//		//System.out.println(deltaProbwBoost(2, -50 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		//System.out.println("--------------------------");
-//		//System.out.println(deltaProbwBoost(2, -100 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		//System.out.println("--------------------------");
-//		//System.out.println(deltaProbwBoost(2, -150 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		//System.out.println("--------------------------");
-//		//System.out.println(deltaProbwBoost(2, -200 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
-//		//System.out.println("--------------------------");
-//		//System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 
-		
-//	}
-	
-	
 	
 	public String toString() {
 		return ""+id; 
@@ -284,11 +268,9 @@ public class Player {
 				//old box better than new one, less likely to buy				
 				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) / 10d );	
 		}
-//		//System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
 
 		changeThreshold(deltaProbb);
 		
-//		//System.out.println(" to " + this.getThreshold());
 		
 		return buyProb;
 	}
@@ -330,7 +312,7 @@ public class Player {
 	
 	
 		/**
-		 * @param q4
+		 * @param q
 		 */
 		public ProbAdjuster(ProbAdjuster q) {
 			this.pDiffMin = q.pDiffMin;
@@ -396,28 +378,16 @@ public class Player {
 	 */
 	protected int decide(ArrayList<Lootbox> offers) {
 				
-		//note: this will currently purchase the first box the player finds acceptable rather than allowing
-		//		them to weigh their options
+
 		for(int i = 0; i < offers.size(); i++) {
-			//System.out.println(this.toString() + " THIS GUY IS:" + this.getThreshold());
 			switch(decisionStrat) {
 				case ALWAYS_BUY: 	return i;
-				case COIN_FLIP: 
-					double j = coinFlip.nextDouble();
-					//System.out.println("THE RAND IS " + j);
-					if (j <= buyProb) {
-						return i;
-						}	
+				case COIN_FLIP: if (coinFlip.nextDouble() <= buyProb) {return i;}	
 				case PRICE: 
 				{		
 					double adjustedBuyProb = buyProb * (100 - offers.get(i).getPrice()) / 50;
-					double k = coinFlip.nextDouble();
-					//System.out.println(this.toString() + "THE RAND IS " + k);
-					//System.out.println(this.toString() + " THE ADJUST IS:" + adjustedBuyProb);
 
-					if (k <= adjustedBuyProb) {
-						return i;
-					}
+					if (coinFlip.nextDouble() <= adjustedBuyProb) {return i;}
 				} 
 				default: 			return -1;//impossible 
 			}
@@ -515,7 +485,7 @@ public class Player {
 	public boolean reviewOffers(ArrayList<Lootbox> offers) {
 		if(offers.get(0).getPrice() == 0) {
 			newLoot = Platform.purchaseLootbox(offers.get(0));
-			updateThreshold(); //Note: player could potentially update threshold depending on
+			updateThreshold(); //Note: future implementation - player could potentially update threshold depending on
 							   //  	   how good the other offers in the array are
 			offers.get(0).setPurchased(true);
 			return true;
@@ -527,11 +497,9 @@ public class Player {
 	@ScheduledMethod(start=1.1, interval=1)
 	public void compareWithOthers(){
 	   if(Platform.networkPresent){
-		//System.out.println(this.toString() + "- before comparing to friends buyProb: " + this.getThreshold());
  
 		askOtherPlayer();
 	     
-		//System.out.println(this.toString() + "- after comparing to friends buyProb: " + this.getThreshold());
 
 	   }
 	  
@@ -547,31 +515,25 @@ public class Player {
 	 */
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {
-//		Below is how to keep model updated with params from context mid-run
-//		Parameters params = RunEnvironment.getInstance().getParameters();
+
 		int index = 0;
 		ArrayList<Lootbox> offers = Platform.platformResponse(this);
 		
 		reviewOffers(offers);
-		//System.out.println(this.toString() + "- offered " + offers.size() + " lootbox(s)");
 		
 		
 		offers = Platform.removeOffers(offers);
 		
 		if((index = decide(offers)) >= 0) {
-			//System.out.println(this.toString() + "- Bought a box!");
 			
 			offers.get(index).setPurchased(true);
+			
 			newLoot = Platform.purchaseLootbox(offers.get(index));
-			
-			
 			
 			if(dump) {
 				infoDump(true);
 			}
-			//System.out.println(this.toString() + "- Current buyProb: " + this.getThreshold());
 			updateThreshold();
-			//System.out.println(this.toString() + "- New buyProb: " + this.getThreshold());
 
 			recordNewLootboxInHistory();
 
@@ -579,9 +541,7 @@ public class Player {
 			
 			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
 		}	
-		else {
-			//System.out.println(this.toString() + "- No buy");
-		}
+
 	}
 
 }
