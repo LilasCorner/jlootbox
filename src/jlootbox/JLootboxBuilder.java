@@ -145,30 +145,6 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 		netBuilder.buildNetwork();
 		
-		//manually add symmetrical edges
-		if(playerCount > 1 && !networkPresent) {
-			
-			Network<Object> net = (Network<Object>)context.getProjection("player network");
-			ListIterator<Object> it = tempList.listIterator();
-			
-			Player p1 = (Player) it.next();
-			Player p2;
-			
-			while (it.hasNext())
-			{
-			    p2 = (Player) it.next();
-			    
-			    // Process p1 and p2
-			    net.addEdge(p1, p2);
-			    net.addEdge(p2, p1);
-			    
-			    // Maintain previous player?
-			    p2 = p1;
-			}
-			
-		}
-
-		
 		Player.init(manip, context, tempList);
 		Platform.init(manip, context, networkPresent);
 		RunEnvironment.getInstance().endAt(stopTime);

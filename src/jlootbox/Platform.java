@@ -4,6 +4,7 @@
 package jlootbox;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import repast.simphony.context.Context;
@@ -139,11 +140,16 @@ public class Platform {
 	}
 	
 	public static ArrayList<Lootbox> removeOffers(ArrayList<Lootbox> offers){
-		for(int i = 0; i < offers.size(); i++) {
-			if (offers.get(i).getPurchased()) {
-				offers.remove(i);
-			}
+		
+		Iterator<Lootbox> i = offers.iterator();
+
+		while(i.hasNext()) {
+		    Lootbox l = i.next();
+		    if (l.getPurchased()) {
+		        i.remove();
+		    }
 		}
+		
 		
 		return offers;
 	}

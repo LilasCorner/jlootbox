@@ -43,13 +43,13 @@ public class Player {
 	public static Manipulate manip;
 	private static final double changeRate = 0.01; 
 	private static int count = 0;
-	private static int MIN_RANGE = 1;
-	private static int MAX_RANGE = 10;
+	private static int MIN_RANGE = 0;
+	private static int MAX_RANGE = 1;
 	private static int memorySize = 5;
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static boolean dump = false; //DEBUGGING MODE
+	private static boolean dump = true; //DEBUGGING MODE
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -90,7 +90,7 @@ public class Player {
 		hist.addLast(newLoot); 
 	}
 	
-	public static void main(String[] args) {
+//	public static void main(String[] args) {
 		
 //		System.out.println(deltaProbwBoost(2, -50 , 5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 //		System.out.println("--------------------------");
@@ -103,7 +103,7 @@ public class Player {
 //		System.out.println(deltaProbwBoost(2, -250 ,5, -100, 0, 0, 4, 0.5, 0.5, 0.1 , 0.05 ));
 
 		
-	}
+//	}
 	
 	
 	
@@ -282,7 +282,7 @@ public class Player {
 			
 			default:
 				//old box better than new one, less likely to buy				
-				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) / 100d );	
+				deltaProbb = ( (double) (newLoot.getRarity() - hist.peekLast().getRarity()) / 10d );	
 		}
 //		System.out.print("I'm agent " + this.toString() + " and im changing buyProb from: " + this.getThreshold() + " by " + deltaProbb);
 
@@ -395,20 +395,29 @@ public class Player {
 	 * @return Lootbox if one was purchased from the offers, null if nothing purchased
 	 */
 	protected int decide(ArrayList<Lootbox> offers) {
-		
-		ArrayList<Boolean> decisions = new ArrayList<Boolean>();
-		
-		
+				
 		//note: this will currently purchase the first box the player finds acceptable rather than allowing
 		//		them to weigh their options
 		for(int i = 0; i < offers.size(); i++) {
+			System.out.println(this.toString() + " THIS GUY IS:" + this.getThreshold());
 			switch(decisionStrat) {
 				case ALWAYS_BUY: 	return i;
-				case COIN_FLIP: 	if (coinFlip.nextDouble() <= buyProb) {return i;}	
+				case COIN_FLIP: 
+					double j = coinFlip.nextDouble();
+					System.out.println("THE RAND IS " + j);
+					if (j <= buyProb) {
+						return i;
+						}	
 				case PRICE: 
 				{		
 					double adjustedBuyProb = buyProb * (100 - offers.get(i).getPrice()) / 50;
-					if (coinFlip.nextDouble() <= adjustedBuyProb) {return i;}
+					double k = coinFlip.nextDouble();
+					System.out.println(this.toString() + "THE RAND IS " + k);
+					System.out.println(this.toString() + " THE ADJUST IS:" + adjustedBuyProb);
+
+					if (k <= adjustedBuyProb) {
+						return i;
+					}
 				} 
 				default: 			return -1;//impossible 
 			}
@@ -459,24 +468,14 @@ public class Player {
 	
 	
 	/** askOtherPlayer()
-	 * If player doesn't buy lootbox, they 
 	 * look at other players to decide if 
 	 * they should buy more, or fewer boxes
-	 * 
-	 * weight of their connection with another
-	 * player increased/decreased depending on
-	 * if the other player has better or worse loot
 	 */
 	protected void askOtherPlayer() {
 		
 		List<Object> players = new ArrayList<Object>();
 
-		players.addAll((Collection<? extends Object>) net.getSuccessors(this));
-		
-		//no friends ;-; choose anyone
-//		if(players.size() < 1) players = soloPlayer();
-//		if(players.size() == 1) compareAndUpdateRelationship( (Player) players.get(0));
-//		else                    	
+		players.addAll((Collection<? extends Object>) net.getSuccessors(this));               	
 		
 		compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));
 	}
@@ -525,6 +524,22 @@ public class Player {
 	}
 	
 
+	@ScheduledMethod(start=1.1, interval=1)
+	public void compareWithOthers(){
+	   if(Platform.networkPresent){
+		System.out.println(this.toString() + "- before comparing to friends buyProb: " + this.getThreshold());
+ 
+		askOtherPlayer();
+	     
+		System.out.println(this.toString() + "- after comparing to friends buyProb: " + this.getThreshold());
+
+	   }
+	  
+		if(dump) {
+			infoDump(false);
+		}
+	}
+	
 	
 	/** step()
 	 * Every tick, determine if player wants to buy a new box, 
@@ -532,49 +547,41 @@ public class Player {
 	 */
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {
-
 //		Below is how to keep model updated with params from context mid-run
 //		Parameters params = RunEnvironment.getInstance().getParameters();
 		int index = 0;
 		ArrayList<Lootbox> offers = Platform.platformResponse(this);
 		
 		reviewOffers(offers);
+		System.out.println(this.toString() + "- offered " + offers.size() + " lootbox(s)");
+		
 		
 		offers = Platform.removeOffers(offers);
 		
 		if((index = decide(offers)) >= 0) {
+			System.out.println(this.toString() + "- Bought a box!");
 			
 			offers.get(index).setPurchased(true);
 			newLoot = Platform.purchaseLootbox(offers.get(index));
 			
+			
+			
 			if(dump) {
 				infoDump(true);
 			}
-			
+			System.out.println(this.toString() + "- Current buyProb: " + this.getThreshold());
 			updateThreshold();
+			System.out.println(this.toString() + "- New buyProb: " + this.getThreshold());
 
 			recordNewLootboxInHistory();
 
 			purchased = true;
 			
 			setBuyTime((int) (RunEnvironment.getInstance().getCurrentSchedule().getTickCount()));
-		}		
+		}	
 		else {
-			//if we didnt buy, we look at other players
-			//and edit buyThreshold accordingly
-			purchased = false; 
-			
-			if(Platform.networkPresent) {
-				askOtherPlayer();
-			}
-			
-			
-			if(dump) {
-				infoDump(false);
-			}
-			
+			System.out.println(this.toString() + "- No buy");
 		}
-		
 	}
 
 }
