@@ -29,7 +29,7 @@ public class Lootbox {
 	private boolean limEd;
 	private boolean purchased = false;
 
-	
+	//constructors
 	public Lootbox(){
 		this(0, false, 0, 0, false); 
 	}
@@ -42,7 +42,6 @@ public class Lootbox {
 		this(weight, false, buyProb, avgHistPrice, false);
 	}
 
-	//
 	public Lootbox(double weight, boolean fav, double buyProb, double avgHistPrice, boolean limEdition){
 		this.price = generatePrice(buyProb, avgHistPrice) ;
 		this.limEd = limEdition;
@@ -73,7 +72,15 @@ public class Lootbox {
 		return limEd;
 	}
 	
-
+	/**generatePrice
+	 * 
+	 * generate price for lootbox by offering price player is most 
+	 * likely to buy given their spending history
+	 * 
+	 * @param buyProb
+	 * @param avgHistPrice
+	 * @return
+	 */
 	private static double generatePrice(double buyProb, double avgHistPrice) {
 		
 		ArrayList<Double> playerProb = new ArrayList<Double>();
@@ -141,7 +148,7 @@ public class Lootbox {
 		return purchased;
 	}
 
-	/**
+	/**setPurchased
 	 * @param purchased the purchased to set
 	 */
 	public void setPurchased(boolean purchased) {

@@ -6,7 +6,6 @@ package jlootbox;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
@@ -48,11 +47,6 @@ public class Platform {
 		playerNetwork = Player.net.getNodes();
 	}
 	
-	
-//	public static double getAskingPrice() {
-//		return newLoot.getPrice();
-//	}
-//	
 	public static Lootbox offerLootbox(Player buyer) {
 		return new Lootbox(0, false, buyer.getThreshold(), buyer.avgHistPrice(), false);
 	}
@@ -86,8 +80,6 @@ public class Platform {
 		}
 	}
 	
-	// give players a free box every 10 ticks
-	// out of pure generosity :-)
 	@ScheduledMethod(start=15, interval=20)
 	public static void freeBoxOn() {
 
@@ -96,8 +88,7 @@ public class Platform {
 		}
 	}
 	
-	// give players a free box every 10 ticks
-	// out of pure generosity :-)
+
 	@ScheduledMethod(start=16, interval=20)
 	public static void freeBoxOff() {
 
@@ -142,21 +133,36 @@ public class Platform {
 			
 	}
 	
-	//node with most in-degrees(most popular) gets consistently better
-	//luck than regular players
+	/**favPlayer
+	 * node with most in-degrees(most popular) gets consistently better
+	 * luck than regular players
+	 * @param buyer
+	 * @return lootbox
+	 */
+	
 	public static Lootbox favPlayer(Player buyer) {
 		return new Lootbox(0, true, buyer.getThreshold(), buyer.avgHistPrice(), false);
 	}
 
-	//better connected a node is, more likely it is
-	//to pull rare loot
-	//# connections = weighted draw
+	/**biasedBox
+	 * better connected a node is, more likely it is
+	 * to pull rare loot 
+	 * # connections = weighted draw
+	 * @param buyer
+	 * @return lootbox
+	 */
+	
 	public static Lootbox biasedBox(Player buyer) {
 		
 		double diff = (Player.net.getInDegree(favorite) - Player.net.getInDegree(buyer))/100d;				
 		return new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice(), false);
 		
 	}
+	/**platformResponse
+	 * platform returning potential lootboxes to offer depending on player & manipualtion at play
+	 * @param buyer
+	 * @return arraylist of lootbox offers from platform
+	 */
 	
 	public static ArrayList<Lootbox> platformResponse(Player buyer) {
 		
@@ -181,6 +187,12 @@ public class Platform {
 		return offers;
 	}
 	
+	
+	/***removeOffers
+	 * platform removing purchased boxes from offer list
+	 * @param offers
+	 * @return modified arraylist
+	 */
 	public static ArrayList<Lootbox> removeOffers(ArrayList<Lootbox> offers){
 		
 		Iterator<Lootbox> i = offers.iterator();

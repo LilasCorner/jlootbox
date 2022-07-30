@@ -91,9 +91,7 @@ public class Player {
 	}
 
 	
-	public String toString() {
-		return ""+id; 
-	}
+
 	
 	public static void init(String manipulation,  Context con, ArrayList<Object> tempList) {
 		manip = Enum.valueOf(Player.Manipulate.class, manipulation); 
@@ -102,6 +100,10 @@ public class Player {
 		net = (Network<Object>)context.getProjection("player network");
 		allPlayers = tempList;
 
+	}
+	
+	public String toString() {
+		return ""+id; 
 	}
 	
 	public Player getPlayer() {
@@ -151,18 +153,6 @@ public class Player {
 			buyProb = i;
 		}
 	}
-	
-	public void addThreshold() {
-//		//System.out.println("About to call setThreshold from addThreshold");	
-		setThreshold(getThreshold() + changeRate);
-			
-	}
-	
-	public void subtractThreshold() {
-//		//System.out.println("About to call setThreshold from subtractThreshold");	
-		setThreshold(getThreshold() - changeRate);
-		
-	}
 
 	public void changeThreshold(double d) {
 		setThreshold(getThreshold() + d);
@@ -170,10 +160,7 @@ public class Player {
 
 
 	/** moneySpent()
-	 *  
 	 *  returns money spent on newest lootbox
-	 *  
-	 * @return int price of last lootbox
 	 */
 	public double moneySpent() {
 		if(purchased) {
@@ -310,10 +297,7 @@ public class Player {
 		}
 	
 	
-	
-		/**
-		 * @param q
-		 */
+
 		public ProbAdjuster(ProbAdjuster q) {
 			this.pDiffMin = q.pDiffMin;
 			this.pDiffMax =  q.pDiffMax;
@@ -333,7 +317,7 @@ public class Player {
 		}
 
 
-
+		//calculates buyProb adjustment for player by interpolating new value as determined by rarityDiff and priceDiff
 		public double getAdjustment(double rarityDiff, double priceDiff) {
 			
 			//how far btwn the two lines we are
@@ -350,7 +334,7 @@ public class Player {
 			
 		}
 	
-		
+		//calculates additional boost for players who have recieved two excellent items in a row (rarityDiff would = 0 if two items of equal value appeared.)
 		public double getAdjustmentwBoost(double rarityDiff, double priceDiff, double newRarity) {
 			return getAdjustment(rarityDiff, priceDiff) + (newRarity / 5d) * 0.3; 
 		}
@@ -494,12 +478,12 @@ public class Player {
 	}
 	
 
+	//players compare themselves to others if a network is present
 	@ScheduledMethod(start=1.1, interval=1)
 	public void compareWithOthers(){
 	   if(Platform.networkPresent){
  
 		askOtherPlayer();
-	     
 
 	   }
 	  
