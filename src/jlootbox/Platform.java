@@ -101,35 +101,34 @@ public class Platform {
 	 * loops through all players in the network to find
 	 * the player with the most in-degrees
 	 */
-	@ScheduledMethod(start=1.2, interval=1)
+	@ScheduledMethod(start=0.8, interval=1)
 	public static void findFavorite() {		
 		
-		if(!networkPresent || manip != Manipulate.FAV_PLAYER) {
-			return;
-		}
-		
-		List<Object> favorites = new ArrayList<Object>();
-		Player player;
-		Player favorite;
-		int index = RandomHelper.nextIntFromTo(0, Player.allPlayers.size() - 1);
-		Object fav = Player.allPlayers.get(index);
-		int favNodes = Player.net.getInDegree(fav);
+		if(favPlayer || biasBox) {
+			List<Object> favorites = new ArrayList<Object>();
+			Player player;
+			int index = RandomHelper.nextIntFromTo(0, Player.allPlayers.size() - 1);
+			Object fav = Player.allPlayers.get(index);
+			int favNodes = Player.net.getInDegree(fav);
 
-		
-		//find most popular player
-		for (Object obj : playerNetwork) {
-			player = (Player) obj;
-			favorite = (Player) fav;
 			
-			if(Player.net.getInDegree(obj) > favNodes && player.avgHistValue() > favorite.avgHistValue()) {
-				favorites.clear();
-				fav = obj;
-				favNodes = Player.net.getInDegree(fav);
+			//find most popular player
+			for (Object obj : playerNetwork) {
+				player = (Player) obj;
+				favorite = (Player) fav;
 				
+				if(Player.net.getInDegree(obj) > favNodes && player.avgHistValue() > favorite.avgHistValue()) {
+					favorites.clear();
+					fav = obj;
+					favNodes = Player.net.getInDegree(fav);
+					
+				}
 			}
+			
+			favorite = (Player)fav;
 		}
 		
-		favorite = (Player)fav;
+		return;
 			
 	}
 	
@@ -153,8 +152,11 @@ public class Platform {
 	 */
 	
 	public static Lootbox biasedBox(Player buyer) {
+				
+		int fav = Player.net.getInDegree(favorite);
+		int player = Player.net.getInDegree(buyer);
 		
-		double diff = (Player.net.getInDegree(favorite) - Player.net.getInDegree(buyer))/100d;				
+		double diff = (fav - player)/100d;				
 		return new Lootbox(diff, false, buyer.getThreshold(), buyer.avgHistPrice(), false);
 		
 	}
@@ -167,18 +169,19 @@ public class Platform {
 	public static ArrayList<Lootbox> platformResponse(Player buyer) {
 		
 		offers.clear();
-		
-		if(freeBox) {
-			offers.add(Platform.offerFreeLootbox(buyer));
+
+		if(favPlayer) {
+			offers.add(Platform.favPlayer(buyer));
 		}
 		else if(limEd) {
 			offers.add(Platform.offerLimLootbox(buyer));
 		}
-		else if(favPlayer) {
-			offers.add(Platform.favPlayer(buyer));
-		}
 		else if(biasBox) {
 			offers.add(Platform.biasedBox(buyer));
+		}
+		else if(freeBox) {
+			offers.add(Platform.offerFreeLootbox(buyer));
+			offers.add(Platform.offerLootbox(buyer));
 		}
 		else { //platform generates regular lootbox
 			offers.add(Platform.offerLootbox(buyer));

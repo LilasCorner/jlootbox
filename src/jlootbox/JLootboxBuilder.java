@@ -88,45 +88,43 @@ public class JLootboxBuilder implements ContextBuilder<Object> {
 		
 		context.setId("jlootbox");
 	
-		if(networkPresent) { 
-			
-			//networks present, validate params
-			validate(nwbeta, 0, 1, "NWBeta must be between 0 and 1. Please re-initialize");
-			validateEvenOdd(nwdegree, true, "NWDegree must be an even number. Please re-initialize");
-			validate(nrdensity, 0, 1,"NRDensity must be between 0 and 1. Please re-initialize");
-			validate(playerCount, 9, 99999, "Please re-initialize the model with > 9 players to create the network." );
-			if(network.equals("LATTICE")) {
-				validateSqrt (playerCount, "For Lattice networks, player # must be a perfect square. Please re-initialize");
-			}
-			
-			//create corresponding network
-			switch(network) {
-				case "WATTS":
-					WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
-							nwdegree, nwsymm);
-					netBuilder.setGenerator(watgen);
-					break;
-				
-				case "RANDOM":
-					RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(nrdensity, 
-							nrloop, nrsymm);
-					netBuilder.setGenerator(randgen);
-					break;
-				
-				case "LATTICE":
-	
-					Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(nltoroid);
-					netBuilder.setGenerator(latgen);
-					
-					break;
-	
-				default:
-					WattsBetaSmallWorldGenerator<Object> defgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
-							nwdegree, nwsymm);
-					netBuilder.setGenerator(defgen);
-			}
-			
+		//networks present, validate params
+		validate(nwbeta, 0, 1, "NWBeta must be between 0 and 1. Please re-initialize");
+		validateEvenOdd(nwdegree, true, "NWDegree must be an even number. Please re-initialize");
+		validate(nrdensity, 0, 1,"NRDensity must be between 0 and 1. Please re-initialize");
+		validate(playerCount, 9, 99999, "Please re-initialize the model with > 9 players to create the network." );
+		if(network.equals("LATTICE")) {
+			validateSqrt (playerCount, "For Lattice networks, player # must be a perfect square. Please re-initialize");
 		}
+		
+		//create corresponding network
+		switch(network) {
+			case "WATTS":
+				WattsBetaSmallWorldGenerator<Object> watgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
+						nwdegree, nwsymm);
+				netBuilder.setGenerator(watgen);
+				break;
+			
+			case "RANDOM":
+				RandomDensityGenerator<Object> randgen = new RandomDensityGenerator<Object>(nrdensity, 
+						nrloop, nrsymm);
+				netBuilder.setGenerator(randgen);
+				break;
+			
+			case "LATTICE":
+
+				Lattice2DGenerator<Object> latgen = new Lattice2DGenerator<Object>(nltoroid);
+				netBuilder.setGenerator(latgen);
+				
+				break;
+
+			default:
+				WattsBetaSmallWorldGenerator<Object> defgen = new WattsBetaSmallWorldGenerator<Object>(nwbeta,  
+						nwdegree, nwsymm);
+				netBuilder.setGenerator(defgen);
+		}
+		
+		
 		
 		
 		

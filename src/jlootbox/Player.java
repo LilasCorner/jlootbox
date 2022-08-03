@@ -421,17 +421,41 @@ public class Player {
 	}
 	
 	
+	/**soloPlayer()
+	 * If a player has no edges, choose a node
+	 * in the network at random and create an edge
+	 * 
+	 * @return List<Object> player - the list of player edges the current agent has
+	 */
+	public List<Object> soloPlayer() {
+		
+		List<Object> player = new ArrayList<Object>();
+		int index = RandomHelper.nextIntFromTo(0, allPlayers.size() - 1);
+		Player otherPlayer = (Player) allPlayers.get(index);
+		RepastEdge<Object> friendEdge = net.getEdge(this, otherPlayer); //will == null if dne
+		
+		player.add(otherPlayer);
+		friendEdge = net.addEdge(this, otherPlayer, 0.0);
+		
+		return player;
+		
+	}
+	
 	/** askOtherPlayer()
 	 * look at other players to decide if 
 	 * they should buy more, or fewer boxes
 	 */
 	protected void askOtherPlayer() {
-		
-		List<Object> players = new ArrayList<Object>();
+		if(Platform.networkPresent) {
+			List<Object> players = new ArrayList<Object>();
 
-		players.addAll((Collection<? extends Object>) net.getSuccessors(this));               	
+			players.addAll((Collection<? extends Object>) net.getSuccessors(this));               	
+			
+			if(players.size() < 1) players = soloPlayer();
+			
+			compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));
+		}
 		
-		compareAndUpdateRelationship( (Player) players.get(RandomHelper.nextIntFromTo(0, players.size() - 1)));
 	}
 	
 	/**compare(Deque<Lootbox> otherLoot) 
