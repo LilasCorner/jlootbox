@@ -363,15 +363,19 @@ public class Player {
 	protected int decide(ArrayList<Lootbox> offers) {
 		
 		int retry = 1;
-		//TODO: create adjustment here if limed == true
+		//create adjustment here if limed == true
 		//temp implementation = they will consider the box twice bc it's limed
+		//this imp. will need to be changed to accomodate multiple offers,
+		//assumes 1 offer currently. For multiple offers, we can flag which boxes 
+		//should be considered twice for LimEd status
 		
-		if (manip == Manipulate.LIM_ED) {
-			retry++;
+		for (Lootbox it: offers) {
+			if(it.getLimEdStatus()) retry++;
 		}
 		
 		while (retry > 0) {
 			for(int i = 0; i < offers.size(); i++) {
+				
 				switch(decisionStrat) {
 					case ALWAYS_BUY: 	return i; //this will be a problem later if there's multiple boxes....
 					case COIN_FLIP: if (coinFlip.nextDouble() <= buyProb) {return i;}	
