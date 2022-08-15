@@ -4,12 +4,13 @@
 package jlootbox;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
-import repast.simphony.space.graph.Network;
 
 /**
  * @author Lilo
@@ -34,18 +35,23 @@ public class Platform {
 	public static boolean networkPresent = false; 
 	private static Context <Object> context;
 	private static Lootbox newLoot;
+	private static int lowestRank = 50; // lowest 50th percentile
 	private static Iterable<Object> playerNetwork;
-	public static  ArrayList<Lootbox> offers = new ArrayList<Lootbox>();
-
+	public static ArrayList<Lootbox> offers = new ArrayList<Lootbox>();
+	private static List<Double> freqList = new ArrayList<Double>();
+	private static List<Double> luckList = new ArrayList<Double>();
+	
 	
 	public static void init(String manipulation, Context <Object> newContext, boolean noNet) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 
 		favPlayer = ((manip == Manipulate.FAV_PLAYER) ? true : false);
 		biasBox = ((manip == Manipulate.BIAS_BOX) ? true : false);
+		freeBox = ((manip == Manipulate.FREE_BOX) ? true : false);
 		context = newContext;
 		networkPresent = noNet;
 		playerNetwork = Player.net.getNodes();
 	}
+	
 	
 	public static Lootbox offerLootbox(Player buyer) {
 		return new Lootbox(0, false, buyer.getThreshold(), buyer.avgHistPrice(), false);
@@ -55,9 +61,18 @@ public class Platform {
 		newLoot = newBox; //inform platform which box chosen, may be useful later
 		return newLoot;
 	}
-
+	
+	//platform should have option to return null to target specific players
+	//target players in lowest 50 percentile (in luck and or purchase freq, whichever lower)
+	//and offer box
 	public static Lootbox offerFreeLootbox(Player buyer) {
-		return new Lootbox(0, false, buyer.getThreshold(), 0, false);
+		System.out.println("Calling offerFreeLootbox");
+		System.out.println(buyer.toString() + ": is rank = " + getRank(buyer));
+
+		if (getRank(buyer) <= lowestRank) return new Lootbox(0, false, buyer.getThreshold(), 0, false);
+		System.out.println("No Loot Offered");
+		return null;
+		
 	}	
 	
 	public static Lootbox offerLimLootbox(Player buyer){
@@ -66,7 +81,6 @@ public class Platform {
 	
 	@ScheduledMethod(start=50, interval=50)
 	public static void limEdOn() {
-
 		if(manip == Manipulate.LIM_ED) {
 			limEd = true;
 		}
@@ -79,30 +93,17 @@ public class Platform {
 			limEd = false;
 		}
 	}
-	
-	@ScheduledMethod(start=15, interval=20)
-	public static void freeBoxOn() {
 
-		if(manip == Manipulate.FREE_BOX) {
-			freeBox = true;
-		}
-	}
 	
-
-	@ScheduledMethod(start=16, interval=20)
-	public static void freeBoxOff() {
-
-		if(manip == Manipulate.FREE_BOX) {
-			freeBox = false;
-		}
-	}
-	
-	/**findFavorite()
+	/**compilePlayerInfo()
 	 * loops through all players in the network to find
 	 * the player with the most in-degrees
 	 */
 	@ScheduledMethod(start=0.8, interval=1)
-	public static void findFavorite() {		
+	public static void compilePlayerInfo() {		
+		
+		if(freeBox) compileArrays();
+		
 		
 		if(favPlayer || biasBox) {
 			List<Object> favorites = new ArrayList<Object>();
@@ -179,14 +180,29 @@ public class Platform {
 		else if(biasBox) {
 			offers.add(Platform.biasedBox(buyer));
 		}
-		else if(freeBox) {
-			offers.add(Platform.offerFreeLootbox(buyer));
+		else if(freeBox) { 
+			// target poor players! 
+			// current implementation: if player is in lowest 50th percentile
+			// in terms of luck/purchase freq, whichevers lower, 
+			// we offer box
+			
+			System.out.println("====================");
+
+			Lootbox newBox = Platform.offerFreeLootbox(buyer);
+			
+			if(newBox != null) { 
+				System.out.println("Offering lootbox!");
+				offers.add(newBox);
+			}
+			
 			offers.add(Platform.offerLootbox(buyer));
 		}
 		else { //platform generates regular lootbox
 			offers.add(Platform.offerLootbox(buyer));
 		}
 		
+		System.out.println("====================");
+
 		return offers;
 	}
 	
@@ -211,6 +227,35 @@ public class Platform {
 		return offers;
 	}
 	
+	 
+	private static double getRank(Player player) {
+		double freq = calcPercentile(freqList, player.getBuyTime());
+		double luck = calcPercentile(luckList, player.avgHistValue());
+		if(freq < luck) return freq;	
+		return luck;
+	}
+
+
+
+	public static void compileArrays() {
+		 
+		for(Object it: playerNetwork) {
+			Player temp =  (Player) it;
+			freqList.add((double) temp.getBuyTime());
+			luckList.add(temp.avgHistValue());
+		}
+		
+	    Collections.sort(freqList);
+	    Collections.sort(luckList);
+	}
+	
+	public static double calcPercentile (List<Double> details, double percentile) {
+	    int index = (int) Math.ceil(percentile / 100.0 * details.size());
+	    System.out.println("index = " + index );
+	    return index;
+   }
+
+
 	
 
 }

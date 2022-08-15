@@ -362,10 +362,10 @@ public class Player {
 	 */
 	protected int decide(ArrayList<Lootbox> offers) {
 				
-
+		//TODO: create adjustment here if limed == true, don't permanently adjust buyProb
 		for(int i = 0; i < offers.size(); i++) {
 			switch(decisionStrat) {
-				case ALWAYS_BUY: 	return i;
+				case ALWAYS_BUY: 	return i; //this will be a problem later if there's multiple boxes....
 				case COIN_FLIP: if (coinFlip.nextDouble() <= buyProb) {return i;}	
 				case PRICE: 
 				{		
@@ -489,6 +489,7 @@ public class Player {
 			
 	}
 
+	
 	//check if freebox was offered and remove from arraylist
 	public boolean reviewOffers(ArrayList<Lootbox> offers) {
 		if(offers.get(0).getPrice() == 0) {
@@ -505,15 +506,8 @@ public class Player {
 	//players compare themselves to others if a network is present
 	@ScheduledMethod(start=1.1, interval=1)
 	public void compareWithOthers(){
-	   if(Platform.networkPresent){
- 
-		askOtherPlayer();
-
-	   }
-	  
-		if(dump) {
-			infoDump(false);
-		}
+	   if(Platform.networkPresent)	askOtherPlayer();
+	   if(dump) 					infoDump(false);
 	}
 	
 	
