@@ -361,21 +361,31 @@ public class Player {
 	 * @return Lootbox if one was purchased from the offers, null if nothing purchased
 	 */
 	protected int decide(ArrayList<Lootbox> offers) {
-				
-		//TODO: create adjustment here if limed == true, don't permanently adjust buyProb
-		for(int i = 0; i < offers.size(); i++) {
-			switch(decisionStrat) {
-				case ALWAYS_BUY: 	return i; //this will be a problem later if there's multiple boxes....
-				case COIN_FLIP: if (coinFlip.nextDouble() <= buyProb) {return i;}	
-				case PRICE: 
-				{		
-					double adjustedBuyProb = buyProb * (100 - offers.get(i).getPrice()) / 50;
+		
+		int retry = 1;
+		//TODO: create adjustment here if limed == true
+		//temp implementation = they will consider the box twice bc it's limed
+		
+		if (manip == Manipulate.LIM_ED) {
+			retry++;
+		}
+		
+		while (retry > 0) {
+			for(int i = 0; i < offers.size(); i++) {
+				switch(decisionStrat) {
+					case ALWAYS_BUY: 	return i; //this will be a problem later if there's multiple boxes....
+					case COIN_FLIP: if (coinFlip.nextDouble() <= buyProb) {return i;}	
+					case PRICE: 
+					{		
+						double adjustedBuyProb = buyProb * (100 - offers.get(i).getPrice()) / 50;
 
-					if (coinFlip.nextDouble() <= adjustedBuyProb) {return i;}
-				} 
-				default: 			return -1;//impossible 
+						if (coinFlip.nextDouble() <= adjustedBuyProb) {return i;}
+					} 
+					default: 			return -1;//impossible 
+				}
 			}
 		}
+		
 		
 		return -1;
 
