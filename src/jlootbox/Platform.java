@@ -35,12 +35,13 @@ public class Platform {
 	public static boolean networkPresent = false; 
 	private static Context <Object> context;
 	private static Lootbox newLoot;
-	private static int lowestRank = 50; // lowest 50th percentile
+	private static double cutoffPercentile = .15; // lowest 50th percentile
 	private static Iterable<Object> playerNetwork;
 	public static ArrayList<Lootbox> offers = new ArrayList<Lootbox>();
 	private static List<Double> freqList = new ArrayList<Double>();
-	private static List<Double> luckList = new ArrayList<Double>();
-	
+	private static List<Double> valueList = new ArrayList<Double>();
+	private static double freqThres = 0;
+	private static double valueThres = 0;
 	
 	public static void init(String manipulation, Context <Object> newContext, boolean noNet) {
 		manip = Enum.valueOf(Platform.Manipulate.class, manipulation); 
@@ -69,7 +70,7 @@ public class Platform {
 		System.out.println("Calling offerFreeLootbox");
 		System.out.println(buyer.toString() + ": is rank = " + getRank(buyer));
 
-		if (getRank(buyer) <= lowestRank) return new Lootbox(0, false, buyer.getThreshold(), 0, false);
+		if (getRank(buyer)) return new Lootbox(0, false, buyer.getThreshold(), 0, false);
 		System.out.println("No Loot Offered");
 		return null;
 		
@@ -100,10 +101,9 @@ public class Platform {
 	 * the player with the most in-degrees
 	 */
 	@ScheduledMethod(start=0.8, interval=1)
-	public static void compilePlayerInfo() {		
+	public static void compilePlayerInfo() {				
 		
 		if(freeBox) compileArrays();
-		
 		
 		if(favPlayer || biasBox) {
 			List<Object> favorites = new ArrayList<Object>();
@@ -228,31 +228,45 @@ public class Platform {
 	}
 	
 	 
-	private static double getRank(Player player) {
-		double freq = calcPercentile(freqList, player.getBuyTime());
-		double luck = calcPercentile(luckList, player.avgHistValue());
-		if(freq < luck) return freq;	
-		return luck;
+	private static boolean getRank(Player player) {
+		
+		if(freqList.indexOf(player.getBuyTime()) >= freqList.indexOf(freqThres)) return true;
+		if(valueList.indexOf(player.avgHistValue()) <= valueList.indexOf(valueThres)) return true;
+		
+		return false;
 	}
 
 
 
 	public static void compileArrays() {
 		 
+		double medianThres = 0;
+		
+		//refresh arrays
 		for(Object it: playerNetwork) {
 			Player temp =  (Player) it;
 			freqList.add((double) temp.getBuyTime());
-			luckList.add(temp.avgHistValue());
+			valueList.add(temp.avgHistValue());
 		}
 		
-	    Collections.sort(freqList);
-	    Collections.sort(luckList);
+		
+		//unequal comparison, find way to flatten! 
+		//find new stack overflow buddy to reference! 
+		//sort lowest to highest
+	    Collections.sort(freqList); //high numbers targeted
+	    Collections.sort(valueList); //low numbers targeted
+	    
+	    //get median value
+	    medianThres = cutoffPercentile * freqList.size();
+	    freqThres = thresholdValue(freqList, medianThres);
+	    valueThres = thresholdValue(valueList, medianThres);  
+	    
 	}
 	
-	public static double calcPercentile (List<Double> details, double percentile) {
-	    int index = (int) Math.ceil(percentile / 100.0 * details.size());
-	    System.out.println("index = " + index );
-	    return index;
+	
+	public static double thresholdValue (List<Double> details, double medianThres) {
+		
+		 return details.get((int) Math.floor(medianThres * details.size()));
    }
 
 

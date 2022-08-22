@@ -363,6 +363,7 @@ public class Player {
 	protected int decide(ArrayList<Lootbox> offers) {
 		
 		int retry = 1;
+		
 		//create adjustment here if limed == true
 		//temp implementation = they will consider the box twice bc it's limed
 		//this imp. will need to be changed to accomodate multiple offers,

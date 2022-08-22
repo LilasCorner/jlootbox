@@ -44,7 +44,10 @@ public class Lootbox {
 
 	public Lootbox(double weight, boolean fav, double buyProb, double avgHistPrice, boolean limEdition){
 		this.price = generatePrice(buyProb, avgHistPrice) ;
-		this.limEd = limEdition;
+		
+		if(Platform.limEd)	limEd = true;
+		else				limEd = false;
+		
 		
 		if(fav){
 			this.rarity = generateFav();
