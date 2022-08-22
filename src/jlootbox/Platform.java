@@ -230,6 +230,7 @@ public class Platform {
 	 
 	private static boolean getRank(Player player) {
 		
+		//reverse the comparison for frequency - higher frequency worse!
 		if(freqList.indexOf(player.getBuyTime()) >= freqList.indexOf(freqThres)) return true;
 		if(valueList.indexOf(player.avgHistValue()) <= valueList.indexOf(valueThres)) return true;
 		
@@ -253,7 +254,7 @@ public class Platform {
 		//unequal comparison, find way to flatten! 
 		//find new stack overflow buddy to reference! 
 		//sort lowest to highest
-	    Collections.sort(freqList); //high numbers targeted
+	    Collections.sort(freqList, Collections.reverseOrder()); //high numbers targeted
 	    Collections.sort(valueList); //low numbers targeted
 	    
 	    //get median value
