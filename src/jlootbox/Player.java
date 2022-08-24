@@ -49,7 +49,7 @@ public class Player {
 	
 	private static Uniform coinFlip = RandomHelper.createUniform(MIN_RANGE, MAX_RANGE);
 	private DecisionStrategy decisionStrat;
-	private static boolean dump = false; //DEBUGGING MODE
+	private static boolean dump = true; //DEBUGGING MODE
 	
 	private boolean purchased = false;
 	private int timeSinceLastPurchase;
@@ -408,7 +408,9 @@ public class Player {
 	            System.out.print(value.next().toString());
 	        }
 		 System.out.println("");
+		 System.out.println(this.toString() + "- Time since last purchase: " + getBuyTime());
 		 System.out.println(this.toString() + "- BuyProb: " + getThreshold());
+		 
 
 		if(buy) {
 			

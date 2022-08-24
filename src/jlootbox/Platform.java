@@ -68,7 +68,7 @@ public class Platform {
 	//and offer box
 	public static Lootbox offerFreeLootbox(Player buyer) {
 		System.out.println("Calling offerFreeLootbox");
-		System.out.println(buyer.toString() + ": is rank = " + getRank(buyer));
+		System.out.println(buyer.toString() + ": targeted? " + getRank(buyer));
 
 		if (getRank(buyer)) return new Lootbox(0, false, buyer.getThreshold(), 0, false);
 		System.out.println("No Loot Offered");
@@ -186,7 +186,6 @@ public class Platform {
 			// in terms of luck/purchase freq, whichevers lower, 
 			// we offer box
 			
-			System.out.println("====================");
 
 			Lootbox newBox = Platform.offerFreeLootbox(buyer);
 			
@@ -201,7 +200,6 @@ public class Platform {
 			offers.add(Platform.offerLootbox(buyer));
 		}
 		
-		System.out.println("====================");
 
 		return offers;
 	}
@@ -230,11 +228,12 @@ public class Platform {
 	 
 	private static boolean getRank(Player player) {
 		
-		//reverse the comparison for frequency - higher frequency worse!
-		if(freqList.indexOf(player.getBuyTime()) >= freqList.indexOf(freqThres)) return true;
-		if(valueList.indexOf(player.avgHistValue()) <= valueList.indexOf(valueThres)) return true;
+		//reverse the comparison for frequency - higher fr equency worse!
+		System.out.println("----------------");
+		System.out.println(player.toString() + "- within frequency percentile? " + (player.getBuyTime() >= freqThres) );
+		System.out.println(player.toString() + "- within frequency percentile? " + (player.avgHistValue() <= valueThres) );
+		return((player.getBuyTime() >= freqThres) || (player.avgHistValue() <= valueThres));		
 		
-		return false;
 	}
 
 
@@ -242,32 +241,49 @@ public class Platform {
 	public static void compileArrays() {
 		 
 		double medianThres = 0;
-		
+		freqList.clear();
+		valueList.clear();
+		System.out.println("=======PLATFORM=======");
+
+		System.out.println("starting network loop...");
 		//refresh arrays
 		for(Object it: playerNetwork) {
+			
 			Player temp =  (Player) it;
+			System.out.println(temp.toString() + ": has buyTime " + temp.getBuyTime() + " and histValue " + temp.avgHistValue());
+
 			freqList.add((double) temp.getBuyTime());
 			valueList.add(temp.avgHistValue());
 		}
-		
-		
+
+
 		//unequal comparison, find way to flatten! 
 		//find new stack overflow buddy to reference! 
 		//sort lowest to highest
 	    Collections.sort(freqList, Collections.reverseOrder()); //high numbers targeted
 	    Collections.sort(valueList); //low numbers targeted
 	    
+		System.out.println("freqList: " + freqList );
+		System.out.println("valueList: " + valueList );
+
+	    
 	    //get median value
 	    medianThres = cutoffPercentile * freqList.size();
 	    freqThres = thresholdValue(freqList, medianThres);
-	    valueThres = thresholdValue(valueList, medianThres);  
+	    valueThres = thresholdValue(valueList, medianThres);   
+	    
+		System.out.println("freqThres: " + freqThres );
+		System.out.println("valueThres: " + valueThres );
+	    
+		System.out.println("=======END PLATFORM=======");
+
 	    
 	}
 	
 	
 	public static double thresholdValue (List<Double> details, double medianThres) {
 		
-		 return details.get((int) Math.floor(medianThres * details.size()));
+		 return details.get((int) Math.floor(medianThres));
    }
 
 
